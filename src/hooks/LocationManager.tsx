@@ -1,16 +1,15 @@
 import { useEffect } from 'react'
-import { useLocation, useParams } from 'react-router'
+import { useLocation } from 'react-router'
+import { useStore } from '../store.ts'
+
 const LocationManager = () => {
-  const { itemId } = useParams()
-  const location = useLocation()
+  const { pathname } = useLocation()
+  const setCurrentParamItemId = useStore((state) => state.setCurrentParamItemId)
 
   useEffect(() => {
-    console.info('[LocationManager] Params changed:', itemId)
-  }, [itemId])
-
-  useEffect(() => {
-    console.info('[LocationManager] Location changed:', location)
-  }, [location])
+    console.info('[LocationManager] Location changed:', pathname)
+    setCurrentParamItemId(pathname)
+  }, [pathname])
 
   return null
 }

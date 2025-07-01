@@ -1,6 +1,7 @@
 import { Link, Route, Routes } from 'react-router'
 import './App.css'
 import LocationManager from './hooks/LocationManager'
+import World from './World'
 
 function App() {
   return (
@@ -13,6 +14,9 @@ function App() {
         <Route index element={null} />
         <Route path='/item/:itemId' element={null} />
       </Routes>
+      <div className='h-full w-full bg-gray-200'>
+        <World />
+      </div>
     </>
   )
 }
