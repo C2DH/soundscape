@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Canvas } from '@react-three/fiber'
 import { useEffect, useState } from 'react'
 import * as THREE from 'three'
-import SoundLine from '../components/SoundLine' // Adjust the import path to your project
+import SoundLine, { type SoundLineProps } from '../components/SoundLine' // Adjust the import path to your project
 
 import { OrbitControls } from '@react-three/drei'
 
@@ -13,7 +13,7 @@ const meta: Meta<typeof SoundLine> = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
-}
+} satisfies Meta<typeof SoundLine>
 
 export default meta
 
@@ -28,34 +28,38 @@ const generateRandomPoints = (count = 100): THREE.Vector3[] => {
   })
 }
 
-const LiveWaveformStory = () => {
-  const [points, setPoints] = useState<THREE.Vector3[]>(() =>
-    generateRandomPoints()
-  )
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPoints(generateRandomPoints())
-    }, 1000) // ~10 FPS
-
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <div style={{ width: '100%', height: 600, background: 'grey' }}>
-      <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
-        <ambientLight />
-        <directionalLight position={[10, 10, 5]} />
-
-        <SoundLine points={points} color='cyan' lineWidth={0.02} />
-
-        <OrbitControls />
-      </Canvas>
-    </div>
-  )
-}
-
 export const Default: Story = {
-  render: () => <LiveWaveformStory />,
+  args: {
+    color: 'cyan',
+    lineWidth: 0.02,
+  },
+  render: (args: SoundLineProps) => {
+    const [points, setPoints] = useState<THREE.Vector3[]>(
+      generateRandomPoints()
+    )
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setPoints(generateRandomPoints())
+      }, 1000) // ~10 FPS
+
+      return () => clearInterval(interval)
+    }, [])
+    return (
+      <div style={{ width: '100%', height: 600, background: 'grey' }}>
+        <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+          <ambientLight />
+          <directionalLight position={[10, 10, 5]} />
+
+          <SoundLine
+            points={points}
+            color={args.color}
+            lineWidth={args.lineWidth}
+          />
+
+          <OrbitControls />
+        </Canvas>
+      </div>
+    )
+  },
   name: 'Live Updating Line',
 }

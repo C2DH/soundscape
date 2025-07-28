@@ -5,7 +5,7 @@ import { Line2 } from 'three/addons/lines/Line2.js'
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js'
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js'
 
-type SoundLineProps = {
+export type SoundLineProps = {
   points: THREE.Vector3[]
   color?: string
   lineWidth?: number
@@ -14,10 +14,17 @@ type SoundLineProps = {
 }
 
 // Default easing function
-const easeInOutQuad = (t: number): number => {
+export const easeInOutQuad = (t: number): number => {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 }
 
+export const easeOutQuad = (t: number): number => {
+  return t * (2 - t)
+}
+
+export const easeOutQuint = (t: number): number => {
+  return 1 - Math.pow(1 - t, 5)
+}
 // Linear interpolation between two Vector3 points
 const lerpVector3 = (
   start: THREE.Vector3,
@@ -36,7 +43,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
   color = 'cyan',
   lineWidth = 0.5,
   tweenDuration = 500,
-  easing = easeInOutQuad,
+  easing = easeOutQuint,
 }) => {
   const lineRef = useRef<Line2 | null>(null)
   const { size } = useThree()

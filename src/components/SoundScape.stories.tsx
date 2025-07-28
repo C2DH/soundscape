@@ -25,12 +25,32 @@ export const Default: Story = {
     lists: dummyLists,
     showWireframe: true,
   },
-  render: () => (
+  render: (args) => (
     <div style={{ width: '100%', height: 600, background: 'grey' }}>
       <Canvas camera={{ position: [25, 10, 25], fov: 50 }}>
         <ambientLight />
         <directionalLight position={[10, 10, 5]} />
-        <SoundScape lists={dummyLists} />
+        <SoundScape {...args} />
+        <OrbitControls />
+      </Canvas>
+    </div>
+  ),
+}
+
+import sampleList from '../assets/sample.json'
+import { amplifyLists } from './SoundScapePlayer'
+
+export const UsingSampleJSON: Story = {
+  args: {
+    lists: amplifyLists(sampleList, 0.5),
+    showWireframe: true,
+  },
+  render: (args) => (
+    <div style={{ width: '100%', height: 600, background: 'grey' }}>
+      <Canvas camera={{ position: [25, 10, 25], fov: 50 }}>
+        <ambientLight />
+        <directionalLight position={[10, 10, 5]} />
+        <SoundScape {...args} />
         <OrbitControls />
       </Canvas>
     </div>
