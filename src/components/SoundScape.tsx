@@ -14,11 +14,13 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
 
   const raycaster = useRef(new THREE.Raycaster()).current
   const mouse = useRef(new THREE.Vector2()).current
+
   const { camera, gl } = useThree()
 
   const handlePointerMove = (event: React.PointerEvent) => {
     mouse.x = (event.clientX / gl.domElement.clientWidth) * 2 - 1
     mouse.y = -(event.clientY / gl.domElement.clientHeight) * 2 + 1
+    console.info('Pointer moved:', mouse.x, mouse.y)
   }
   useFrame(() => {
     if (!meshRef.current) return
@@ -63,7 +65,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
         const b = a + 1
         const c = a + listLength
         const d = c + 1
-
         indices.push(a, b, c) // triangle 1
         indices.push(b, d, c) // triangle 2
       }
@@ -91,7 +92,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
       </mesh>
       {/* Marker for intersection point */}
       <mesh ref={markerRef} visible={false}>
-        <sphereGeometry args={[0.05, 16, 16]} />
+        <sphereGeometry args={[0.05, 32, 32]} />
         <meshStandardMaterial color='yellow' />
       </mesh>
     </>

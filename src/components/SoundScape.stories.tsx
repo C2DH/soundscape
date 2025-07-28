@@ -23,7 +23,7 @@ const dummyLists = Array.from({ length: 10 }, (_, t) =>
 export const Default: Story = {
   args: {
     lists: dummyLists,
-    showWireframe: false,
+    showWireframe: true,
   },
   render: () => (
     <div style={{ width: '100%', height: 600, background: 'grey' }}>
