@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import SoundScape from './SoundScape'
+import sampleList from '../assets/sample.json'
+import frequenceList from '../assets/frequencies.json'
 
 const meta: Meta<typeof SoundScape> = {
   title: '3D/SoundScape',
@@ -37,12 +39,29 @@ export const Default: Story = {
   ),
 }
 
-import sampleList from '../assets/sample.json'
 import { amplifyLists } from './SoundScapePlayer'
 
 export const UsingSampleJSON: Story = {
   args: {
     lists: amplifyLists(sampleList, 0.5),
+    showWireframe: true,
+  },
+  render: (args) => (
+    <div style={{ width: '100%', height: 600, background: 'grey' }}>
+      <Canvas camera={{ position: [25, 10, 25], fov: 50 }}>
+        <ambientLight />
+        <directionalLight position={[10, 10, 5]} />
+        <SoundScape {...args} />
+        <OrbitControls />
+      </Canvas>
+    </div>
+  ),
+}
+
+
+export const UsingFrequenciesJSON: Story = {
+  args: {
+    lists: amplifyLists(frequenceList, 0.5),
     showWireframe: true,
   },
   render: (args) => (

@@ -34,10 +34,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
   const setHighlightedVectors = localSoundScapeStore(
     (state) => state.setHighlightedVectors
   )
-  // const [setT, setHighlightedVectors] = localSoundScapeStore((state) => [
-  //   state.setT,
-  //   state.setHighlightedVectors,
-  // ])
   const meshRef = useRef<THREE.Mesh>(null)
   const intersectionRef = useRef<THREE.Vector3 | null>(null)
   const previousIntersectionListIndexRef = useRef<number>(0)
@@ -54,13 +50,23 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
   }
 
   const getClosestVectors = (point: THREE.Vector3) => {
-    const listIndex = Math.max(0, Math.floor(point.z))
+    const timeLength = lists.length
+    const listLength = lists[0]?.length ?? 0
+    
+    // Adjust for centered coordinates
+    const adjustedZ = point.z + timeLength / 2
+    const listIndex = Math.max(0, Math.floor(adjustedZ))
+    
     if (previousIntersectionListIndexRef.current === listIndex) {
       return // No change in list index, skip processing
     }
-    setHighlightedVectors(
-      lists[listIndex].map((y, x) => new THREE.Vector3(x, y, listIndex))
+    
+    // Create vectors with centered coordinates
+    const centeredVectors = lists[listIndex].map((y, x) => 
+      new THREE.Vector3(x - listLength / 2, y, listIndex - timeLength / 2)
     )
+    
+    setHighlightedVectors(centeredVectors)
     previousIntersectionListIndexRef.current = listIndex
   }
 
@@ -84,6 +90,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
       }
     }
   })
+
   const geometry = useMemo(() => {
     const timeLength = lists.length
     const listLength = lists[0]?.length ?? 0
@@ -92,15 +99,20 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
     const indices: number[] = []
     const vectors = [] as THREE.Vector3[][]
 
-    // Generate vertex positions
+    // Calculate center offsets
+    const xCenter = listLength / 2
+    const zCenter = timeLength / 2
+
+    // Generate vertex positions (centered around origin)
     for (let t = 0; t < timeLength; t++) {
       const yList = lists[t]
       if (!vectors[t]) vectors[t] = []
       for (let x = 0; x < listLength; x++) {
         const y = yList[x]
-        vertices.push(x, y, t) // x = index, y = value, z = time
+        // Center the coordinates around the origin
+        vertices.push(x - xCenter, y, t - zCenter)
 
-        vectors[t].push(new THREE.Vector3(x, y, t))
+        vectors[t].push(new THREE.Vector3(x - xCenter, y, t - zCenter))
       }
     }
 
@@ -124,8 +136,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
     geometry.setIndex(indices)
     geometry.computeVertexNormals()
 
-    setHighlightedVectors(vectors[0]) // Set initial hig\hlighted vectors
-    // setT(0) // Initialize time\
+    setHighlightedVectors(vectors[0]) // Set initial highlighted vectors
     return geometry
   }, [lists])
 
@@ -144,13 +155,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
         <meshStandardMaterial color='yellow' />
       </mesh>
       <SoundScapeSoundlineWrapper />
-      {/* Uncomment to visualize the intersection point */}
-      {/* {intersectionRef.current && (
-        <mesh position={intersectionRef.current}>
-          <sphereGeometry args={[0.1, 32, 32]} />
-          <meshStandardMaterial color='blue' />
-        </mesh>
-      )} */}
     </>
   )
 }
