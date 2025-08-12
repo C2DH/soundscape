@@ -5,13 +5,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useWorldStore } from '../store'
 import { latLonToVector3 } from '../geo'
 import { useFrame, useThree } from '@react-three/fiber'
-import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { easeInOutQuad } from '../easing'
+import Pin from './Pin'
 export interface WorldProps {
   geoPoints?: GeoPoint[]
   radius?: number
-  controls: React.RefObject<OrbitControlsImpl>
-  // onPointClick?: (point: GeoPoint) => void;
 }
 
 interface AnimationState {
@@ -30,6 +28,9 @@ const World: React.FC<WorldProps> = ({
   const pointsGroupRef = useRef<THREE.Group>(null)
   const previousHighlightedPoint = useRef<GeoPoint | undefined>(undefined)
   const [pointDirection] = useState(new THREE.Vector3(0, 1, 0)) // Up vector of the Earth
+  const setHighlightedPoint = useWorldStore(
+    (state) => state.setHighlightedPoint
+  )
   // Animation state for custom easing
   const animationState = useRef<AnimationState>({
     isAnimating: false,
@@ -45,7 +46,6 @@ const World: React.FC<WorldProps> = ({
       const elapsed = Date.now() - animation.startTime
       const t = Math.min(elapsed / animation.duration, 1) // Clamp t to [0, 1]
       const progress = easeInOutQuad(t) // Apply easing function
-      console.log('Animation progress:', progress)
       // End animation when complete
       if (progress >= 1) {
         animation.isAnimating = false
@@ -55,10 +55,13 @@ const World: React.FC<WorldProps> = ({
       const toCamera = new THREE.Vector3()
         .subVectors(camera.position, worldRef.current.position)
         .normalize()
-
+      // change the toCamera vector, fake a vertical movement
+      toCamera.add(new THREE.Vector3(0, 0.5, 0)).normalize()
       // Create a quaternion that rotates pointDirection → toCamera
       const quaternion = new THREE.Quaternion()
       quaternion.setFromUnitVectors(pointDirection, toCamera)
+      // apply an agle to the quaternon only on one axis, e.g. 15 degrees if the pointDirection is towards north
+      // or 30 degrees if the pointDirection is towards south
 
       // Apply rotation with easing
       worldRef.current.quaternion.slerp(quaternion, progress) // Smoothly rotate towards camera
@@ -102,6 +105,11 @@ const World: React.FC<WorldProps> = ({
     return () => unsub()
   }, [])
 
+  const handleClickPoint = (point: GeoPoint) => {
+    // Optionally, you can set the highlighted point in the store
+    setHighlightedPoint(point)
+  }
+
   return (
     <group ref={worldRef}>
       <Earth radius={radius} />
@@ -109,10 +117,12 @@ const World: React.FC<WorldProps> = ({
         {geoPoints.map((point, i) => {
           const position = latLonToVector3(point.lat, point.lon, radius + 0.02)
           return (
-            <mesh key={i} position={position}>
-              <sphereGeometry args={[0.05, 16, 16]} />
-              <meshStandardMaterial color={point.color || 'yellow'} />
-            </mesh>
+            <Pin
+              key={point.id || i}
+              position={position}
+              point={point}
+              onClick={() => handleClickPoint(point)}
+            />
           )
         })}
       </group>
