@@ -10,7 +10,12 @@ export interface PinProps {
 
 const Pin: React.FC<PinProps> = ({ point, position, color, onClick }) => {
   return (
-    <mesh position={position} onClick={() => onClick(point)}>
+    <mesh
+      position={position}
+      onClick={() => onClick(point)}
+      onPointerOver={() => (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = 'default')}
+    >
       <sphereGeometry args={[0.05, 16, 16]} />
       <meshStandardMaterial color={point.color || color || 'yellow'} />
     </mesh>
