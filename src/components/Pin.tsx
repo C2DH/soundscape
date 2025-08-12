@@ -1,4 +1,4 @@
-import type { Vector3 } from 'three'
+import { Vector3 } from 'three'
 import type { GeoPoint } from '../types'
 import { Html } from '@react-three/drei'
 
@@ -20,6 +20,7 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick }) => {
           </p>
         </div>
       </Html>
+
       <mesh
         onClick={() => onClick(point)}
         onPointerOver={() => (document.body.style.cursor = 'pointer')}

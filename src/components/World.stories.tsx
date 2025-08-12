@@ -85,7 +85,16 @@ export const WithInterval: Story = {
     }, [args.geoPoints])
     return (
       <div style={{ width: 800, height: 800, background: 'grey' }}>
-        <Canvas shadows camera={{ position: [5, 5, 5], fov: 100 }}>
+        <Canvas
+          shadows
+          camera={{
+            position: [5, 5, 5],
+            fov: 50, // Reduced from 100 to 50 for more natural perspective
+            near: 0.1, // Added near plane
+            far: 1000, // Added far plane
+          }}
+        >
+          <color attach='background' args={['purple']} />
           <ambientLight intensity={0.4} />
           <directionalLight
             castShadow

@@ -3,8 +3,7 @@ import { useLoader } from '@react-three/fiber'
 import * as THREE from 'three'
 import vertexEarth from '../shaders/earth/planet/vertex.glsl?raw'
 import fragmentEarth from '../shaders/earth/planet/fragment.glsl?raw'
-import vertexAtmosphere from '../shaders/earth/atmosphere/vertex.glsl?raw'
-import fragmentAtmosphere from '../shaders/earth/atmosphere/fragment.glsl?raw'
+import Atmosphere from './Atmosphere'
 
 export type EarthProps = {
   maskUrl?: string // black&white texture: white = continents, black = water (you can flip with `invert`)
@@ -12,32 +11,6 @@ export type EarthProps = {
   waterColor?: string
   invert?: boolean
   radius?: number
-}
-
-type AtmosphereProps = {
-  radius: number
-  color?: string
-}
-
-const Atmosphere: React.FC<AtmosphereProps> = ({
-  radius,
-  color = '#E0D6FF',
-}) => {
-  return (
-    <mesh scale={[1.05, 1.05, 1.05]}>
-      <sphereGeometry args={[radius, 64, 64]} />
-      <shaderMaterial
-        vertexShader={vertexAtmosphere}
-        fragmentShader={fragmentAtmosphere}
-        uniforms={{
-          atmosphereColor: { value: new THREE.Color(color) },
-        }}
-        blending={THREE.AdditiveBlending}
-        side={THREE.BackSide} // atmosphere is rendered inside-out
-        transparent
-      />
-    </mesh>
-  )
 }
 
 const Earth: React.FC<EarthProps> = ({
@@ -56,7 +29,8 @@ const Earth: React.FC<EarthProps> = ({
 
   return (
     <group>
-      <Atmosphere radius={2.8} />
+      {/* <Atmosphere radius={2.8} /> */}
+      <Atmosphere radius={radius} />
       <mesh ref={mesh} rotation={[0, 0, 0]}>
         <sphereGeometry args={[radius, 64, 64]} />
         <shaderMaterial
