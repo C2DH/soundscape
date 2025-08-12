@@ -6,11 +6,18 @@ import { useWorldStore } from '../store'
 import { latLonToVector3 } from '../geo'
 import { useFrame, useThree } from '@react-three/fiber'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
+import { easeInOutQuad } from '../easing'
 export interface WorldProps {
   geoPoints?: GeoPoint[]
   radius?: number
   controls: React.RefObject<OrbitControlsImpl>
   // onPointClick?: (point: GeoPoint) => void;
+}
+
+interface AnimationState {
+  isAnimating: boolean
+  startTime: number
+  duration: number
 }
 
 const World: React.FC<WorldProps> = ({
@@ -23,22 +30,41 @@ const World: React.FC<WorldProps> = ({
   const pointsGroupRef = useRef<THREE.Group>(null)
   const previousHighlightedPoint = useRef<GeoPoint | undefined>(undefined)
   const [pointDirection] = useState(new THREE.Vector3(0, 1, 0)) // Up vector of the Earth
+  // Animation state for custom easing
+  const animationState = useRef<AnimationState>({
+    isAnimating: false,
+    startTime: 0,
+    duration: 1500, // 1.5 seconds
+  })
 
   useFrame(() => {
     if (!worldRef.current) return
-    // World direction from sphere center to camera
-    const toCamera = new THREE.Vector3()
-      .subVectors(camera.position, worldRef.current.position)
-      .normalize()
 
-    // Create a quaternion that rotates pointDirection → toCamera
-    const quaternion = new THREE.Quaternion()
-    quaternion.setFromUnitVectors(pointDirection, toCamera)
+    const animation = animationState.current
+    if (animation.isAnimating) {
+      const elapsed = Date.now() - animation.startTime
+      const t = Math.min(elapsed / animation.duration, 1) // Clamp t to [0, 1]
+      const progress = easeInOutQuad(t) // Apply easing function
+      console.log('Animation progress:', progress)
+      // End animation when complete
+      if (progress >= 1) {
+        animation.isAnimating = false
+      }
 
-    // Apply rotation with easing
-    worldRef.current.quaternion.slerp(quaternion, 0.05) // Smoothly rotate towards camera
-    // worldRef.current.quaternion.setFromUnitVectors(pointDirection, toCamera) // Directly set the quaternion
-    // worldRef.current.quaternion.copy(quaternion)
+      // World direction from sphere center to camera
+      const toCamera = new THREE.Vector3()
+        .subVectors(camera.position, worldRef.current.position)
+        .normalize()
+
+      // Create a quaternion that rotates pointDirection → toCamera
+      const quaternion = new THREE.Quaternion()
+      quaternion.setFromUnitVectors(pointDirection, toCamera)
+
+      // Apply rotation with easing
+      worldRef.current.quaternion.slerp(quaternion, progress) // Smoothly rotate towards camera
+      // worldRef.current.quaternion.setFromUnitVectors(pointDirection, toCamera) // Directly set the quaternion
+      // worldRef.current.quaternion.copy(quaternion)
+    }
   })
 
   // Subscribe to highlightedPoint without triggering React re-renders
@@ -68,6 +94,8 @@ const World: React.FC<WorldProps> = ({
         // Rotate the world towards the target position
         if (worldRef.current) {
           pointDirection.copy(targetPos).normalize()
+          animationState.current.startTime = Date.now()
+          animationState.current.isAnimating = true
         }
       }
     })
