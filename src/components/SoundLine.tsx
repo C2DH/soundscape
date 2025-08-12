@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { Line2 } from 'three/addons/lines/Line2.js'
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js'
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js'
+import { easeOutQuint } from '../easing'
 
 export type SoundLineProps = {
   points: THREE.Vector3[]
@@ -13,18 +14,6 @@ export type SoundLineProps = {
   easing?: (t: number) => number // easing function for tweening
 }
 
-// Default easing function
-export const easeInOutQuad = (t: number): number => {
-  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
-}
-
-export const easeOutQuad = (t: number): number => {
-  return t * (2 - t)
-}
-
-export const easeOutQuint = (t: number): number => {
-  return 1 - Math.pow(1 - t, 5)
-}
 // Linear interpolation between two Vector3 points
 const lerpVector3 = (
   start: THREE.Vector3,
