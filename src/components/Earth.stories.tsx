@@ -20,8 +20,8 @@ type Story = StoryObj<typeof Earth>
 
 export const Default: Story = {
   render: () => (
-    <div style={{ width: '100%', height: 600, background: 'grey' }}>
-      <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
+    <div style={{ width: '100%', height: '100vh', background: 'grey' }}>
+      <Canvas >
         <color attach="background" args={['#000']} />
         {/* <ambientLight/>
         <directionalLight position={[15, 10, 5]} /> */}

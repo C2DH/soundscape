@@ -5,26 +5,29 @@ import fragmentAtmosphere from '../shaders/earth/atmosphere/fragment.glsl?raw'
 
 interface AtmosphereProps {
   radius: number
-  color?: THREE.ColorRepresentation
+  uColor?: string
+  uThickness?: number
 }
 
 const Atmosphere: React.FC<AtmosphereProps> = ({
-  radius,
-  color = '#E0D6FF',
+  radius
 }) => {
   return (
     <>
-      <mesh scale={[1.05, 1.05, 1.05]}>
-        <sphereGeometry args={[radius + 1.5, 64, 64]} />
+      <mesh>
+        <sphereGeometry args={[radius + 0.05, 64, 64]} />
         <shaderMaterial
           vertexShader={vertexAtmosphere}
           fragmentShader={fragmentAtmosphere}
           uniforms={{
-            atmosphereColor: { value: new THREE.Color(color) },
+            uColor: { value: new THREE.Color('#B399FF') },
+            uThickness: { value: 1.0 },
+            uViewDir: { value: new THREE.Vector3(0.5, 0.0, 0.7) } // fixed direction
           }}
-          blending={THREE.AdditiveBlending}
-          side={THREE.BackSide} // atmosphere is rendered inside-out
-          transparent
+           blending={THREE.AdditiveBlending}
+                  // side={THREE.BackSide} 
+           transparent
+           depthWrite={false}
         />
       </mesh>
     </>
