@@ -8,4 +8,7 @@ void main() {
   float fade = smoothstep(0.0, uThickness, edge);
   gl_FragColor = vec4(uColor, fade);
   if (fade < 0.01) discard;
+
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
 }

@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import vertexAtmosphere from '../shaders/earth/atmosphere/vertex.glsl?raw'
 import fragmentAtmosphere from '../shaders/earth/atmosphere/fragment.glsl?raw'
 
+
 interface AtmosphereProps {
   radius: number
   uColor?: string
