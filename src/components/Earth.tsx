@@ -4,6 +4,9 @@ import * as THREE from 'three'
 import vertexEarth from '../shaders/earth/planet/vertex.glsl?raw'
 import fragmentEarth from '../shaders/earth/planet/fragment.glsl?raw'
 import Atmosphere from './Atmosphere'
+import PlanetLines from './PlanetLines'
+import EarthBackground from './EarthBackground'
+
 
 export type EarthProps = {
   maskUrl?: string // black&white texture: white = continents, black = water (you can flip with `invert`)
@@ -28,8 +31,12 @@ const Earth: React.FC<EarthProps> = ({
   const materialRef = useRef<THREE.ShaderMaterial>(null!)
 
   return (
+    <>
+          <EarthBackground />
     <group>
       {/* <Atmosphere radius={2.8} /> */}
+
+      <PlanetLines radius={radius} maskUrl={'/textures/continents_mask.jpg'} />
       <Atmosphere radius={radius} />
       <mesh ref={mesh} rotation={[0, 0, 0]}>
         <sphereGeometry args={[radius, 64, 64]} />
@@ -46,7 +53,9 @@ const Earth: React.FC<EarthProps> = ({
           }}
         />
       </mesh>
+
     </group>
+    </>
   )
 }
 
