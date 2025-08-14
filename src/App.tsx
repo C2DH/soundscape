@@ -38,7 +38,7 @@ function App() {
         </Routes>
       </div>
       <div className='h-full w-full bg-gray-200'>
-        <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }}>
+        <Canvas shadows camera={{ position: [5, 5, 5], fov: 100 }}>
           <ambientLight intensity={0.4} />
           <directionalLight
             castShadow
@@ -50,7 +50,7 @@ function App() {
           
           <World geoPoints={geoPoints} radius={5} />
 
-          <OrbitControls />
+          <OrbitControls enablePan={false} />
         </Canvas>
       </div>
     </>
