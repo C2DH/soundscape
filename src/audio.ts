@@ -11,7 +11,7 @@ export async function extractFrequencyLists(
   try {
     // Create audio context
     const audioContext = new (window.AudioContext ||
-      window.webkitAudioContext)()
+      (window as any).webkitAudioContext)()
 
     // Fetch and decode audio file
     const response = await fetch(mp3Url)
@@ -92,7 +92,7 @@ export async function extractFrequencyListsWithAnalyser(
 ): Promise<number[][]> {
   try {
     const audioContext = new (window.AudioContext ||
-      window.webkitAudioContext)()
+      (window as any).webkitAudioContext)()
 
     // Fetch and decode audio
     const response = await fetch(mp3Url)
@@ -118,7 +118,7 @@ export async function extractFrequencyListsWithAnalyser(
     analyser.connect(offlineContext.destination)
 
     const lists: number[][] = []
-    const frequencyBinCount: number = analyser.frequencyBinCount
+    // const frequencyBinCount: number = analyser.frequencyBinCount
     const sampleRate: number = audioBuffer.sampleRate
     const samplesPerSecond: number = sampleRate
 
@@ -128,8 +128,7 @@ export async function extractFrequencyListsWithAnalyser(
       second < Math.floor(audioBuffer.duration);
       second++
     ) {
-      const frequencyData: Uint8Array = new Uint8Array(frequencyBinCount)
-
+      
       // This is a simplified approach - in practice, you'd need to
       // process the audio buffer in real-time chunks
       const startSample: number = second * samplesPerSecond

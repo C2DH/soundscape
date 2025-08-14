@@ -50,7 +50,7 @@ const SoundScapeRealtime: React.FC<Props> = ({
       if (listener.current) camera.remove(listener.current)
       audio.current?.stop()
       audio.current?.disconnect()
-      analyser.current = undefined
+      analyser.current = null
     }
   }, [camera, url])
 
