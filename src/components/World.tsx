@@ -111,21 +111,22 @@ const World: React.FC<WorldProps> = ({
   }
 
   return (
-    <group ref={worldRef}>
-      <Earth radius={radius} />
-      <group ref={pointsGroupRef}>
-        {geoPoints.map((point, i) => {
-          const position = latLonToVector3(point.lat, point.lon, radius + 0.02)
-          return (
-            <Pin
-              key={point.id || i}
-              position={position}
-              point={point}
-              onClick={() => handleClickPoint(point)}
-            />
-          )
-        })}
-      </group>
+    <group ref={worldRef} rotation={[-0.1, -1.0, -0.4]}>
+      <Earth radius={radius} >
+        <group ref={pointsGroupRef} >
+            {geoPoints.map((point, i) => {
+              const position = latLonToVector3(point.lat, point.lon, radius + 0.03)
+              return (
+                <Pin
+                  key={point.id || i}
+                  position={position}
+                  point={point}
+                  onClick={handleClickPoint}
+                />
+              )
+            })}
+          </group>
+      </ Earth >
     </group>
   )
 }

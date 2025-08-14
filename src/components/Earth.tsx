@@ -14,6 +14,7 @@ export type EarthProps = {
   waterColor?: string
   invert?: boolean
   radius?: number
+   children?: React.ReactNode
 }
 
 const Earth: React.FC<EarthProps> = ({
@@ -22,6 +23,8 @@ const Earth: React.FC<EarthProps> = ({
   waterColor = '#2A263C',
   invert = true,
   radius = 2,
+  children, 
+  ...props
 }) => {
   const mesh = useRef<THREE.Mesh>(null!)
   const mask = useLoader(THREE.TextureLoader, maskUrl)
@@ -33,7 +36,7 @@ const Earth: React.FC<EarthProps> = ({
   return (
     <>
           <EarthBackground />
-    <group>
+    <group {...props}>
       {/* <Atmosphere radius={2.8} /> */}
 
       <PlanetLines radius={radius} maskUrl={'/textures/continents_mask.jpg'} />
@@ -53,7 +56,7 @@ const Earth: React.FC<EarthProps> = ({
           }}
         />
       </mesh>
-
+      {children}
     </group>
     </>
   )

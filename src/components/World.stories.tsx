@@ -21,9 +21,21 @@ export default meta
 type Story = StoryObj<typeof World>
 
 const geoPoints = [
-  { lat: 48.8566, lon: 2.3522, color: 'red', id: 'Paris' }, // Paris
-  { lat: 40.7128, lon: -74.006, color: 'blue', id: 'New York' }, // New York
-  { lat: -33.8688, lon: 151.2093, color: 'green', id: 'Sydney' }, // Sydney
+{ id: 'Sweden', lat: 60.128161, lon: 18.643501 },
+{ id: 'Norway', lat: 60.472024, lon: 8.468946 },
+{ id: 'Finland', lat: 61.92411, lon: 25.748151 },
+{ id: 'Denmark', lat: 56.26392, lon: 9.501785 },
+{ id: 'Iceland', lat: 64.963051, lon: -19.020835 },
+{ id: 'Greenland', lat: 71.706936, lon: -42.604303 },
+{ id: 'Faroe Islands', lat: 61.892635, lon: -6.911806 },
+{ id: 'Estonia', lat: 58.595272, lon: 25.013607 },
+{ id: 'Latvia', lat: 56.879635, lon: 24.603189 },
+{ id: 'Lithuania', lat: 55.169438, lon: 23.881275 },
+{ id: 'Russia', lat: 61.52401, lon: 105.318756 },
+{ id: 'Belarus', lat: 53.709807, lon: 27.953389 },
+{ id: 'Poland', lat: 51.919438, lon: 19.145136 },
+
+  
 ] as GeoPoint[]
 
 export const Default: Story = {
@@ -33,7 +45,7 @@ export const Default: Story = {
   },
   render: (args: WorldProps) => {
     return (
-      <div style={{ width: 800, height: 800, background: 'grey' }}>
+      <div style={{ width: '100vw', height: '100vh', background: 'grey' }}>
         <Canvas shadows camera={{ position: [5, 5, 5], fov: 100 }}>
           <ambientLight intensity={0.4} />
           <directionalLight
@@ -43,14 +55,14 @@ export const Default: Story = {
             shadow-mapSize-width={1024}
             shadow-mapSize-height={1024}
           />
-          <mesh
+          {/* <mesh
             receiveShadow
             rotation={[-Math.PI / 2, 0, 0]}
             position={[0, -1.1, 0]}
           >
             <planeGeometry args={[100, 100]} />
             <shadowMaterial opacity={0.3} />
-          </mesh>
+          </mesh> */}
           <World geoPoints={args.geoPoints} radius={args.radius} />
 
           <OrbitControls enableZoom enablePan />
@@ -89,7 +101,7 @@ export const WithInterval: Story = {
           shadows
           camera={{
             position: [5, 5, 5],
-            fov: 50, // Reduced from 100 to 50 for more natural perspective
+            fov: 150, // Reduced from 100 to 50 for more natural perspective
             near: 0.1, // Added near plane
             far: 1000, // Added far plane
           }}
