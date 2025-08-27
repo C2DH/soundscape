@@ -6,7 +6,7 @@ import fft from 'fft-js'
 
 const inputFile = process.argv[2]
 const outputFile = process.argv[3]
-const keepCount = parseInt(process.argv[4]) || 32 // number of frequency bins to keep from start
+const keepCount = parseInt(process.argv[4]) || 48 // number of frequency bins to keep from start
 const intervalSeconds = parseFloat(process.argv[5]) || 0.25 // analysis interval
 
 if (!inputFile || !outputFile) {

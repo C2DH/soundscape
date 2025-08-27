@@ -1,6 +1,6 @@
 const SoundLines = () => {
     return (
-        <mesh castShadow>
+        <mesh castShadow >
         <boxGeometry args={[2, 2, 2]} />
         <meshStandardMaterial color='gold' />
         </mesh>

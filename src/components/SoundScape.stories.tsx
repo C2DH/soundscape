@@ -4,7 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import SoundScape from './SoundScape'
 import sampleList from '../assets/sample.json'
-import frequenceList from '../assets/frequencies.json'
+import frequenceList from '../assets/frequencies_sweden.json'
 
 const meta: Meta<typeof SoundScape> = {
   title: '3D/SoundScape',

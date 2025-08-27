@@ -27,7 +27,7 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
   if (points.length === 0) {
     return null // No points to render
   }
-  return <SoundLine points={points} />
+  return <SoundLine points={points} rotateY180/>
 }
 
 const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
@@ -142,7 +142,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
 
   return (
     <>
-      <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove}>
+      <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove} scale={[0.6, 1, 1]} rotation={[0, Math.PI / 1, 0]}>
         <meshStandardMaterial
           color='red'
           side={THREE.DoubleSide}
