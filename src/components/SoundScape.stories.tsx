@@ -5,6 +5,7 @@ import { OrbitControls } from '@react-three/drei'
 import SoundScape from './SoundScape'
 import sampleList from '../assets/sample.json'
 import frequenceList from '../assets/frequencies_sweden.json'
+import frequenceListDenmark from '../assets/frequencies_denmark.json'
 
 const meta: Meta<typeof SoundScape> = {
   title: '3D/SoundScape',
@@ -59,9 +60,26 @@ export const UsingSampleJSON: Story = {
 }
 
 
-export const UsingFrequenciesJSON: Story = {
+export const Sweden: Story = {
   args: {
     lists: amplifyLists(frequenceList, 0.5),
+    showWireframe: true,
+  },
+  render: (args) => (
+    <div style={{ width: '100%', height: 600, background: 'grey' }}>
+      <Canvas camera={{ position: [25, 10, 25], fov: 50 }}>
+        <ambientLight />
+        <directionalLight position={[10, 10, 5]} />
+        <SoundScape {...args} />
+        <OrbitControls />
+      </Canvas>
+    </div>
+  ),
+}
+
+export const Denmark: Story = {
+  args: {
+    lists: amplifyLists(frequenceListDenmark, 0.5),
     showWireframe: true,
   },
   render: (args) => (
