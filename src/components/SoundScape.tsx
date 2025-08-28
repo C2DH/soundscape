@@ -47,9 +47,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
   const handlePointerMove = (event: React.PointerEvent) => {
     mouse.x = (event.clientX / gl.domElement.clientWidth) * 2 - 1;
     mouse.y = -(event.clientY / gl.domElement.clientHeight) * 2 + 1;
-
-    // flip once more for 180° scene rotation
-    mouse.y *= -1;
   };
 
   const getClosestVectors = (point: THREE.Vector3) => {
@@ -57,7 +54,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
     const listLength = lists[0]?.length ?? 0;
 
     // Adjust for centered coordinates
-    const adjustedZ = point.z + timeLength / 2;
+    const adjustedZ = -point.z + timeLength / 2;
     const listIndex = Math.max(0, Math.floor(adjustedZ));
 
     if (previousIntersectionListIndexRef.current === listIndex) {

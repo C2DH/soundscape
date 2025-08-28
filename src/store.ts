@@ -42,11 +42,13 @@ export const useThemeStore = create<ThemeState>((set) => ({
       const primary = root.getPropertyValue('--color-primary').trim();
       const light = root.getPropertyValue('--light').trim();
       const dark = root.getPropertyValue('--dark').trim();
+      const accent = root.getPropertyValue('--accent').trim();
       return {
         colors: {
           '--color-primary': primary,
           '--light': light,
           '--dark': dark,
+          '--accent': accent,
         },
       };
     }),
