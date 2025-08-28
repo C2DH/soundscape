@@ -31,7 +31,7 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
   return <SoundLine points={points} />;
 };
 
-const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
+const SoundScape: React.FC<SoundScapeProps> = ({ lists }) => {
   const setHighlightedVectors = localSoundScapeStore((state) => state.setHighlightedVectors);
   const meshRef = useRef<THREE.Mesh>(null);
   const intersectionRef = useRef<THREE.Vector3 | null>(null);
@@ -146,7 +146,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
           side={THREE.DoubleSide}
           roughness={0.5}
           metalness={0.2}
-          // wireframe={showWireframe}
         />
       </mesh>
       {/* Marker for intersection point */}
