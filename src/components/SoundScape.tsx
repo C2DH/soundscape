@@ -27,7 +27,7 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
   if (points.length === 0) {
     return null // No points to render
   }
-  return <SoundLine points={points} rotateY180/>
+  return <SoundLine points={points}/>
 }
 
 const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
@@ -47,7 +47,10 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
   const handlePointerMove = (event: React.PointerEvent) => {
     mouse.x = (event.clientX / gl.domElement.clientWidth) * 2 - 1
     mouse.y = -(event.clientY / gl.domElement.clientHeight) * 2 + 1
-  }
+
+    // flip once more for 180° scene rotation
+    mouse.y *= -1
+  } 
 
   const getClosestVectors = (point: THREE.Vector3) => {
     const timeLength = lists.length
@@ -141,8 +144,9 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
   }, [lists])
 
   return (
-    <>
-      <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove} scale={[0.6, 1, 1]} rotation={[0, Math.PI / 1, 0]}>
+
+    <group rotation={[0, Math.PI / 1, 0]} scale={[0.6, 1, 1]}>
+      <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove} >
         <meshStandardMaterial
           color='red'
           side={THREE.DoubleSide}
@@ -155,7 +159,8 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
         <meshStandardMaterial color='yellow' />
       </mesh>
       <SoundScapeSoundlineWrapper />
-    </>
+
+    </group>
   )
 }
 

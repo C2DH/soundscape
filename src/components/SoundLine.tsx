@@ -8,13 +8,12 @@ import { easeOutQuint } from '../easing'
 
 export type SoundLineProps = {
   points: THREE.Vector3[]
-  reverse?: boolean
-  rotateY180?: boolean
   color?: string
   lineWidth?: number
   tweenDuration?: number // in milliseconds
   easing?: (t: number) => number // easing function for tweening
 }
+
 
 // Linear interpolation between two Vector3 points
 const lerpVector3 = (
@@ -31,24 +30,11 @@ const lerpVector3 = (
 
 const SoundLine: React.FC<SoundLineProps> = ({
   points,
-  reverse = false,
-  rotateY180 = false,
   color = 'cyan',
   lineWidth = 0.5,
   tweenDuration = 500,
   easing = easeOutQuint,
 }) => {
-  // Process points: reverse and/or rotate
-  const processedPoints = useMemo(() => {
-    let base = reverse ? [...points].reverse() : [...points]
-    if (rotateY180) {
-      base = base.map((p) =>
-        p.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI)
-      )
-    }
-    return base
-  }, [points, reverse, rotateY180])
-
   const lineRef = useRef<Line2 | null>(null)
   const { size } = useThree()
 
@@ -56,10 +42,10 @@ const SoundLine: React.FC<SoundLineProps> = ({
   const isAnimatingRef = useRef<boolean>(false)
   const startPointsRef = useRef<THREE.Vector3[]>([])
   const targetPointsRef = useRef<THREE.Vector3[]>([])
-  const currentPointsRef = useRef<THREE.Vector3[]>(processedPoints)
+  const currentPointsRef = useRef<THREE.Vector3[]>(points)
   const animationStartTimeRef = useRef<number>(0)
   const positionsBufferRef = useRef<Float32Array>(
-    new Float32Array(processedPoints.length * 3)
+    new Float32Array(points.length * 3)
   )
 
   const resolution = useMemo(
@@ -68,8 +54,8 @@ const SoundLine: React.FC<SoundLineProps> = ({
   )
 
   // Initialize positions buffer
-  const updatePositionsBuffer = (pts: THREE.Vector3[]) => {
-    pts.forEach((p, i) => {
+  const updatePositionsBuffer = (points: THREE.Vector3[]) => {
+    points.forEach((p, i) => {
       positionsBufferRef.current[i * 3] = p.x
       positionsBufferRef.current[i * 3 + 1] = p.y
       positionsBufferRef.current[i * 3 + 2] = p.z
@@ -80,24 +66,24 @@ const SoundLine: React.FC<SoundLineProps> = ({
   useEffect(() => {
     if (startPointsRef.current.length === 0) {
       // First render - no animation needed
-      startPointsRef.current = [...processedPoints]
-      currentPointsRef.current = [...processedPoints]
-      updatePositionsBuffer(processedPoints)
+      startPointsRef.current = [...points]
+      currentPointsRef.current = [...points]
+      updatePositionsBuffer(points)
       return
     }
 
-    if (processedPoints.length !== startPointsRef.current.length) {
+    if (points.length !== startPointsRef.current.length) {
       console.warn(
         'SoundLine: Points array length changed, no tweening applied'
       )
-      startPointsRef.current = [...processedPoints]
-      currentPointsRef.current = [...processedPoints]
-      updatePositionsBuffer(processedPoints)
+      startPointsRef.current = [...points]
+      currentPointsRef.current = [...points]
+      updatePositionsBuffer(points)
       return
     }
 
     // Check if points actually changed
-    const hasChanged = processedPoints.some((point, index) => {
+    const hasChanged = points.some((point, index) => {
       const current = startPointsRef.current[index]
       return !point.equals(current)
     })
@@ -106,10 +92,10 @@ const SoundLine: React.FC<SoundLineProps> = ({
 
     // Start animation
     startPointsRef.current = [...currentPointsRef.current] // Current becomes start
-    targetPointsRef.current = [...processedPoints] // New points become target
+    targetPointsRef.current = [...points] // New points become target
     isAnimatingRef.current = true
     animationStartTimeRef.current = performance.now()
-  }, [processedPoints])
+  }, [points])
 
   // Animation frame loop
   useFrame(() => {
@@ -163,15 +149,9 @@ const SoundLine: React.FC<SoundLineProps> = ({
     const line = new Line2(geometry, material)
     line.computeLineDistances()
     return line
-  }, [color, lineWidth, resolution])
+  }, [color, lineWidth, resolution]) // Removed positions dependency
 
-  return (
-    <primitive
-      object={line}
-      ref={lineRef}
-      scale={[0.6, 1, 1]}
-    />
-  )
+  return <primitive object={line} ref={lineRef} />
 }
 
 export default SoundLine
