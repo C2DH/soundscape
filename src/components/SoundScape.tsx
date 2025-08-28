@@ -57,7 +57,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, showWireframe }) => {
     const listLength = lists[0]?.length ?? 0
     
     // Adjust for centered coordinates
-    const adjustedZ = point.z + timeLength / 2
+    const adjustedZ = (-point.z) + timeLength / 2
     const listIndex = Math.max(0, Math.floor(adjustedZ))
     
     if (previousIntersectionListIndexRef.current === listIndex) {
