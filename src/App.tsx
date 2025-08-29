@@ -13,6 +13,7 @@ import { amplifyLists } from './components/SoundScapePlayer';
 import { useThemeStore } from './store';
 import Footer from './components/Footer';
 import Button from './components/Button';
+import AudioControls from './components/AudioControls';
 
 const DenmarkScene: React.FC = () => {
   // ⬇️ This is basically your Storybook args
@@ -77,7 +78,7 @@ function App() {
         <Header />
         <Button
           label="Open Modal"
-          className="absolute bottom-20 left-[calc(50%-3rem)] z-10"
+          className="absolute bottom-30 left-[calc(50%-3rem)] z-10"
           onClick={() => setIsOpen(true)}
         />
         <Canvas shadows camera={{ position: [5, 5, 5], fov: 100 }}>
@@ -103,6 +104,15 @@ function App() {
             Denmark
           </p>
           <DenmarkScene />
+          <AudioControls
+            // isPlaying={false}
+            // onPlay={() => {}}
+            // onPause={() => {}}
+            onNextVis={() => {}}
+            onPrevVis={() => {}}
+            onNextCountry={() => {}}
+            onPrevCountry={() => {}}
+          />
         </div>
       </Modal>
     </>
