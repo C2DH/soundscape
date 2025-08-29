@@ -78,7 +78,7 @@ function App() {
         <Header />
         <Button
           label="Open Modal"
-          className="absolute bottom-[25%] left-[calc(50%-3rem)] z-10"
+          className="absolute bottom-[20%] left-[calc(50%-3rem)] z-10"
           onClick={() => setIsOpen(true)}
         />
         <Canvas shadows camera={{ position: [5, 5, 5], fov: 100 }}>
