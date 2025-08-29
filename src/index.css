@@ -118,6 +118,12 @@ button span {
   margin-bottom: -0.1rem;
 }
 
+@media screen and (max-width: 640px) {
+  footer > div {
+    flex-direction: column;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
