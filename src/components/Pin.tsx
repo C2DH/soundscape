@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import type { GeoPoint } from '../types';
 import { Html } from '@react-three/drei';
+import './Pin.css';
 
 export interface PinProps {
   point: GeoPoint;
@@ -51,24 +52,14 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) 
         }}
       >
         <div
-          className="flex "
-          style={{
-            alignItems: 'center',
-            transform: 'rotateZ(90deg)',
-            textWrap: 'nowrap',
-            textAlign: 'right',
-            transformOrigin: 'right',
-          }}
+          className="Pin"
           onClick={() => onClick(point)}
           onPointerOver={() => (document.body.style.cursor = 'pointer')}
           onPointerOut={() => (document.body.style.cursor = 'default')}
         >
-          <h3 className="text-sm font-bold text-white">{point.id || 'Unnamed'}</h3>
-          <span
-            className="bg-white ml-1.5"
-            style={{ display: 'inline-block', width: '20px', height: '2px' }}
-          ></span>
-          <div className="cursor-pointer pointer-events-none w-[10px] h-[10px] rounded-full bg-white "></div>
+          <p>{point.id || 'Unnamed'}</p>
+          <span className="Pin-line"></span>
+          <div className="Pin-dot"></div>
 
           {/* <p className="text-xs text-gray-600">
             {point.description || 'No description available.'}
