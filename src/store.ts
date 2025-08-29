@@ -39,16 +39,19 @@ export const useThemeStore = create<ThemeState>((set) => ({
   refreshFromCSS: () =>
     set(() => {
       const root = getComputedStyle(document.documentElement);
-      const primary = root.getPropertyValue('--color-primary').trim();
-      const light = root.getPropertyValue('--light').trim();
-      const dark = root.getPropertyValue('--dark').trim();
-      const accent = root.getPropertyValue('--accent').trim();
+      const primaryRgb = root.getPropertyValue('--color-primary').trim();
+      const lightRgb = root.getPropertyValue('--light').trim();
+      const darkRgb = root.getPropertyValue('--dark').trim();
+      const accentRgb = root.getPropertyValue('--accent').trim();
+
+      // Optional: read default alpha (or set 1)
+      const alpha = root.getPropertyValue('--alpha')?.trim() || '1';
       return {
         colors: {
-          '--color-primary': primary,
-          '--light': light,
-          '--dark': dark,
-          '--accent': accent,
+          '--color-primary': `rgba(${primaryRgb}, ${alpha})`,
+          '--light': `rgba(${lightRgb}, ${alpha})`,
+          '--dark': `rgba(${darkRgb}, ${alpha})`,
+          '--accent': `rgba(${accentRgb}, ${alpha})`,
         },
       };
     }),
