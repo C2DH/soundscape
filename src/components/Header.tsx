@@ -1,8 +1,8 @@
-import Logo from './svg/Logo_sow';
+import LogoSow from './svg/LogoSow';
 
 const Header: React.FC = () => {
   return (
-    <header className="w-full fixed top-0 left-0 right-0 z-10">
+    <header className="w-full fixed top-5 left-0 right-0 z-10">
       <nav className="flex items-center justify-center px-6 py-4">
         <ul className="flex items-center space-x-8 text-gray-700 font-medium">
           {/* Left side */}
@@ -15,7 +15,7 @@ const Header: React.FC = () => {
 
           {/* Center logo */}
           <li className="items-center justify-center">
-            <Logo width={100} />
+            <LogoSow width={100} />
           </li>
 
           {/* Right side */}
