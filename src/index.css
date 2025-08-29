@@ -12,10 +12,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --color-primary: #7e5ac5;
-  --light: #f9f1e4;
-  --dark: #1c0e32;
-  --accent: #ffe940;
+  --color-primary: 126, 90, 197; /* #7e5ac5 */
+  --light: 249, 241, 228; /* #f9f1e4 */
+  --dark: 28, 14, 50; /* #1c0e32 */
+  --accent: 255, 222, 124; /* #ffde7c */
 }
 
 @font-face {
@@ -59,11 +59,11 @@
 }
 
 main {
-  background-color: var(--dark);
+  background-color: rgba(var(--dark), 1);
 }
 
 header nav ul li a {
-  color: var(--light);
+  color: rgba(var(--light), 1);
 }
 
 a {
@@ -88,22 +88,34 @@ h1 {
 }
 
 button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  border: 1px solid rgba(var(--accent), 0.5);
   font-size: 1em;
-  font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: rgba(var(--dark), 0.5);
+  color: rgba(var(--accent), 1);
   cursor: pointer;
-  transition: border-color 0.25s;
+  box-shadow: 0 0 0 0 transparent; /* initialize */
+  transition: all 0.2s ease;
+  text-transform: uppercase;
 }
 button:hover {
-  border-color: #646cff;
+  border: 1px solid rgba(var(--accent), 1);
+  box-shadow: 0 0 4px 4px rgba(var(--accent), 0.4);
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  box-shadow: 0 0 4px 4px rgba(var(--accent), 0.4);
+}
+
+button span {
+  margin-bottom: -0.1rem;
 }
 
 @media (prefers-color-scheme: light) {
