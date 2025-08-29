@@ -26,12 +26,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
   return (
     <div
-      className="fixed inset-1 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={onClose}
     >
       {/* Modal container */}
       <div
-        className="relative bg-transparent rounded-2xl shadow-lg m-[5%] w-screen h-[90%] flex flex-col"
+        className="relative bg-transparent shadow-lg w-[100%] h-[100%] flex flex-col"
         onClick={(e) => e.stopPropagation()} // prevent closing on inner click
       >
         {/* Close button */}
