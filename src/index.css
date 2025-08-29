@@ -122,6 +122,10 @@ button span {
   footer > div {
     flex-direction: column;
   }
+
+  footer span {
+    text-align: center;
+  }
 }
 
 @media (prefers-color-scheme: light) {
