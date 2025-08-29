@@ -27,7 +27,7 @@ const lerpVector3 = (start: THREE.Vector3, end: THREE.Vector3, t: number): THREE
 const SoundLine: React.FC<SoundLineProps> = ({
   points,
   color = useThemeStore((s) => s.colors['--accent']),
-  lineWidth = 0.5,
+  lineWidth = 0.2,
   tweenDuration = 500,
   easing = easeOutQuint,
 }) => {
@@ -136,7 +136,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
     return line;
   }, [color, lineWidth, resolution]); // Removed positions dependency
 
-  return <primitive object={line} ref={lineRef} />;
+  return <primitive object={line} ref={lineRef} position={[0, 1, 0]} />;
 };
 
 export default SoundLine;
