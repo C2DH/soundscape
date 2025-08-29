@@ -4,7 +4,11 @@ interface LogoProps {
   className?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ color = 'var(--light)', width = 100, className }) => {
+const LogoSow: React.FC<LogoProps> = ({
+  color = 'rgba(var(--light),1)',
+  width = 100,
+  className,
+}) => {
   const ratio = 640.24 / 436.51;
   const height = width / ratio;
 
@@ -30,4 +34,4 @@ const Logo: React.FC<LogoProps> = ({ color = 'var(--light)', width = 100, classN
   );
 };
 
-export default Logo;
+export default LogoSow;
