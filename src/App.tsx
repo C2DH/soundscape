@@ -5,15 +5,16 @@ import World from './components/World';
 import { OrbitControls, Grid } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import Header from './components/Header';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Modal from './components/Modal';
 import SoundScape from './components/SoundScape';
 import frequenceListDenmark from './assets/frequencies_denmark.json';
 import { amplifyLists } from './components/SoundScapePlayer';
-import { useThemeStore } from './store';
+import { useThemeStore, useModalStore, useSidebarStore } from './store';
 import Footer from './components/Footer';
 import Button from './components/Button';
 import AudioControls from './components/AudioControls';
+import Sidebar from './components/Sidebar';
 
 const DenmarkScene: React.FC = () => {
   // ⬇️ This is basically your Storybook args
@@ -28,24 +29,27 @@ const DenmarkScene: React.FC = () => {
       <ambientLight intensity={1} />
       <directionalLight castShadow intensity={1} position={[-5, 3, 0]} />
       <directionalLight intensity={3} position={[3, 3, 0]} />
-      <SoundScape {...args} />
       <OrbitControls />
-      <Grid
-        args={[160, 160]}
-        cellSize={5}
-        cellColor={color}
-        sectionSize={80}
-        sectionColor={color}
-        fadeDistance={200}
-        fadeStrength={2}
-      />
+      <group>
+        <SoundScape {...args} />
+        <Grid
+          args={[160, 160]}
+          cellSize={5}
+          cellColor={color}
+          sectionSize={80}
+          sectionColor={color}
+          fadeDistance={200}
+          fadeStrength={2}
+        />
+      </group>
     </Canvas>
   );
 };
 
 function App() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { openModal, closeModal, isOpenModal } = useModalStore();
   const refreshFromCSS = useThemeStore((s) => s.refreshFromCSS);
+  const { isOpenSidebar } = useSidebarStore();
 
   useEffect(() => {
     // Optional: re-read periodically if you expect dynamic changes
@@ -74,47 +78,47 @@ function App() {
         <Route path="/item/:itemId" element={null} />
       </Routes>
 
-      <main className="h-full w-full">
-        <Header />
-        <Button
-          label="Open Modal"
-          className="absolute bottom-[20%] left-[calc(50%-3rem)] z-10"
-          onClick={() => setIsOpen(true)}
-        />
-        <Canvas shadows camera={{ position: [5, 5, 5], fov: 100 }}>
-          <ambientLight intensity={0.4} />
-          <directionalLight
-            castShadow
-            position={[5, 10, 5]}
-            intensity={1}
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
+      <div className="main-wrapper flex-1 relative flex flex-row-reverse h-full 'w-full'">
+        <main
+          className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full`}
+        >
+          <Header />
+          <Button
+            label="Open Modal"
+            className="absolute bottom-[20%] left-[calc(50%-3rem)] z-10"
+            onClick={openModal}
           />
+          <Canvas shadows camera={{ position: [5, 5, 5], fov: 100 }}>
+            <ambientLight intensity={0.4} />
+            <directionalLight
+              castShadow
+              position={[5, 10, 5]}
+              intensity={1}
+              shadow-mapSize-width={1024}
+              shadow-mapSize-height={1024}
+            />
 
-          <World geoPoints={geoPoints} radius={5.3} />
+            <World geoPoints={geoPoints} radius={5.3} />
 
-          <OrbitControls enablePan={false} minDistance={6} maxDistance={10} />
-        </Canvas>
-        <Footer />
-      </main>
+            <OrbitControls enablePan={false} minDistance={6} maxDistance={10} />
+          </Canvas>
+          <Footer />
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="h-full w-full flex items-center justify-cente">
-          <p className="big-text font-medium tracking-[-0.06em] uppercase absolute w-screen text-center top-[10%] text-[12vw] opacity-20">
-            Denmark
-          </p>
-          <DenmarkScene />
-          <AudioControls
-            // isPlaying={false}
-            // onPlay={() => {}}
-            // onPause={() => {}}
-            onNextVis={() => {}}
-            onPrevVis={() => {}}
-            onNextCountry={() => {}}
-            onPrevCountry={() => {}}
-          />
-        </div>
-      </Modal>
+          <Modal isOpen={isOpenModal} onClose={closeModal}>
+            <p className="big-text font-medium tracking-[-0.06em] uppercase absolute top-[10%] left-0 w-full flex flex-col items-center text-[12vw] opacity-20">
+              Denmark
+            </p>
+            <DenmarkScene />
+            <AudioControls
+              onNextVis={() => {}}
+              onPrevVis={() => {}}
+              onNextCountry={() => {}}
+              onPrevCountry={() => {}}
+            />
+          </Modal>
+        </main>
+        <Sidebar />
+      </div>
     </>
   );
 }
