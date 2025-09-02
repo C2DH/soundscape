@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { useSidebarStore } from '../store';
+import './Modal.css';
 
 interface ModalProps {
   isOpen: boolean;
@@ -7,46 +9,53 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-  // Close on Escape key
+  const { isOpenSidebar, toggleSidebar } = useSidebarStore();
+  // Close on Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+      if (e.key === 'Escape') onClose();
     };
-    if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-    }
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      {/* Modal container */}
-      <div
-        className="relative bg-transparent shadow-lg w-[100%] h-[100%] flex flex-col"
-        onClick={(e) => e.stopPropagation()} // prevent closing on inner click
-      >
-        {/* Close button */}
+    <>
+      {isOpen ? (
         <button
-          className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-200 z-60"
-          onClick={onClose}
-          aria-label="Close modal"
+          onClick={toggleSidebar}
+          aria-expanded={isOpenSidebar}
+          className="more-info absolute top-6 left-4 z-90 p-2 rounded bg-indigo-600 text-white shadow-lg"
         >
-          X
+          <i className="relative">
+            <span className="bar"></span>
+            <span className={`bar ${isOpenSidebar ? 'open' : ''}`}></span>
+          </i>
+          <p>MORE INFO</p>
         </button>
+      ) : null}
+      <div
+        className={` ${isOpen ? 'isOpenModal' : ''} z-50 Modal flex absolute top-0 left-0 items-center justify-center w-full h-screen`}
+      >
+        <div className="z-50 flex flex-col items-center justify-center backdrop-blur-sm w-full h-screen">
+          {/* Toggle Button */}
+          <div className="bg-transparent w-full h-full shadow-lg flex flex-col">
+            <button
+              className="absolute top-3 right-3 p-2 z-60"
+              onClick={() => {
+                onClose();
+                isOpenSidebar ? toggleSidebar() : null;
+              }}
+              aria-label="Close modal"
+            >
+              X
+            </button>
 
-        {/* Content slot (for future canvases) */}
-        <div className="flex-1 overflow-hidden">{children}</div>
+            {children}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
