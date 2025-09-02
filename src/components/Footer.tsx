@@ -3,7 +3,7 @@ import LogoUniLinkoping from './svg/LogoUniLinkoping';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="fixed bottom-2 left-0 w-full bg-transparent gap-2">
+    <footer className="absolute bottom-2 left-0 w-full bg-transparent gap-2">
       <div className="max-w-10xl mx-auto flex items-center justify-between px-2 md:px-8 py-3">
         {/* Left side: Logos */}
         <div className="flex items-center gap-4 m-2">
