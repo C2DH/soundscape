@@ -8,6 +8,7 @@ import { useThemeStore } from '../store';
 type SoundScapeProps = {
   lists: number[][];
   showWireframe?: boolean;
+  position?: [number, number, number];
 };
 
 const localSoundScapeStore = create<{
@@ -31,7 +32,7 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
   return <SoundLine points={points} />;
 };
 
-const SoundScape: React.FC<SoundScapeProps> = ({ lists }) => {
+const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const setHighlightedVectors = localSoundScapeStore((state) => state.setHighlightedVectors);
   const meshRef = useRef<THREE.Mesh>(null);
   const intersectionRef = useRef<THREE.Vector3 | null>(null);
@@ -139,7 +140,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists }) => {
   }, [lists]);
 
   return (
-    <group rotation={[0, Math.PI / 1, 0]} scale={[0.6, 1, 1]}>
+    <group rotation={[0, Math.PI / 1, 0]} scale={[0.6, 1, 1]} position={position}>
       <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove}>
         <meshStandardMaterial
           color={color ? new THREE.Color(color) : new THREE.Color('purple')}
@@ -149,14 +150,13 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists }) => {
         />
       </mesh>
       {/* Marker for intersection point */}
-      <mesh ref={markerRef} visible={false}>
+      {/* <mesh ref={markerRef} visible={false}>
         <sphereGeometry args={[0.05, 32, 32]} />
         <meshStandardMaterial color="yellow" />
-      </mesh>
+      </mesh> */}
       <SoundScapeSoundlineWrapper />
     </group>
   );
 };
 
 export default SoundScape;
-
