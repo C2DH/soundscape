@@ -56,3 +56,31 @@ export const useThemeStore = create<ThemeState>((set) => ({
       };
     }),
 }));
+
+interface ModalState {
+  isOpenModal: boolean;
+  toggleModal: () => void;
+  openModal: () => void;
+  closeModal: () => void;
+}
+
+export const useModalStore = create<ModalState>((set) => ({
+  isOpenModal: false,
+  toggleModal: () => set((state) => ({ isOpenModal: !state.isOpenModal })),
+  openModal: () => set({ isOpenModal: true }),
+  closeModal: () => set({ isOpenModal: false }),
+}));
+
+interface SidebarState {
+  isOpenSidebar: boolean;
+  toggleSidebar: () => void;
+  openSidebar: () => void;
+  closeSidebar: () => void;
+}
+
+export const useSidebarStore = create<SidebarState>((set) => ({
+  isOpenSidebar: false,
+  toggleSidebar: () => set((state) => ({ isOpenSidebar: !state.isOpenSidebar })),
+  openSidebar: () => set({ isOpenSidebar: true }),
+  closeSidebar: () => set({ isOpenSidebar: false }),
+}));
