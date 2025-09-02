@@ -136,4 +136,7 @@
     color: rgba(var(--light), 1);
     padding: 1rem 1rem;
   }
+  .Sidebar hr {
+    margin: 0rem 1rem;
+  }
 }

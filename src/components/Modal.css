@@ -6,6 +6,11 @@
     transform 0s ease-in-out 0.4s; /* ⬅ delay of 0.4s only on translateX */
 }
 
+.isOpenModal.more-info {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out 0.4s;
+}
+
 .Modal.isOpenModal {
   opacity: 1;
   transform: translateX(0);
@@ -23,6 +28,14 @@
   padding: 0;
   cursor: pointer;
   color: rgba(var(--light), 1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.isOpenModal.more-info {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .more-info:hover,

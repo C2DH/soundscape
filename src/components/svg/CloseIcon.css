@@ -1,0 +1,53 @@
+.CloseIconButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.CloseIconButton:hover,
+.CloseIconButton:focus {
+  box-shadow: none;
+  border: none;
+  opacity: 1;
+}
+
+.CloseIconButton .cross-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+
+.CloseIconButton .cross-group .bar {
+  position: absolute;
+  top: -21px;
+  width: 2px;
+  height: 40px;
+  background: rgba(var(--light), 1);
+  transition: all 0.3s ease;
+  transform-origin: center;
+  transform: scale(0);
+}
+
+.CloseIconButton:hover .cross-group .bar {
+  transform: scale(1) rotateZ(0deg);
+}
+
+.CloseIconButton .cross-group .bar:nth-child(1) {
+  transform: scale(0) rotateZ(45deg);
+}
+
+.CloseIconButton .cross-group .bar:nth-child(2) {
+  transform: scale(0) rotateZ(-45deg);
+}
+
+.CloseIconButton:hover .cross-group .bar:nth-child(1) {
+  transform: scale(1) rotateZ(45deg);
+}
+
+.CloseIconButton:hover .cross-group .bar:nth-child(2) {
+  transform: scale(1) rotateZ(-45deg);
+}
