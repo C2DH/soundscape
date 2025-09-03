@@ -15,6 +15,7 @@ import Footer from './components/Footer';
 import Button from './components/Button';
 import AudioControls from './components/AudioControls';
 import Sidebar from './components/Sidebar';
+import SoundEqualizerButton from './components/SoundEqualizerButton';
 
 const DenmarkScene: React.FC = () => {
   // ⬇️ This is basically your Storybook args
@@ -118,6 +119,7 @@ function App() {
           </Modal>
         </main>
         <Sidebar />
+        <SoundEqualizerButton />
       </div>
     </>
   );
