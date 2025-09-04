@@ -11,6 +11,7 @@ export interface WorldProps {
   geoPoints?: GeoPoint[];
   radius?: number;
   position?: [number, number, number];
+  scale?: [number, number, number];
 }
 
 interface AnimationState {
@@ -23,6 +24,7 @@ const World: React.FC<WorldProps> = ({
   geoPoints = [],
   radius = 5,
   position = [0, 0, 0],
+  scale = [1, 1, 1],
   // onPointClick = (point: GeoPoint) => {}
 }) => {
   const { camera } = useThree(); // get active camera
@@ -107,7 +109,7 @@ const World: React.FC<WorldProps> = ({
   };
 
   return (
-    <group ref={worldRef} rotation={[-0.1, -1.0, -0.4]} position={position}>
+    <group ref={worldRef} rotation={[-0.1, -1.0, -0.4]} position={position} scale={scale}>
       <Earth radius={radius}>
         <group ref={pointsGroupRef}>
           {geoPoints.map((point, i) => {

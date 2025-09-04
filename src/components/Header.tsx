@@ -1,4 +1,5 @@
 import LogoSow from './svg/LogoSow';
+import { Link } from 'react-router';
 
 const Header: React.FC = () => {
   return (
@@ -7,7 +8,7 @@ const Header: React.FC = () => {
         <ul className="flex items-center space-x-3 sm:space-x-8 text-gray-700 font-medium">
           {/* Left side */}
           <li>
-            <a href="#home">Home</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
             <a href="#overview">Overview</a>
@@ -20,7 +21,7 @@ const Header: React.FC = () => {
 
           {/* Right side */}
           <li>
-            <a href="#about">About</a>
+            <Link to="/about">About</Link>
           </li>
           <li>
             <a href="#contact">Contact</a>

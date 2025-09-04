@@ -41,7 +41,7 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) 
       ref={ref}
     >
       <Html
-        distanceFactor={5} // scale factor relative to scene
+        distanceFactor={0.01} // scale factor relative to scene
         onOcclude={setOccluded}
         zIndexRange={[0, 20]} // 👈 limit z-index
         style={{

@@ -1,18 +1,21 @@
-import { useRef, useMemo, useEffect } from "react";
-import * as THREE from "three";
-import { useThree, useFrame } from "@react-three/fiber";
-import vertexBackground from "../shaders/earth/background/vertex.glsl?raw";
-import fragmentBackground from "../shaders/earth/background/fragment.glsl?raw";
+import { useRef, useMemo, useEffect } from 'react';
+import * as THREE from 'three';
+import { useThree, useFrame } from '@react-three/fiber';
+import vertexBackground from '../shaders/earth/background/vertex.glsl?raw';
+import fragmentBackground from '../shaders/earth/background/fragment.glsl?raw';
 
 export default function EarthBackground() {
   const { size, gl } = useThree();
   const meshRef = useRef<THREE.Mesh>(null);
 
   // Uniforms
-  const uniforms = useMemo(() => ({
-    u_resolution: { value: new THREE.Vector2(size.width, size.height) },
-    u_time: { value: 0 },
-  }), []);
+  const uniforms = useMemo(
+    () => ({
+      u_resolution: { value: new THREE.Vector2(size.width, size.height) },
+      u_time: { value: 0 },
+    }),
+    []
+  );
 
   // Update resolution on resize
   useEffect(() => {
@@ -46,8 +49,8 @@ export default function EarthBackground() {
 
     gl.autoClear = false;
     gl.clear();
-    gl.render(bgScene, bgCamera);  // background first
-    gl.render(scene, camera);      // main scene on top
+    gl.render(bgScene, bgCamera); // background first
+    gl.render(scene, camera); // main scene on top
   }, 1);
 
   return null;

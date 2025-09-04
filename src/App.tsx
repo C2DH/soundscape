@@ -1,8 +1,8 @@
-import { Route, Routes } from 'react-router';
+import { Route, Routes, useLocation } from 'react-router';
 import './App.css';
 import LocationManager from './hooks/LocationManager';
 import World from './components/World';
-import { OrbitControls, Grid } from '@react-three/drei';
+import { OrbitControls, Grid, OrthographicCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import Header from './components/Header';
 import { useEffect } from 'react';
@@ -16,6 +16,7 @@ import Button from './components/Button';
 import AudioControls from './components/AudioControls';
 import Sidebar from './components/Sidebar';
 import SoundEqualizerButton from './components/SoundEqualizerButton';
+import AboutPage from './pages/AboutPage';
 
 const DenmarkScene: React.FC = () => {
   // ⬇️ This is basically your Storybook args
@@ -51,6 +52,8 @@ function App() {
   const { openModal, closeModal, isOpenModal } = useModalStore();
   const refreshFromCSS = useThemeStore((s) => s.refreshFromCSS);
   const { isOpenSidebar } = useSidebarStore();
+  const location = useLocation();
+  const path = location.pathname;
 
   useEffect(() => {
     // Optional: re-read periodically if you expect dynamic changes
@@ -77,6 +80,7 @@ function App() {
       <Routes>
         <Route index element={null} />
         <Route path="/item/:itemId" element={null} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
 
       <div className="main-wrapper flex-1 relative flex flex-row-reverse h-full 'w-full'">
@@ -84,12 +88,21 @@ function App() {
           className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full`}
         >
           <Header />
-          <Button
-            label="Open Modal"
-            className="absolute bottom-[20%] left-[calc(50%-3rem)] z-10"
-            onClick={openModal}
-          />
-          <Canvas shadows camera={{ position: [5, 5, 5], fov: 100 }}>
+          {path !== '/about' ? (
+            <Button
+              label="Open Modal"
+              className="absolute bottom-[20%] left-[calc(50%-3rem)] z-10"
+              onClick={openModal}
+            />
+          ) : null}
+          <Canvas shadows>
+            <OrthographicCamera
+              makeDefault
+              zoom={35} // zoom level (higher = closer)
+              position={[5, 5, 5]} // position like perspective
+              near={-1000}
+              far={1000}
+            />
             <ambientLight intensity={0.4} />
             <directionalLight
               castShadow
@@ -99,9 +112,20 @@ function App() {
               shadow-mapSize-height={1024}
             />
 
-            <World geoPoints={geoPoints} radius={5.3} />
+            <World
+              geoPoints={geoPoints}
+              radius={5.3}
+              position={path === '/about' ? [-10, -10, 10] : [0, 0, 0]}
+              scale={path === '/about' ? [1.6, 1.6, 1.6] : [1, 1, 1]}
+            />
 
-            <OrbitControls enablePan={false} minDistance={6} maxDistance={10} />
+            <OrbitControls
+              enablePan={false}
+              enableRotate={true}
+              minZoom={35} // smallest zoom (farthest away)
+              maxZoom={200} // largest zoom (closest in)
+              zoomSpeed={1}
+            />
           </Canvas>
           <Footer />
 

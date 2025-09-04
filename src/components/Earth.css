@@ -1,0 +1,11 @@
+.earth-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 510px;
+  height: 510px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border: 16px solid rgba(255, 255, 255, 0.2);
+}
