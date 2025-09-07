@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { GeoPoint } from './types';
+import * as THREE from 'three';
 
 export const useStore = create<{
   currentParamItemId: string | undefined;
@@ -25,36 +26,60 @@ export const useWorldStore = create<{
 }));
 
 interface ThemeState {
-  colors: Record<string, string>;
+  colors: Record<string, string>; // still keep raw CSS strings
+  threeColors: Record<string, THREE.Color>; // THREE.Color instances
   setColor: (name: string, value: string) => void;
   refreshFromCSS: () => void;
+  getColorVec3: (name: string) => THREE.Vector3 | undefined;
 }
 
-export const useThemeStore = create<ThemeState>((set) => ({
+export const useThemeStore = create<ThemeState>((set, get) => ({
   colors: {},
-  setColor: (name, value) =>
+  threeColors: {},
+  setColor: (name, value) => {
+    const color = new THREE.Color(value); // convert to THREE.Color
     set((state) => ({
       colors: { ...state.colors, [name]: value },
-    })),
-  refreshFromCSS: () =>
-    set(() => {
-      const root = getComputedStyle(document.documentElement);
-      const primaryRgb = root.getPropertyValue('--color-primary').trim();
-      const lightRgb = root.getPropertyValue('--light').trim();
-      const darkRgb = root.getPropertyValue('--dark').trim();
-      const accentRgb = root.getPropertyValue('--accent').trim();
+      threeColors: { ...state.threeColors, [name]: color },
+    }));
+  },
+  refreshFromCSS: () => {
+    const root = getComputedStyle(document.documentElement);
+    const primaryRgb = root.getPropertyValue('--color-primary').trim();
+    const lightRgb = root.getPropertyValue('--light').trim();
+    const darkRgb = root.getPropertyValue('--dark').trim();
+    const accentRgb = root.getPropertyValue('--accent').trim();
+    const accent3dRgb = root.getPropertyValue('--accent-3d').trim();
 
-      // Optional: read default alpha (or set 1)
-      const alpha = root.getPropertyValue('--alpha')?.trim() || '1';
-      return {
-        colors: {
-          '--color-primary': `rgba(${primaryRgb}, ${alpha})`,
-          '--light': `rgba(${lightRgb}, ${alpha})`,
-          '--dark': `rgba(${darkRgb}, ${alpha})`,
-          '--accent': `rgba(${accentRgb}, ${alpha})`,
-        },
-      };
-    }),
+    const alpha = root.getPropertyValue('--alpha')?.trim() || '1';
+
+    // Helper to convert CSS rgb string → THREE.Color
+    const parseColor = (rgb: string) => {
+      const [r, g, b] = rgb.split(',').map((c) => parseFloat(c) / 255);
+      return new THREE.Color(r, g, b);
+    };
+
+    set(() => ({
+      colors: {
+        '--color-primary': `rgba(${primaryRgb}, ${alpha})`,
+        '--light': `rgba(${lightRgb}, ${alpha})`,
+        '--dark': `rgba(${darkRgb}, ${alpha})`,
+        '--accent': `rgba(${accentRgb}, ${alpha})`,
+        '--accent-3d': `rgba(${accent3dRgb}, ${alpha})`,
+      },
+      threeColors: {
+        '--color-primary': parseColor(primaryRgb),
+        '--light': parseColor(lightRgb),
+        '--dark': parseColor(darkRgb),
+        '--accent': parseColor(accentRgb),
+        '--accent-3d': parseColor(accent3dRgb),
+      },
+    }));
+  },
+  getColorVec3: (name) => {
+    const color = get().threeColors[name];
+    return color ? new THREE.Vector3(color.r, color.g, color.b) : undefined;
+  },
 }));
 
 interface ModalState {

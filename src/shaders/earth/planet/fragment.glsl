@@ -18,21 +18,21 @@ void main() {
 
     // basic lambert lighting
     float NdotL = max(dot(normalize(vNormal), lightDir), 0.0);
-    float ambient = 0.6;
+    float ambient = 0.1;
     float diff = ambient + 2.0 * NdotL;
 
     vec3 base = mix(waterColor, landColor, mask);
 
     // specular calculations
     float spec = pow(
-        max(dot(reflect(-lightDir, normalize(vNormal)), normalize(vec3(0.0, 0.0, 1.0))), 0.0),
+        max(dot(reflect(-lightDir, normalize(vNormal)), normalize(vec3(0.0, 0.0, 0.0))), 0.0),
         shininess
     );
 
     float waterMask = 1.0 - mask; // water areas
     float landMask = mask;        // land areas
 
-    vec3 waterSpec = vec3(1.0) * spec * waterMask * 0.3; // softer water highlight
+    vec3 waterSpec = vec3(1.0) * spec * waterMask * 0.6; // softer water highlight
     vec3 landSpec  = vec3(1.0) * spec * landMask * 0.1;  // very subtle land highlight
 
     vec3 specular = waterSpec + landSpec;

@@ -56,9 +56,7 @@ function App() {
   const path = location.pathname;
 
   useEffect(() => {
-    // Optional: re-read periodically if you expect dynamic changes
-    const interval = setInterval(refreshFromCSS, 500);
-    return () => clearInterval(interval);
+    refreshFromCSS();
   }, [refreshFromCSS]);
 
   const geoPoints = [

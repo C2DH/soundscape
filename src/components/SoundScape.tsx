@@ -1,9 +1,11 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import SoundLine from './SoundLine';
 import { create } from 'zustand';
 import { useThemeStore } from '../store';
+import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
+import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 
 type SoundScapeProps = {
   lists: number[][];
@@ -35,10 +37,13 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
 const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const setHighlightedVectors = localSoundScapeStore((state) => state.setHighlightedVectors);
   const meshRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<THREE.ShaderMaterial>(null!);
   const intersectionRef = useRef<THREE.Vector3 | null>(null);
   const previousIntersectionListIndexRef = useRef<number>(0);
   const markerRef = useRef<THREE.Mesh>(null);
-  const color = useThemeStore((s) => s.colors['--dark']);
+  const [bbox, setBbox] = useState({ min: new THREE.Vector3(), max: new THREE.Vector3() });
+  const theme = useThemeStore();
+  console.log('theme colors:', theme.getColorVec3('--dark'));
 
   const raycaster = useRef(new THREE.Raycaster()).current;
   const mouse = useRef(new THREE.Vector2()).current;
@@ -135,6 +140,28 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
 
+    const uvs: number[] = [];
+
+    // Generate UV coordinates
+    for (let t = 0; t < timeLength; t++) {
+      for (let x = 0; x < listLength; x++) {
+        const u = x / (listLength - 1);
+        const v = t / (timeLength - 1);
+        uvs.push(u, v);
+      }
+    }
+
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+
+    // After creating geometry, compute its bounding box
+    geometry.computeBoundingBox();
+    if (geometry.boundingBox) {
+      setBbox({
+        min: geometry.boundingBox.min.clone(),
+        max: geometry.boundingBox.max.clone(),
+      });
+    }
+
     setHighlightedVectors(vectors[0]); // Set initial highlighted vectors
     return geometry;
   }, [lists]);
@@ -142,11 +169,20 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   return (
     <group rotation={[0, Math.PI / 1, 0]} scale={[0.6, 1, 1]} position={position}>
       <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove}>
-        <meshStandardMaterial
-          color={color ? new THREE.Color(color) : new THREE.Color('purple')}
+        <shaderMaterial
+          ref={materialRef}
+          vertexShader={vertexSoundScape}
+          fragmentShader={fragmentSoundScape}
+          uniforms={{
+            color1: { value: theme.getColorVec3('--dark') ?? new THREE.Vector3(0, 0, 0) },
+            color2: { value: theme.getColorVec3('--accent-3d') ?? new THREE.Vector3(0, 0, 0) },
+            uBboxMin: { value: bbox.min },
+            uBboxMax: { value: bbox.max },
+            uRoughness: { value: 0.5 },
+            uRoughnessPower: { value: 0.5 },
+            uCameraPosition: { value: camera.position },
+          }}
           side={THREE.DoubleSide}
-          roughness={0.5}
-          metalness={0.2}
         />
       </mesh>
       {/* Marker for intersection point */}
