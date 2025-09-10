@@ -8,7 +8,7 @@ export default function Sidebar() {
     <div className=" Sidebar h-full z-80">
       {/* Sidebar */}
       <aside
-        className={`${isOpenSidebar ? 'isOpenSidebar' : ''} w-full h-full flex-shrink-0 transition-all duration-300
+        className={`${isOpenSidebar ? 'isOpenSidebar' : ''} w-full h-full flex-shrink-0 
         `}
       >
         {isOpenSidebar && (

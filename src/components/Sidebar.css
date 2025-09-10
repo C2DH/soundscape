@@ -89,10 +89,10 @@
   transform: scaleX(0);
 }
 
-.Sidebar,
+/* .Sidebar,
 .main-section {
   transition: all 0.154s ease-in-out;
-}
+} */
 
 .Sidebar {
   transform: translateX(-600px);
