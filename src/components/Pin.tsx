@@ -5,6 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import type { GeoPoint } from '../types';
 import { Html } from '@react-three/drei';
 import './Pin.css';
+import { useModalStore } from '../store';
 
 export interface PinProps {
   point: GeoPoint;
@@ -20,6 +21,7 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) 
   const [isInRange, setInRange] = useState(false);
   const [isOccluded, setOccluded] = useState(false);
   const [isVisible, setVisible] = useState(true); // controlled by distance + occlusion
+  const { openModal } = useModalStore();
 
   const vec = new THREE.Vector3();
 
@@ -53,7 +55,10 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) 
       >
         <div
           className="Pin"
-          onClick={() => onClick(point)}
+          onClick={() => {
+            onClick(point);
+            openModal();
+          }}
           onPointerOver={() => (document.body.style.cursor = 'pointer')}
           onPointerOut={() => (document.body.style.cursor = 'default')}
         >
