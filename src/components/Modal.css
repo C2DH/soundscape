@@ -4,6 +4,7 @@
   transition:
     opacity 0.2s ease-in-out,
     transform 0s ease-in-out 0.4s; /* ⬅ delay of 0.4s only on translateX */
+  background-color: rgba(var(--dark), 0.3);
 }
 
 .isOpenModal.more-info {
