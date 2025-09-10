@@ -1,60 +1,19 @@
-import { Route, Routes, useLocation } from 'react-router';
+import { Route, Routes } from 'react-router';
 import './App.css';
-import LocationManager from './hooks/LocationManager';
+import LocationManager from './components/LocationManager';
 import World from './components/World';
-import { OrbitControls, Grid, OrthographicCamera } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import Header from './components/Header';
-import { useEffect } from 'react';
-import Modal from './components/Modal';
-import SoundScape from './components/SoundScape';
-import frequenceListDenmark from './assets/frequencies_denmark.json';
-import { amplifyLists } from './components/SoundScapePlayer';
-import { useThemeStore, useSidebarStore } from './store';
+import { useSidebarStore } from './store';
 import Footer from './components/Footer';
-import AudioControls from './components/AudioControls';
 import Sidebar from './components/Sidebar';
 import SoundEqualizerButton from './components/SoundEqualizerButton';
 import AboutPage from './pages/AboutPage';
-import { useModalStore } from './store';
-
-const DenmarkScene: React.FC = () => {
-  // ⬇️ This is basically your Storybook args
-  const args = {
-    lists: amplifyLists(frequenceListDenmark, 0.6),
-  };
-
-  const color = useThemeStore((s) => s.colors['--light']);
-
-  return (
-    <Canvas shadows camera={{ position: [100, 100, 50], fov: 50 }}>
-      <OrbitControls />
-      <group>
-        <SoundScape {...args} />
-        <Grid
-          args={[160, 160]}
-          cellSize={5}
-          cellColor={color}
-          sectionSize={80}
-          sectionColor={color}
-          fadeDistance={200}
-          fadeStrength={2}
-        />
-      </group>
-    </Canvas>
-  );
-};
+import SceneManager from './components/SceneManager';
 
 function App() {
-  const refreshFromCSS = useThemeStore((s) => s.refreshFromCSS);
   const { isOpenSidebar } = useSidebarStore();
-  const location = useLocation();
-  const path = location.pathname;
-  const { isOpenModal, closeModal } = useModalStore();
-
-  useEffect(() => {
-    refreshFromCSS();
-  }, [refreshFromCSS]);
 
   const geoPoints = [
     { id: 'denmark', name: 'Denmark', lat: 56.2639, lon: 9.5018 },
@@ -82,6 +41,7 @@ function App() {
         <main
           className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full`}
         >
+          <SceneManager />
           <Header />
           <Canvas shadows>
             <OrthographicCamera
@@ -100,12 +60,7 @@ function App() {
               shadow-mapSize-height={1024}
             />
 
-            <World
-              geoPoints={geoPoints}
-              radius={5.3}
-              position={path === '/about' ? [-10, -10, 10] : [0, 0, 0]}
-              scale={path === '/about' ? [1.6, 1.6, 1.6] : [1, 1, 1]}
-            />
+            <World geoPoints={geoPoints} radius={5.3} />
 
             <OrbitControls
               enablePan={false}
@@ -116,21 +71,6 @@ function App() {
             />
           </Canvas>
           <Footer />
-
-          <Modal isOpen={isOpenModal} onClose={closeModal}>
-            <p className="big-text font-medium tracking-[-0.06em] uppercase absolute top-[10%] left-0 w-full flex flex-col items-center text-[12vw] opacity-20">
-              Denmark
-            </p>
-            <DenmarkScene />
-          </Modal>
-          {isOpenModal ? (
-            <AudioControls
-              onNextVis={() => {}}
-              onPrevVis={() => {}}
-              onNextCountry={() => {}}
-              onPrevCountry={() => {}}
-            />
-          ) : null}
         </main>
         <Sidebar />
         <SoundEqualizerButton />

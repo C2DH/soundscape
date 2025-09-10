@@ -1,11 +1,10 @@
 // SoundScape.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-import SoundScape from './SoundScape'
-import sampleList from '../assets/sample.json'
-import frequenceList from '../assets/frequencies_sweden.json'
-import frequenceListDenmark from '../assets/frequencies_denmark.json'
+import type { Meta, StoryObj } from '@storybook/react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import SoundScape from './SoundScape';
+import frequenceList from '../../src/assets/data/vis/sweden.json';
+import frequenceListDenmark from '../../src/assets/data/vis/denmark.json';
 
 const meta: Meta<typeof SoundScape> = {
   title: '3D/SoundScape',
@@ -14,14 +13,14 @@ const meta: Meta<typeof SoundScape> = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
-}
-export default meta
+};
+export default meta;
 
-type Story = StoryObj<typeof SoundScape>
+type Story = StoryObj<typeof SoundScape>;
 
 const dummyLists = Array.from({ length: 10 }, (_, t) =>
   Array.from({ length: 50 }, (_, i) => Math.sin(i * 0.2 + t * 0.5) * 2)
-)
+);
 
 export const Default: Story = {
   args: {
@@ -38,13 +37,13 @@ export const Default: Story = {
       </Canvas>
     </div>
   ),
-}
+};
 
-import { amplifyLists } from './SoundScapePlayer'
+import { amplifyLists } from './SoundScapePlayer';
 
 export const UsingSampleJSON: Story = {
   args: {
-    lists: amplifyLists(sampleList, 0.5),
+    lists: amplifyLists(frequenceList, 0.5),
     showWireframe: true,
   },
   render: (args) => (
@@ -57,8 +56,7 @@ export const UsingSampleJSON: Story = {
       </Canvas>
     </div>
   ),
-}
-
+};
 
 export const Sweden: Story = {
   args: {
@@ -75,7 +73,7 @@ export const Sweden: Story = {
       </Canvas>
     </div>
   ),
-}
+};
 
 export const Denmark: Story = {
   args: {
@@ -92,4 +90,4 @@ export const Denmark: Story = {
       </Canvas>
     </div>
   ),
-}
+};
