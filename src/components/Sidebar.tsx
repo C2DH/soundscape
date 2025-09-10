@@ -13,7 +13,7 @@ export default function Sidebar() {
       >
         {isOpenSidebar && (
           <div className="flex relative flex-col h-full">
-            <span className="sound-code absolute top-0 right-0">DEN-001</span>
+            <span className="sound-code absolute top-0 right-0">SWE-001</span>
             {/* Header */}
             <header className="flex text-sm">
               <div className="meta-data">
@@ -30,29 +30,34 @@ export default function Sidebar() {
             {/* Scrollable content */}
             <div className="content flex-1 overflow-y-auto space-y-4">
               <p>
-                Denmark’s modern siren system was introduced in 1993, replacing a patchwork of
-                WWII-era alarms. The design was based on studies carried out by the Danish Emergency
-                Management Agency (Beredskabsstyrelsen) in the late 1980s and early 1990s, which
-                found that older tones were easily confused with fire brigade calls. To avoid
-                confusion, the national standard settled on two core signals: a 45-second rising and
-                falling tone (“Varsling” / Gå inden døre – Go indoors) and a 45-second steady tone
-                (“Faren er forbi” – The danger is over). The intention was to provide a clear,
-                recognizable acoustic pattern that would be both impossible to mistake for other
-                uses of sirens and psychologically easy to distinguish between threat and all-clear
-                (Beredskabsstyrelsen, siren information page; Wikipedia Warning siren in
-                Denmark).\nThe system consists of about 1,000 electronic sirens distributed across
-                Danish cities, covering roughly 80 % of the population. The sirens are centrally
-                controlled by the national police and can also be triggered locally. Each year on
-                the first Wednesday in May at 12:00, a full nationwide test is conducted: first the
-                rising/falling “go indoors” warning, then after a pause, the steady “danger over”
-                all-clear. This practice reinforces public familiarity and ensures technical
-                reliability. Authorities emphasize that when people hear the rising/falling tone,
-                they should immediately go indoors, close windows and doors, and seek information
-                from DR (Danish Radio) or other official media channels (Beredskabsstyrelsen;
-                Wikipedia Warning siren in Denmark).\nSources:\n • Danish Emergency Management
-                Agency (Beredskabsstyrelsen), official siren information: beredskabsstyrelsen.dk –
-                Sirenerne\n • Wikipedia, Warning siren in Denmark:
-                en.wikipedia.org/wiki/Warning_siren_in_Denmark
+                Sweden’s outdoor warning (Viktigt meddelande till allmänheten, VMA—“Hesa Fredrik”)
+                descends from interwar/WWII air-raid practice (first public tests in 1931) and was
+                later codified for uniform recognition. The legal baseline comes from the
+                Civilförsvarskungörelse (1960:377), which specifies VMA as “upprepade långa
+                ljudsegment (6–7 sekunder) åtskilda av pauser (12–14 sekunder)” and that the signal
+                “skall omfatta minst sex ljudsegment” (official statute text, Riksdagen)
+                (Försvarsmakten history page on “Hesa Fredrik”, forsvarsmakten.se;
+                Civilförsvarskungörelse (1960:377), riksdagen.se / lagen.nu). The same framework
+                differentiates VMA from the war-time flyglarm (2 s on / 2 s off for 1 min) and
+                beredskapslarm (30 s on / 15 s off for 5 min), giving each alert a distinct acoustic
+                “fingerprint” (MSB and Krisinformation pages) (msb.se;
+                krisinformation.se).\nOperational guidance today reinforces that distinctiveness is
+                the point: VMA is always sent with this exact 7 s/14 s interval, and if you hear
+                something similar but not in that pattern, it’s likely another system (MSB
+                “Utomhusvarning – Hesa Fredrik,” “Falsklarm”) (msb.se). The signal runs for about
+                two minutes (six cycles) and is followed by “Faran över” (≈30 s steady) once the
+                danger has passed; quarterly tests at 15:00 on the first non-holiday Monday of
+                March/June/September/December maintain public recognition (MSB; Krisinformation; MSB
+                brochures) (msb.se; krisinformation.se; MSB brochure “In case of crisis or war,”
+                rib.msb.se). In short, while no official document spells out why “7 and 14” were
+                chosen, the legal standardization from 1960 and current guidance show the rationale
+                is uniform, unmistakable recognition and separation from other alarms so people
+                immediately shelter and tune to SR P4 for instructions (riksdagen.se; msb.se;
+                krisinformation.se).\nSources: Försvarsmakten history of “Hesa Fredrik”
+                (forsvarsmakten.se); Civilförsvarskungörelse (1960:377) statute text (riksdagen.se;
+                lagen.nu); MSB VMA & outdoor warning pages incl. “Falsklarm” and signal specs
+                (msb.se); Krisinformation VMA/Warning-systems pages (krisinformation.se); MSB
+                brochure “In case of crisis or war” (rib.msb.se
               </p>
             </div>
 

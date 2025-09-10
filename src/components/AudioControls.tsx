@@ -14,6 +14,7 @@ type AudioControlsProps = {
   onPrevCountry: () => void;
   onTimeUpdate?: (time: number) => void; // NEW
   onDuration?: (duration: number) => void; // NEW
+  src?: string; // NEW
 };
 
 const AudioControls: FC<AudioControlsProps> = ({
@@ -21,6 +22,7 @@ const AudioControls: FC<AudioControlsProps> = ({
   onPrevVis,
   onNextCountry,
   onPrevCountry,
+  src = '',
 }) => {
   const { currentTime, duration, setCurrentTime, setDuration } = useAudioStore();
 
@@ -66,7 +68,7 @@ const AudioControls: FC<AudioControlsProps> = ({
       aria-label="Audio controls"
     >
       {/* Hidden audio element */}
-      <audio ref={audioRef} src="/audio/Denmark.mp3" preload="auto" loop />
+      <audio ref={audioRef} src={src} preload="auto" loop />
 
       <div className="button-group flex items-center justify-center gap-6">
         {/* Previous catalogue */}
