@@ -22,7 +22,7 @@ const SceneManager = () => {
             onPrevVis={() => {}}
             onNextCountry={() => {}}
             onPrevCountry={() => {}}
-            src="/audio/Denmark.mp3"
+            src="/audio/Sweden.mp3"
           />
         ) : null}
         <Scene landscapeData={landscapeData} />
