@@ -10,27 +10,24 @@ import Modal from './components/Modal';
 import SoundScape from './components/SoundScape';
 import frequenceListDenmark from './assets/frequencies_denmark.json';
 import { amplifyLists } from './components/SoundScapePlayer';
-import { useThemeStore, useModalStore, useSidebarStore } from './store';
+import { useThemeStore, useSidebarStore } from './store';
 import Footer from './components/Footer';
-import Button from './components/Button';
 import AudioControls from './components/AudioControls';
 import Sidebar from './components/Sidebar';
 import SoundEqualizerButton from './components/SoundEqualizerButton';
 import AboutPage from './pages/AboutPage';
+import { useModalStore } from './store';
 
 const DenmarkScene: React.FC = () => {
   // ⬇️ This is basically your Storybook args
   const args = {
-    lists: amplifyLists(frequenceListDenmark, 0.5),
+    lists: amplifyLists(frequenceListDenmark, 0.6),
   };
 
   const color = useThemeStore((s) => s.colors['--light']);
 
   return (
     <Canvas shadows camera={{ position: [100, 100, 50], fov: 50 }}>
-      <ambientLight intensity={1} />
-      <directionalLight castShadow intensity={1} position={[-5, 3, 0]} />
-      <directionalLight intensity={3} position={[3, 3, 0]} />
       <OrbitControls />
       <group>
         <SoundScape {...args} />
@@ -49,11 +46,11 @@ const DenmarkScene: React.FC = () => {
 };
 
 function App() {
-  const { openModal, closeModal, isOpenModal } = useModalStore();
   const refreshFromCSS = useThemeStore((s) => s.refreshFromCSS);
   const { isOpenSidebar } = useSidebarStore();
   const location = useLocation();
   const path = location.pathname;
+  const { isOpenModal, closeModal } = useModalStore();
 
   useEffect(() => {
     refreshFromCSS();
@@ -86,13 +83,6 @@ function App() {
           className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full`}
         >
           <Header />
-          {path !== '/about' ? (
-            <Button
-              label="Open Modal"
-              className="absolute bottom-[20%] left-[calc(50%-3rem)] z-10"
-              onClick={openModal}
-            />
-          ) : null}
           <Canvas shadows>
             <OrthographicCamera
               makeDefault
@@ -132,13 +122,15 @@ function App() {
               Denmark
             </p>
             <DenmarkScene />
+          </Modal>
+          {isOpenModal ? (
             <AudioControls
               onNextVis={() => {}}
               onPrevVis={() => {}}
               onNextCountry={() => {}}
               onPrevCountry={() => {}}
             />
-          </Modal>
+          ) : null}
         </main>
         <Sidebar />
         <SoundEqualizerButton />
