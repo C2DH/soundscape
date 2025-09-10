@@ -21,9 +21,7 @@
 
 @font-face {
   font-family: 'Rajdhani';
-  src:
-    url('/fonts/Rajdhani-Light.woff2') format('woff2'),
-    url('/fonts/Rajdhani-Light.woff') format('woff');
+  src: url('/font/Rajdhani-Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -31,9 +29,7 @@
 
 @font-face {
   font-family: 'Rajdhani';
-  src:
-    url('/fonts/Rajdhani-Regular.woff2') format('woff2'),
-    url('/fonts/Rajdhani-Regular.woff') format('woff');
+  src: url('/font/Rajdhani-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -41,9 +37,7 @@
 
 @font-face {
   font-family: 'Rajdhani';
-  src:
-    url('/fonts/Rajdhani-Medium.woff2') format('woff2'),
-    url('/fonts/Rajdhani-Medium.woff') format('woff');
+  src: url('/font/Rajdhani-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -51,9 +45,7 @@
 
 @font-face {
   font-family: 'Rajdhani';
-  src:
-    url('/fonts/Rajdhani-SemiBold.woff2') format('woff2'),
-    url('/fonts/Rajdhani-SemiBold.woff') format('woff');
+  src: url('/font/Rajdhani-SemiBold.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -61,9 +53,7 @@
 
 @font-face {
   font-family: 'Rajdhani';
-  src:
-    url('/fonts/Rajdhani-Bold.woff2') format('woff2'),
-    url('/fonts/Rajdhani-Bold.woff') format('woff');
+  src: url('/font/Rajdhani-Bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
