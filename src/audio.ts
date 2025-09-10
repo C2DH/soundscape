@@ -10,44 +10,40 @@ export async function extractFrequencyLists(
 ): Promise<number[][]> {
   try {
     // Create audio context
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)()
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
     // Fetch and decode audio file
-    const response = await fetch(mp3Url)
-    const arrayBuffer = await response.arrayBuffer()
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
+    const response = await fetch(mp3Url);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
     // Get audio data
-    const channelData = audioBuffer.getChannelData(0) // Use first channel
-    const sampleRate = audioBuffer.sampleRate
-    const duration = audioBuffer.duration
+    const channelData = audioBuffer.getChannelData(0); // Use first channel
+    const sampleRate = audioBuffer.sampleRate;
+    const duration = audioBuffer.duration;
 
     // Calculate samples per second
-    const samplesPerSecond: number = sampleRate
-    const lists: number[][] = []
+    const samplesPerSecond: number = sampleRate;
+    const lists: number[][] = [];
 
     // Process audio data second by second
     for (let second: number = 0; second < Math.floor(duration); second++) {
-      const startSample: number = second * samplesPerSecond
-      const endSample: number = Math.min(
-        startSample + samplesPerSecond,
-        channelData.length
-      )
+      const startSample: number = second * samplesPerSecond;
+      const endSample: number = Math.min(startSample + samplesPerSecond, channelData.length);
 
       // Extract one second of audio data
-      const secondData: Float32Array = channelData.slice(startSample, endSample)
+      const secondData: Float32Array = channelData.slice(startSample, endSample);
 
       // Perform FFT analysis
-      const frequencies: number[] = performFFT(secondData, fftSize)
+      const frequencies: number[] = performFFT(secondData, fftSize);
 
-      lists.push(frequencies)
+      lists.push(frequencies);
     }
 
-    return lists
+    return lists;
   } catch (error) {
-    console.error('Error extracting frequency data:', error)
-    throw error
+    console.error('Error extracting frequency data:', error);
+    throw error;
   }
 }
 
@@ -59,30 +55,30 @@ export async function extractFrequencyLists(
  */
 function performFFT(audioData: Float32Array, fftSize: number): number[] {
   // Pad or truncate audio data to match FFT size
-  const paddedData = new Float32Array(fftSize)
-  const copyLength = Math.min(audioData.length, fftSize)
-  paddedData.set(audioData.slice(0, copyLength))
+  const paddedData = new Float32Array(fftSize);
+  const copyLength = Math.min(audioData.length, fftSize);
+  paddedData.set(audioData.slice(0, copyLength));
 
   // Simple FFT implementation (you might want to use a more sophisticated library)
-  const frequencies: number[] = []
-  const frequencyBinCount: number = fftSize / 2
+  const frequencies: number[] = [];
+  const frequencyBinCount: number = fftSize / 2;
 
   for (let k = 0; k < frequencyBinCount; k++) {
-    let realSum = 0
-    let imagSum = 0
+    let realSum = 0;
+    let imagSum = 0;
 
     for (let n = 0; n < fftSize; n++) {
-      const angle = (-2 * Math.PI * k * n) / fftSize
-      realSum += paddedData[n] * Math.cos(angle)
-      imagSum += paddedData[n] * Math.sin(angle)
+      const angle = (-2 * Math.PI * k * n) / fftSize;
+      realSum += paddedData[n] * Math.cos(angle);
+      imagSum += paddedData[n] * Math.sin(angle);
     }
 
     // Calculate magnitude
-    const magnitude = Math.sqrt(realSum * realSum + imagSum * imagSum)
-    frequencies.push(magnitude)
+    const magnitude = Math.sqrt(realSum * realSum + imagSum * imagSum);
+    frequencies.push(magnitude);
   }
 
-  return frequencies
+  return frequencies;
 }
 
 // Alternative implementation using Web Audio API's AnalyserNode (more efficient)
@@ -91,68 +87,62 @@ export async function extractFrequencyListsWithAnalyser(
   fftSize: number = 256
 ): Promise<number[][]> {
   try {
-    const audioContext = new (window.AudioContext ||
-      (window as any).webkitAudioContext)()
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
 
     // Fetch and decode audio
-    const response = await fetch(mp3Url)
-    const arrayBuffer = await response.arrayBuffer()
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
+    const response = await fetch(mp3Url);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
     // Create offline audio context for analysis
     const offlineContext = new OfflineAudioContext(
       1, // mono
       audioBuffer.length,
       audioBuffer.sampleRate
-    )
+    );
 
     // Create analyser node
-    const analyser = offlineContext.createAnalyser()
-    analyser.fftSize = fftSize
-    analyser.smoothingTimeConstant = 0
+    const analyser = offlineContext.createAnalyser();
+    analyser.fftSize = fftSize;
+    analyser.smoothingTimeConstant = 0;
 
     // Create buffer source
-    const source = offlineContext.createBufferSource()
-    source.buffer = audioBuffer
-    source.connect(analyser)
-    analyser.connect(offlineContext.destination)
+    const source = offlineContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(analyser);
+    analyser.connect(offlineContext.destination);
 
-    const lists: number[][] = []
+    const lists: number[][] = [];
     // const frequencyBinCount: number = analyser.frequencyBinCount
-    const sampleRate: number = audioBuffer.sampleRate
-    const samplesPerSecond: number = sampleRate
+    const sampleRate: number = audioBuffer.sampleRate;
+    const samplesPerSecond: number = sampleRate;
 
     // Process audio in 1-second chunks
-    for (
-      let second: number = 0;
-      second < Math.floor(audioBuffer.duration);
-      second++
-    ) {
-      
+    for (let second: number = 0; second < Math.floor(audioBuffer.duration); second++) {
       // This is a simplified approach - in practice, you'd need to
       // process the audio buffer in real-time chunks
-      const startSample: number = second * samplesPerSecond
-      const channelData: Float32Array = audioBuffer.getChannelData(0)
+      const startSample: number = second * samplesPerSecond;
+      const channelData: Float32Array = audioBuffer.getChannelData(0);
       const secondData: Float32Array = channelData.slice(
         startSample,
         startSample + samplesPerSecond
-      )
+      );
 
       // Convert to frequency domain
-      const frequencies: number[] = performFFT(secondData, fftSize)
+      const frequencies: number[] = performFFT(secondData, fftSize);
 
       // Normalize to 0-255 range (similar to AnalyserNode output)
       const normalizedFrequencies: number[] = frequencies.map((f: number) =>
         Math.min(255, f * 255)
-      )
+      );
 
-      lists.push(normalizedFrequencies)
+      lists.push(normalizedFrequencies);
     }
 
-    return lists
+    return lists;
   } catch (error) {
-    console.error('Error extracting frequency data:', error)
-    throw error
+    console.error('Error extracting frequency data:', error);
+    throw error;
   }
 }
 

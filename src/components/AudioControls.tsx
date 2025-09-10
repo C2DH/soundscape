@@ -1,38 +1,73 @@
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import PlaySign from './svg/PlaySign';
 import './AudioControls.css';
 import PauseSign from './svg/PauseSign';
 import NextVisSign from './svg/NextVisSign';
 import NextCountrySign from './svg/NextCountrySign';
+import { useAudioStore } from '../store';
 
 type AudioControlsProps = {
-  // onPlay: () => void;
-  // onPause: () => void;
   onNextVis: () => void;
   onPrevVis: () => void;
   onNextCountry: () => void;
   onPrevCountry: () => void;
+  onTimeUpdate?: (time: number) => void; // NEW
+  onDuration?: (duration: number) => void; // NEW
 };
 
 const AudioControls: FC<AudioControlsProps> = ({
-  // onPlay,
-  // onPause,
   onNextVis,
   onPrevVis,
   onNextCountry,
   onPrevCountry,
 }) => {
+  const { currentTime, duration, setCurrentTime, setDuration } = useAudioStore();
+
   const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const formatTime = (time: number) => time.toFixed(2);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const updateTime = () => setCurrentTime(audio.currentTime);
+    const setAudioData = () => setDuration(audio.duration);
+
+    audio.addEventListener('loadedmetadata', setAudioData);
+    audio.addEventListener('timeupdate', updateTime);
+
+    return () => {
+      audio.removeEventListener('loadedmetadata', setAudioData);
+      audio.removeEventListener('timeupdate', updateTime);
+    };
+  }, [setCurrentTime, setDuration]);
+
   const handleToggle = () => {
     setIsPlaying((prev) => !prev);
   };
 
+  // Sync audio element with isPlaying state
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+  }, [isPlaying]);
+
   return (
     <nav
-      className="AudioControls absolute bottom-[10%] left-[calc(50%-100px)] flex flex-col items-center justify-center gap-1"
+      className="AudioControls absolute bottom-[10%] left-[calc(50%-100px)] flex flex-col items-center justify-center gap-1 z-50"
       aria-label="Audio controls"
     >
+      {/* Hidden audio element */}
+      <audio ref={audioRef} src="/audio/Denmark.mp3" preload="auto" loop />
+
       <div className="button-group flex items-center justify-center gap-6">
         {/* Previous catalogue */}
         <button onClick={onPrevCountry} aria-label="Previous catalogue">
@@ -47,11 +82,11 @@ const AudioControls: FC<AudioControlsProps> = ({
         {/* Play / Pause toggle */}
         {isPlaying ? (
           <button className="no-opacity" onClick={handleToggle} aria-label="Pause">
-            <PlaySign />
+            <PauseSign />
           </button>
         ) : (
           <button className="no-opacity" onClick={handleToggle} aria-label="Play">
-            <PauseSign />
+            <PlaySign />
           </button>
         )}
 
@@ -65,7 +100,11 @@ const AudioControls: FC<AudioControlsProps> = ({
           <NextCountrySign />
         </button>
       </div>
-      <span className="duration">40:00 / 15:45</span>
+
+      {/* Optional: duration/time display */}
+      <span className="duration">
+        {formatTime(duration)} / {formatTime(currentTime)}
+      </span>
     </nav>
   );
 };

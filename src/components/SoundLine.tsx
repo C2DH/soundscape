@@ -13,6 +13,7 @@ export type SoundLineProps = {
   lineWidth?: number;
   tweenDuration?: number; // in milliseconds
   easing?: (t: number) => number; // easing function for tweening
+  scale?: [number, number, number]; // scale for x,y,z
 };
 
 // Linear interpolation between two Vector3 points
@@ -30,6 +31,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
   lineWidth = 0.2,
   tweenDuration = 500,
   easing = easeOutQuint,
+  scale = [-0.6, 1, -0.8],
 }) => {
   const lineRef = useRef<Line2 | null>(null);
   const { size } = useThree();
@@ -47,9 +49,9 @@ const SoundLine: React.FC<SoundLineProps> = ({
   // Initialize positions buffer
   const updatePositionsBuffer = (points: THREE.Vector3[]) => {
     points.forEach((p, i) => {
-      positionsBufferRef.current[i * 3] = p.x;
-      positionsBufferRef.current[i * 3 + 1] = p.y;
-      positionsBufferRef.current[i * 3 + 2] = p.z;
+      positionsBufferRef.current[i * 3] = p.x * scale[0];
+      positionsBufferRef.current[i * 3 + 1] = p.y * scale[1];
+      positionsBufferRef.current[i * 3 + 2] = p.z * scale[2];
     });
   };
 

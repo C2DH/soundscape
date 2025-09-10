@@ -6,6 +6,7 @@ import { create } from 'zustand';
 import { useThemeStore } from '../store';
 import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
+import AudioVisualizer from './AudioVisualizer';
 
 type SoundScapeProps = {
   lists: number[][];
@@ -61,7 +62,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
 
     // Adjust for centered coordinates
 
-    const adjustedZ = -point.z + timeLength / 2;
+    const adjustedZ = point.z + timeLength / 2;
     const listIndex = Math.max(0, Math.floor(adjustedZ));
 
     if (previousIntersectionListIndexRef.current === listIndex) {
@@ -84,17 +85,30 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
 
     const intersects = raycaster.intersectObject(meshRef.current, true);
     if (intersects.length > 0) {
-      const point = intersects[0].point;
-      intersectionRef.current = point;
-      getClosestVectors(point);
+      // Clone intersection point
+      const point = intersects[0].point.clone();
+
+      // Convert to local space
+      const localPoint = meshRef.current.worldToLocal(point.clone());
+
+      // Normalize by scale
+      const scale = meshRef.current.scale;
+      const normalizedPoint = new THREE.Vector3(
+        localPoint.x / scale.x,
+        localPoint.y / scale.y,
+        localPoint.z / scale.z
+      );
+
+      intersectionRef.current = normalizedPoint;
+      getClosestVectors(normalizedPoint);
+
+      // Marker stays in world space
       if (markerRef.current) {
         markerRef.current.position.copy(point);
         markerRef.current.visible = true;
       }
     } else {
-      if (markerRef.current) {
-        markerRef.current.visible = false;
-      }
+      if (markerRef.current) markerRef.current.visible = false;
     }
   });
 
@@ -167,31 +181,36 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   }, [lists]);
 
   return (
-    <group rotation={[0, Math.PI / 1, 0]} scale={[0.6, 1, 1]} position={position}>
-      <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove}>
-        <shaderMaterial
-          ref={materialRef}
-          vertexShader={vertexSoundScape}
-          fragmentShader={fragmentSoundScape}
-          uniforms={{
-            color1: { value: theme.getColorVec3('--dark') ?? new THREE.Vector3(0, 0, 0) },
-            color2: { value: theme.getColorVec3('--accent-3d') ?? new THREE.Vector3(0, 0, 0) },
-            uBboxMin: { value: bbox.min },
-            uBboxMax: { value: bbox.max },
-            uRoughness: { value: 0.5 },
-            uRoughnessPower: { value: 0.5 },
-            uCameraPosition: { value: camera.position },
-          }}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      {/* Marker for intersection point */}
-      {/* <mesh ref={markerRef} visible={false}>
+    <>
+      <group rotation={[0, Math.PI / 1, 0]} scale={[0.6, 1, 0.8]} position={position}>
+        <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove}>
+          <shaderMaterial
+            ref={materialRef}
+            vertexShader={vertexSoundScape}
+            fragmentShader={fragmentSoundScape}
+            uniforms={{
+              color1: { value: theme.getColorVec3('--dark') ?? new THREE.Vector3(0, 0, 0) },
+              color2: { value: theme.getColorVec3('--accent-3d') ?? new THREE.Vector3(0, 0, 0) },
+              uBboxMin: { value: bbox.min },
+              uBboxMax: { value: bbox.max },
+              uRoughness: { value: 0.5 },
+              uRoughnessPower: { value: 0.5 },
+              uCameraPosition: { value: camera.position },
+            }}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        {/* Marker for intersection point */}
+        {/* <mesh ref={markerRef} visible={false}>
         <sphereGeometry args={[0.05, 32, 32]} />
         <meshStandardMaterial color="yellow" />
       </mesh> */}
+      </group>
       <SoundScapeSoundlineWrapper />
-    </group>
+      <AudioVisualizer
+        allLines={lists.map((yList, t) => yList.map((y, x) => new THREE.Vector3(x, y, t)))}
+      />
+    </>
   );
 };
 
