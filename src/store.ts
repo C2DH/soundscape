@@ -109,3 +109,17 @@ export const useSidebarStore = create<SidebarState>((set) => ({
   openSidebar: () => set({ isOpenSidebar: true }),
   closeSidebar: () => set({ isOpenSidebar: false }),
 }));
+
+type AudioState = {
+  currentTime: number;
+  duration: number;
+  setCurrentTime: (t: number) => void;
+  setDuration: (d: number) => void;
+};
+
+export const useAudioStore = create<AudioState>((set) => ({
+  currentTime: 0,
+  duration: 1, // avoid div by zero
+  setCurrentTime: (t) => set({ currentTime: t }),
+  setDuration: (d) => set({ duration: d }),
+}));
