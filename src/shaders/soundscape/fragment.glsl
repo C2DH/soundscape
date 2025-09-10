@@ -24,7 +24,7 @@ void main() {
     // vec3 lightDir2 = normalize(vec3(10.0, 10.0, 0.0));
 
     // Ambient
-    vec3 ambient = 0.9 * baseColor;
+    vec3 ambient = 0.7 * baseColor;
 
     // Roughness -> shininess mapping
 
