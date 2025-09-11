@@ -1,7 +1,4 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { Line2 } from 'three/addons/lines/Line2.js';
-import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
-import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useThemeStore } from '../store';
@@ -21,14 +18,13 @@ const ProgressiveLines: React.FC<ProgressiveLinesProps> = ({
   allLines,
   visibleLines,
   color = useThemeStore((s) => s.colors['--accent-3d']),
-  lineWidth = 0.1,
+  lineWidth = 0.1, // note: lineWidth works only on some platforms with WebGL, mostly Firefox
   scale = [-0.6, 1.01, -0.8],
   opacity = 0.5,
   position = [0, 0.1, 0],
-  delay = 100, // default: 100ms per line
+  delay = 100,
 }) => {
   const { size } = useThree();
-  const resolution = useMemo(() => new THREE.Vector2(size.width, size.height), [size]);
 
   // State: how many lines are currently revealed
   const [delayedVisible, setDelayedVisible] = useState(0);
@@ -58,30 +54,23 @@ const ProgressiveLines: React.FC<ProgressiveLinesProps> = ({
         (p) => new THREE.Vector3(p.x - listLength / 2, p.y, index - timeLength / 2)
       );
 
-      const scaledPoints = centeredPoints.flatMap((p) => [
-        p.x * scale[0],
-        p.y * scale[1],
-        p.z * scale[2],
-      ]);
+      const scaledPoints = centeredPoints.map(
+        (p) => new THREE.Vector3(p.x * scale[0], p.y * scale[1], p.z * scale[2])
+      );
 
-      const geometry = new LineGeometry();
-      geometry.setPositions(scaledPoints);
+      const geometry = new THREE.BufferGeometry().setFromPoints(scaledPoints);
 
-      const material = new LineMaterial({
+      const material = new THREE.LineBasicMaterial({
         color,
-        linewidth: lineWidth,
-        resolution,
-        worldUnits: true,
         transparent: true,
         opacity,
       });
 
-      const line = new Line2(geometry, material);
-      line.computeLineDistances();
+      const line = new THREE.Line(geometry, material);
 
       return <primitive key={index} object={line} />;
     });
-  }, [allLines, delayedVisible, color, lineWidth, resolution, scale]);
+  }, [allLines, delayedVisible, color, scale, opacity]);
 
   return <group position={position}>{lineObjects}</group>;
 };
