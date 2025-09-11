@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { useThree } from '@react-three/fiber';
+// import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useThemeStore } from '../store';
 
@@ -18,13 +18,13 @@ const ProgressiveLines: React.FC<ProgressiveLinesProps> = ({
   allLines,
   visibleLines,
   color = useThemeStore((s) => s.colors['--accent-3d']),
-  lineWidth = 0.1, // note: lineWidth works only on some platforms with WebGL, mostly Firefox
+  //   lineWidth = 0.1, // note: lineWidth works only on some platforms with WebGL, mostly Firefox
   scale = [-0.6, 1.01, -0.8],
   opacity = 0.5,
   position = [0, 0.1, 0],
   delay = 100,
 }) => {
-  const { size } = useThree();
+  //   const { size } = useThree();
 
   // State: how many lines are currently revealed
   const [delayedVisible, setDelayedVisible] = useState(0);
