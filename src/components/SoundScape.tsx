@@ -2,8 +2,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import React, { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import SoundLine from './SoundLine';
-import { create } from 'zustand';
-import { useThemeStore } from '../store';
+import { useThemeStore, localSoundScapeStore } from '../store';
 import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
@@ -13,19 +12,6 @@ type SoundScapeProps = {
   showWireframe?: boolean;
   position?: [number, number, number];
 };
-
-const localSoundScapeStore = create<{
-  t: number;
-  highlightedVectors: THREE.Vector3[];
-  setT: (t: number) => void;
-  setHighlightedVectors: (highlightedVectors: THREE.Vector3[]) => void;
-}>((set) => ({
-  t: 0,
-  highlightedVectors: [],
-  setT: (t: number) => set(() => ({ t })),
-  setHighlightedVectors: (highlightedVectors: THREE.Vector3[]) =>
-    set(() => ({ highlightedVectors })),
-}));
 
 const SoundScapeSoundlineWrapper: React.FC = () => {
   const points = localSoundScapeStore((state) => state.highlightedVectors);
@@ -74,7 +60,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
       (y, x) => new THREE.Vector3(x - listLength / 2, y, listIndex - timeLength / 2)
     );
 
-    setHighlightedVectors(centeredVectors);
+    setHighlightedVectors(centeredVectors, listIndex);
     previousIntersectionListIndexRef.current = listIndex;
   };
 
@@ -176,7 +162,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
       });
     }
 
-    setHighlightedVectors(vectors[0]); // Set initial highlighted vectors
+    setHighlightedVectors(vectors[0], 0); // Set initial highlighted vectors
     return geometry;
   }, [lists]);
 

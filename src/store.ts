@@ -123,3 +123,21 @@ export const useAudioStore = create<AudioState>((set) => ({
   setCurrentTime: (t) => set({ currentTime: t }),
   setDuration: (d) => set({ duration: d }),
 }));
+
+export const localSoundScapeStore = create<{
+  t: number;
+  highlightedVectors: THREE.Vector3[];
+  highlightedLineIndex: number;
+  setT: (t: number) => void;
+  setHighlightedVectors: (
+    highlightedVectors: THREE.Vector3[],
+    highlightedLineIndex: number
+  ) => void;
+}>((set) => ({
+  t: 0,
+  highlightedVectors: [],
+  highlightedLineIndex: 0,
+  setT: (t: number) => set(() => ({ t })),
+  setHighlightedVectors: (highlightedVectors, highlightedLineIndex) =>
+    set(() => ({ highlightedVectors, highlightedLineIndex })),
+}));

@@ -1,6 +1,7 @@
 import ProgressiveLines from './ProgressiveLines';
 import * as THREE from 'three';
 import { useAudioStore } from '../store';
+import CurrentTimeLine from './CurrentTimeLine';
 
 // Example parent component
 const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }) => {
@@ -13,6 +14,7 @@ const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }
     <>
       {/* The 3D scene */}
       <ProgressiveLines allLines={allLines} visibleLines={visibleLines} />
+      <CurrentTimeLine allLines={allLines} visibleLines={visibleLines} />
     </>
   );
 };
