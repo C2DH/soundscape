@@ -3,22 +3,29 @@ import { useAudioStore, useThemeStore, localSoundScapeStore } from '../store';
 import * as THREE from 'three';
 import SoundLines from './SoundLines';
 import SoundLine from './SoundLine';
+import { isMobile } from 'react-device-detect';
 
 const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }) => {
   const currentTime = useAudioStore((s) => s.currentTime);
   const duration = useAudioStore((s) => s.duration);
   // const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
   const { setCurrentTime } = useAudioStore();
+  // console.log('currentTime', currentTime);
 
   useEffect(() => {
-    console.log('CurrentTime changed:', currentTime);
-    let prevCount = localSoundScapeStore.getState().clickCounter;
+    let prevClickCounter = localSoundScapeStore.getState().clickCounter;
     const unsubscribe = localSoundScapeStore.subscribe((s) => {
-      if (s.clickCounter > prevCount) {
-        const { lineTime } = s;
+      const { lineTime } = s;
+      console.log('HERE');
+      if (s.clickCounter > prevClickCounter) {
+        console.log('linetime', lineTime);
+        setCurrentTime(lineTime);
+        // Any additional actions after setting the time can be placed here
+      }
+      prevClickCounter = s.clickCounter;
+      if (isMobile) {
         setCurrentTime(lineTime);
       }
-      prevCount = s.clickCounter;
     });
 
     return () => unsubscribe();

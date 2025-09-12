@@ -29,7 +29,11 @@ const AudioControls: FC<AudioControlsProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const formatTime = (time: number) => time.toFixed(2);
+  const formatTime = (time: number) => {
+    const seconds = Math.floor(time);
+    const milliseconds = Math.floor((time - seconds) * 60);
+    return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     console.log('AudioControls render', formatTime(currentTime), duration);

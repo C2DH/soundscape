@@ -21,7 +21,7 @@ const Scene: React.FC<SceneProps> = ({ landscapeData }) => {
       <p className="big-text font-medium tracking-[-0.06em] uppercase absolute top-[10%] left-0 w-full flex flex-col items-center text-[12vw] opacity-20">
         Sweden
       </p>
-      <Canvas shadows camera={{ position: [100, 100, 50], fov: 50 }}>
+      <Canvas shadows camera={{ position: [100, 100, 50], fov: 50 }} touch-action="none">
         <OrbitControls />
         <group>
           <SoundScape {...args} />

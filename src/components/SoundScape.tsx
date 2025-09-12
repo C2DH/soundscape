@@ -2,7 +2,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import React, { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import SoundLine from './SoundLine';
-import { useThemeStore, localSoundScapeStore } from '../store';
+import { useThemeStore, localSoundScapeStore, useAudioStore } from '../store';
 import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
@@ -63,6 +63,53 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     previousIntersectionListIndexRef.current = listIndex;
   };
 
+  const handlePointerDown = (event: React.PointerEvent) => {
+    event.stopPropagation();
+    event.preventDefault?.();
+
+    localSoundScapeStore.getState().incrementClickCounter();
+    if (!meshRef.current) return;
+
+    // Convert click coords
+    mouse.x = (event.clientX / gl.domElement.clientWidth) * 2 - 1;
+    mouse.y = -(event.clientY / gl.domElement.clientHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(meshRef.current, true);
+    if (intersects.length === 0) return;
+
+    // Convert to local space
+    const localPoint = meshRef.current.worldToLocal(intersects[0].point.clone());
+    const scale = meshRef.current.scale;
+    const normalizedPoint = new THREE.Vector3(
+      localPoint.x / scale.x,
+      localPoint.y / scale.y,
+      localPoint.z / scale.z
+    );
+
+    // Calculate listIndex
+    const timeLength = lists.length;
+    const listLength = lists[0]?.length ?? 0;
+    const listIndex = Math.max(0, Math.floor(normalizedPoint.z + timeLength / 2));
+
+    // Always update on first click
+    const previousIndex = previousIntersectionListIndexRef.current;
+    if (previousIndex !== listIndex || previousIndex === undefined) {
+      const centeredVectors = lists[listIndex].map(
+        (y, x) => new THREE.Vector3(x - listLength / 2, y, listIndex - timeLength / 2)
+      );
+
+      setHighlightedVectors(centeredVectors, listIndex);
+
+      const duration = useAudioStore.getState().duration;
+      const lineTime = (listIndex / timeLength) * duration;
+
+      localSoundScapeStore.getState().setLineTime(lineTime);
+
+      previousIntersectionListIndexRef.current = listIndex;
+    }
+  };
+
   useFrame(() => {
     if (!meshRef.current) return;
 
@@ -96,50 +143,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
       if (markerRef.current) markerRef.current.visible = false;
     }
   });
-
-  const handlePointerDown = (event: React.PointerEvent) => {
-    // increment global counter
-    localSoundScapeStore.getState().incrementClickCounter();
-
-    event.stopPropagation(); // prevent bubbling
-    if (!meshRef.current) return;
-
-    // Convert mouse coords
-    mouse.x = (event.clientX / gl.domElement.clientWidth) * 2 - 1;
-    mouse.y = -(event.clientY / gl.domElement.clientHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObject(meshRef.current, true);
-
-    if (intersects.length === 0) return;
-
-    // Convert to local space
-    const localPoint = meshRef.current.worldToLocal(intersects[0].point.clone());
-    const scale = meshRef.current.scale;
-    const normalizedPoint = new THREE.Vector3(
-      localPoint.x / scale.x,
-      localPoint.y / scale.y,
-      localPoint.z / scale.z
-    );
-
-    // Update vectors and lineTime
-    const timeLength = lists.length;
-    const listLength = lists[0]?.length ?? 0;
-    const listIndex = Math.max(0, Math.floor(normalizedPoint.z + timeLength / 2));
-
-    if (previousIntersectionListIndexRef.current !== listIndex) {
-      const centeredVectors = lists[listIndex].map(
-        (y, x) => new THREE.Vector3(x - listLength / 2, y, listIndex - timeLength / 2)
-      );
-      setHighlightedVectors(centeredVectors, listIndex);
-
-      const duration = 10; // or from your audio store
-      const lineTime = (listIndex / timeLength) * duration;
-      localSoundScapeStore.getState().setLineTime(lineTime, true);
-
-      previousIntersectionListIndexRef.current = listIndex;
-    }
-  };
 
   const geometry = useMemo(() => {
     const timeLength = lists.length;
@@ -217,7 +220,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
           geometry={geometry}
           ref={meshRef}
           onPointerMove={handlePointerMove}
-          onPointerDown={handlePointerDown}
+          onPointerDown={handlePointerDown} // mouse & pointer
         >
           <shaderMaterial
             ref={materialRef}

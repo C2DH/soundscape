@@ -158,7 +158,10 @@ export const localSoundScapeStore = create<{
   setT: (t: number) => set(() => ({ t })),
   setHighlightedVectors: (vectors: THREE.Vector3[], index: number) =>
     set({ highlightedVectors: vectors, highlightedLineIndex: index }),
-  setLineTime: (time: number, byClick: boolean = false) =>
-    set({ lineTime: time, lineTimeUpdatedByClick: byClick }),
+  setLineTime: (time: number) => {
+    // console.log('time | byClick', time, byClick);
+    set({ lineTime: time });
+  },
+
   incrementClickCounter: () => set((state) => ({ clickCounter: state.clickCounter + 1 })), // NEW
 }));
