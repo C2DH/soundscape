@@ -5,7 +5,7 @@ import './AudioControls.css';
 import PauseSign from './svg/PauseSign';
 import NextVisSign from './svg/NextVisSign';
 import NextCountrySign from './svg/NextCountrySign';
-import { useAudioStore } from '../store';
+import { useAudioStore, localSoundScapeStore } from '../store';
 
 type AudioControlsProps = {
   onNextVis: () => void;
@@ -32,6 +32,7 @@ const AudioControls: FC<AudioControlsProps> = ({
   const formatTime = (time: number) => time.toFixed(2);
 
   useEffect(() => {
+    console.log('AudioControls render', formatTime(currentTime), duration);
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -50,6 +51,19 @@ const AudioControls: FC<AudioControlsProps> = ({
   const handleToggle = () => {
     setIsPlaying((prev) => !prev);
   };
+
+  useEffect(() => {
+    let prevCount = localSoundScapeStore.getState().clickCounter;
+    const unsubscribe = localSoundScapeStore.subscribe((s) => {
+      if (s.clickCounter > prevCount && audioRef.current) {
+        const { lineTime } = s;
+        audioRef.current.currentTime = lineTime; // jump playback
+        setCurrentTime(lineTime); // update store so lines update immediately
+      }
+      prevCount = s.clickCounter;
+    });
+    return () => unsubscribe();
+  }, [setCurrentTime]);
 
   // Sync audio element with isPlaying state
   useEffect(() => {

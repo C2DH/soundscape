@@ -42,16 +42,13 @@ const SoundLine: React.FC<SoundLineProps> = ({
   const highlightedLineIndex = localSoundScapeStore((s) => s.highlightedLineIndex);
   const totalLines = 200; // or your global total lines count
   const { currentTime, duration } = useAudioStore();
-  const formatTimeDuration = (time: number) => time.toFixed(2);
-
-  console.log('SoundLine render', formatTimeDuration(currentTime), duration);
 
   const lineTime = (highlightedLineIndex / totalLines) * duration;
   const [lineTimeState] = useState(lineTime);
 
   const formatTime = (time: number) => {
     const seconds = Math.floor(time);
-    const milliseconds = Math.floor((time - seconds) * 100);
+    const milliseconds = Math.floor((time - seconds) * 60);
     return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
   };
   // Animation state
@@ -181,7 +178,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
               ref={currentTimeIndex ? null : htmlRef} // <- now ref points to the DOM element, not Object3D
               style={{ color: 'white', fontSize: '16px' }}
             >
-              {currentTimeIndex ? formatTimeDuration(currentTime) : formatTime(lineTimeState)}
+              {currentTimeIndex ? formatTime(currentTime) : formatTime(lineTimeState)}
             </div>
           </Html>
         </group>

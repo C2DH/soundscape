@@ -120,11 +120,18 @@ type AudioState = {
   setDuration: (d: number) => void;
 };
 
-export const useAudioStore = create<AudioState>((set) => ({
+export const useAudioStore = create<
+  AudioState & {
+    audioRef: React.RefObject<HTMLAudioElement> | null;
+    setAudioRef: (ref: React.RefObject<HTMLAudioElement>) => void;
+  }
+>((set) => ({
   currentTime: 0,
-  duration: 1, // avoid div by zero
+  duration: 1,
+  audioRef: null,
   setCurrentTime: (t) => set({ currentTime: t }),
   setDuration: (d) => set({ duration: d }),
+  setAudioRef: (ref) => set({ audioRef: ref }),
 }));
 
 export const localSoundScapeStore = create<{
@@ -133,21 +140,25 @@ export const localSoundScapeStore = create<{
   highlightedLineIndex: number;
   lineTime: number;
   lineTimeUpdatedByClick: boolean;
+  clickCounter: number; // NEW
   setT: (t: number) => void;
   setLineTime: (time: number, byClick?: boolean) => void;
   setHighlightedVectors: (
     highlightedVectors: THREE.Vector3[],
     highlightedLineIndex: number
   ) => void;
+  incrementClickCounter: () => void; // NEW
 }>((set) => ({
   t: 0,
   highlightedVectors: [],
   highlightedLineIndex: 0,
   lineTime: 0,
   lineTimeUpdatedByClick: false,
+  clickCounter: 0, // NEW
   setT: (t: number) => set(() => ({ t })),
   setHighlightedVectors: (vectors: THREE.Vector3[], index: number) =>
     set({ highlightedVectors: vectors, highlightedLineIndex: index }),
   setLineTime: (time: number, byClick: boolean = false) =>
     set({ lineTime: time, lineTimeUpdatedByClick: byClick }),
+  incrementClickCounter: () => set((state) => ({ clickCounter: state.clickCounter + 1 })), // NEW
 }));

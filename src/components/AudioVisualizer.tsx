@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAudioStore, localSoundScapeStore, useThemeStore } from '../store';
+import { useAudioStore, useThemeStore, localSoundScapeStore } from '../store';
 import * as THREE from 'three';
 import SoundLines from './SoundLines';
 import SoundLine from './SoundLine';
@@ -7,18 +7,18 @@ import SoundLine from './SoundLine';
 const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }) => {
   const currentTime = useAudioStore((s) => s.currentTime);
   const duration = useAudioStore((s) => s.duration);
-  const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
+  // const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
+  const { setCurrentTime } = useAudioStore();
 
   useEffect(() => {
-    // Subscribe to lineTimeUpdatedByClick
-    const unsubscribe = localSoundScapeStore.subscribe((state) => {
-      if (state.lineTimeUpdatedByClick) {
-        const lineTime = state.lineTime;
-        console.log('Clicked', lineTime);
+    console.log('CurrentTime changed:', currentTime);
+    let prevCount = localSoundScapeStore.getState().clickCounter;
+    const unsubscribe = localSoundScapeStore.subscribe((s) => {
+      if (s.clickCounter > prevCount) {
+        const { lineTime } = s;
         setCurrentTime(lineTime);
-        // Reset the click flag
-        localSoundScapeStore.setState({ lineTimeUpdatedByClick: false });
       }
+      prevCount = s.clickCounter;
     });
 
     return () => unsubscribe();
@@ -30,9 +30,6 @@ const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }
   const translatedLines = allLines.map((points, index) =>
     points.map((p) => new THREE.Vector3(p.x - points.length / 2, p.y, index - totalLines / 2))
   );
-  // const centeredPoints = points.map(
-  //   (p) => new THREE.Vector3(p.x - points.length / 2, p.y, index - totalLines / 2)
-  // );
 
   return (
     <>

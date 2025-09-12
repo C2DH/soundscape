@@ -23,7 +23,6 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
 
 const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const setHighlightedVectors = localSoundScapeStore((state) => state.setHighlightedVectors);
-  const setLineTime = localSoundScapeStore((state) => state.setLineTime);
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null!);
   const intersectionRef = useRef<THREE.Vector3 | null>(null);
@@ -99,6 +98,9 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   });
 
   const handlePointerDown = (event: React.PointerEvent) => {
+    // increment global counter
+    localSoundScapeStore.getState().incrementClickCounter();
+
     event.stopPropagation(); // prevent bubbling
     if (!meshRef.current) return;
 
@@ -133,7 +135,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
 
       const duration = 10; // or from your audio store
       const lineTime = (listIndex / timeLength) * duration;
-      setLineTime(lineTime, true); // <-- click update
+      localSoundScapeStore.getState().setLineTime(lineTime, true);
 
       previousIntersectionListIndexRef.current = listIndex;
     }
