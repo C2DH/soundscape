@@ -50,6 +50,7 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     const darkRgb = root.getPropertyValue('--dark').trim();
     const accentRgb = root.getPropertyValue('--accent').trim();
     const accent3dRgb = root.getPropertyValue('--accent-3d').trim();
+    const accent3dTimeRgb = root.getPropertyValue('--accent-3d-time').trim();
 
     const alpha = root.getPropertyValue('--alpha')?.trim() || '1';
 
@@ -66,6 +67,7 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
         '--dark': `rgba(${darkRgb}, ${alpha})`,
         '--accent': `rgba(${accentRgb}, ${alpha})`,
         '--accent-3d': `rgba(${accent3dRgb}, ${alpha})`,
+        '--accent-3d-time': `rgba(${accent3dTimeRgb}, ${alpha})`,
       },
       threeColors: {
         '--color-primary': parseColor(primaryRgb),
@@ -73,6 +75,7 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
         '--dark': parseColor(darkRgb),
         '--accent': parseColor(accentRgb),
         '--accent-3d': parseColor(accent3dRgb),
+        '--accent-3d-time': parseColor(accent3dTimeRgb),
       },
     }));
   },
@@ -128,7 +131,10 @@ export const localSoundScapeStore = create<{
   t: number;
   highlightedVectors: THREE.Vector3[];
   highlightedLineIndex: number;
+  lineTime: number;
+  lineTimeUpdatedByClick: boolean;
   setT: (t: number) => void;
+  setLineTime: (time: number, byClick?: boolean) => void;
   setHighlightedVectors: (
     highlightedVectors: THREE.Vector3[],
     highlightedLineIndex: number
@@ -137,7 +143,11 @@ export const localSoundScapeStore = create<{
   t: 0,
   highlightedVectors: [],
   highlightedLineIndex: 0,
+  lineTime: 0,
+  lineTimeUpdatedByClick: false,
   setT: (t: number) => set(() => ({ t })),
-  setHighlightedVectors: (highlightedVectors, highlightedLineIndex) =>
-    set(() => ({ highlightedVectors, highlightedLineIndex })),
+  setHighlightedVectors: (vectors: THREE.Vector3[], index: number) =>
+    set({ highlightedVectors: vectors, highlightedLineIndex: index }),
+  setLineTime: (time: number, byClick: boolean = false) =>
+    set({ lineTime: time, lineTimeUpdatedByClick: byClick }),
 }));

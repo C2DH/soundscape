@@ -105,7 +105,7 @@ const AudioControls: FC<AudioControlsProps> = ({
 
       {/* Optional: duration/time display */}
       <span className="duration">
-        {formatTime(duration)} / {formatTime(currentTime)}
+        {formatTime(currentTime)} /{formatTime(duration)}
       </span>
     </nav>
   );

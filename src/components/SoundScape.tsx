@@ -23,6 +23,7 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
 
 const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const setHighlightedVectors = localSoundScapeStore((state) => state.setHighlightedVectors);
+  const setLineTime = localSoundScapeStore((state) => state.setLineTime);
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null!);
   const intersectionRef = useRef<THREE.Vector3 | null>(null);
@@ -30,7 +31,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const markerRef = useRef<THREE.Mesh>(null);
   const [bbox, setBbox] = useState({ min: new THREE.Vector3(), max: new THREE.Vector3() });
   const theme = useThemeStore();
-  console.log('theme colors:', theme.getColorVec3('--dark'));
 
   const raycaster = useRef(new THREE.Raycaster()).current;
   const mouse = useRef(new THREE.Vector2()).current;
@@ -97,6 +97,47 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
       if (markerRef.current) markerRef.current.visible = false;
     }
   });
+
+  const handlePointerDown = (event: React.PointerEvent) => {
+    event.stopPropagation(); // prevent bubbling
+    if (!meshRef.current) return;
+
+    // Convert mouse coords
+    mouse.x = (event.clientX / gl.domElement.clientWidth) * 2 - 1;
+    mouse.y = -(event.clientY / gl.domElement.clientHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(meshRef.current, true);
+
+    if (intersects.length === 0) return;
+
+    // Convert to local space
+    const localPoint = meshRef.current.worldToLocal(intersects[0].point.clone());
+    const scale = meshRef.current.scale;
+    const normalizedPoint = new THREE.Vector3(
+      localPoint.x / scale.x,
+      localPoint.y / scale.y,
+      localPoint.z / scale.z
+    );
+
+    // Update vectors and lineTime
+    const timeLength = lists.length;
+    const listLength = lists[0]?.length ?? 0;
+    const listIndex = Math.max(0, Math.floor(normalizedPoint.z + timeLength / 2));
+
+    if (previousIntersectionListIndexRef.current !== listIndex) {
+      const centeredVectors = lists[listIndex].map(
+        (y, x) => new THREE.Vector3(x - listLength / 2, y, listIndex - timeLength / 2)
+      );
+      setHighlightedVectors(centeredVectors, listIndex);
+
+      const duration = 10; // or from your audio store
+      const lineTime = (listIndex / timeLength) * duration;
+      setLineTime(lineTime, true); // <-- click update
+
+      previousIntersectionListIndexRef.current = listIndex;
+    }
+  };
 
   const geometry = useMemo(() => {
     const timeLength = lists.length;
@@ -165,11 +206,17 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     setHighlightedVectors(vectors[0], 0); // Set initial highlighted vectors
     return geometry;
   }, [lists]);
+  const lines = lists.map((yList, t) => yList.map((y, x) => new THREE.Vector3(x, y, t)));
 
   return (
     <>
       <group rotation={[0, Math.PI / 1, 0]} scale={[0.6, 1, 0.8]} position={position}>
-        <mesh geometry={geometry} ref={meshRef} onPointerMove={handlePointerMove}>
+        <mesh
+          geometry={geometry}
+          ref={meshRef}
+          onPointerMove={handlePointerMove}
+          onPointerDown={handlePointerDown}
+        >
           <shaderMaterial
             ref={materialRef}
             vertexShader={vertexSoundScape}
@@ -191,11 +238,9 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
         <sphereGeometry args={[0.05, 32, 32]} />
         <meshStandardMaterial color="yellow" />
       </mesh> */}
+        <AudioVisualizer allLines={lines} />
       </group>
       <SoundScapeSoundlineWrapper />
-      <AudioVisualizer
-        allLines={lists.map((yList, t) => yList.map((y, x) => new THREE.Vector3(x, y, t)))}
-      />
     </>
   );
 };

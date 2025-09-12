@@ -17,6 +17,7 @@
   --dark: 28, 14, 50; /* #1c0e32 */
   --accent: 255, 222, 124; /* #ffde7c */
   --accent-3d: 255, 133, 239; /* #ff85ef */
+  --accent-3d-time: 95, 255, 242; /* #5ffff2 */
 }
 
 @font-face {

@@ -6,7 +6,6 @@ import { useThemeStore } from '../store';
 type ProgressiveLinesProps = {
   allLines: THREE.Vector3[][];
   visibleLines: number; // target number of lines
-  color?: string;
   lineWidth?: number;
   scale?: [number, number, number];
   opacity?: number;
@@ -17,7 +16,7 @@ type ProgressiveLinesProps = {
 const ProgressiveLines: React.FC<ProgressiveLinesProps> = ({
   allLines,
   visibleLines,
-  color = useThemeStore((s) => s.colors['--accent-3d']),
+
   //   lineWidth = 0.1, // note: lineWidth works only on some platforms with WebGL, mostly Firefox
   scale = [-0.6, 1.01, -0.8],
   opacity = 0.5,
@@ -28,6 +27,7 @@ const ProgressiveLines: React.FC<ProgressiveLinesProps> = ({
 
   // State: how many lines are currently revealed
   const [delayedVisible, setDelayedVisible] = useState(0);
+  const color = useThemeStore((s) => s.colors['--accent-3d']);
 
   useEffect(() => {
     if (visibleLines === 0) {

@@ -16,6 +16,7 @@ type SoundLineProps = {
   easing?: (t: number) => number;
   scale?: [number, number, number];
   position?: [number, number, number];
+  currentTimeIndex?: boolean;
 };
 
 const lerpVector3 = (start: THREE.Vector3, end: THREE.Vector3, t: number): THREE.Vector3 => {
@@ -34,15 +35,19 @@ const SoundLine: React.FC<SoundLineProps> = ({
   easing = easeOutQuint,
   scale = [-0.6, 1.05, -0.8],
   position = [0, 1, 0],
+  currentTimeIndex = false,
 }) => {
   const lineRef = useRef<Line2 | null>(null);
   const { size } = useThree();
   const highlightedLineIndex = localSoundScapeStore((s) => s.highlightedLineIndex);
   const totalLines = 200; // or your global total lines count
-  const { duration } = useAudioStore();
+  const { currentTime, duration } = useAudioStore();
+  const formatTimeDuration = (time: number) => time.toFixed(2);
+
+  console.log('SoundLine render', formatTimeDuration(currentTime), duration);
 
   const lineTime = (highlightedLineIndex / totalLines) * duration;
-  const [lineTimeState, setLineTimeState] = useState(lineTime);
+  const [lineTimeState] = useState(lineTime);
 
   const formatTime = (time: number) => {
     const seconds = Math.floor(time);
@@ -66,10 +71,12 @@ const SoundLine: React.FC<SoundLineProps> = ({
 
   const resolution = useMemo(() => new THREE.Vector2(size.width, size.height), [size]);
 
-  useEffect(() => {
-    setLineTimeState((highlightedLineIndex / totalLines) * duration);
-  }, [highlightedLineIndex, duration, totalLines]);
+  const setLineTime = localSoundScapeStore((s) => s.setLineTime);
 
+  useEffect(() => {
+    const lineTime = (highlightedLineIndex / totalLines) * duration;
+    setLineTime(lineTime); // update global store
+  }, [highlightedLineIndex, duration, totalLines, setLineTime, currentTime]);
   // Initialize buffer
   const updatePositionsBuffer = (pts: THREE.Vector3[]) => {
     pts.forEach((p, i) => {
@@ -124,23 +131,22 @@ const SoundLine: React.FC<SoundLineProps> = ({
       geometry.setPositions(positionsBufferRef.current);
       lineRef.current.computeLineDistances();
 
+      // pick the middle point as anchor
+      const mid = Math.floor(currentPointsRef.current.length / 2);
+      const anchor = currentPointsRef.current[mid];
+
+      htmlGroupRef.current.position.set(
+        currentPointsRef.current[1].x * scale[0] + 3,
+        0,
+        anchor.z * scale[2] - 0.4 // use same scaling as line
+      );
+
+      // Update text
+      if (htmlRef.current) {
+        const lineTime = (highlightedLineIndex / totalLines) * duration;
+        htmlRef.current.textContent = formatTime(lineTime);
+      }
       if (progress >= 1) isAnimatingRef.current = false;
-    }
-
-    // pick the middle point as anchor
-    const mid = Math.floor(currentPointsRef.current.length / 2);
-    const anchor = currentPointsRef.current[mid];
-
-    htmlGroupRef.current.position.set(
-      currentPointsRef.current[1].x * scale[0] + 3,
-      0,
-      anchor.z * scale[2] - 0.4 // use same scaling as line
-    );
-
-    // Update text
-    if (htmlRef.current) {
-      const lineTime = (highlightedLineIndex / totalLines) * duration;
-      htmlRef.current.textContent = formatTime(lineTime);
     }
   });
 
@@ -163,14 +169,19 @@ const SoundLine: React.FC<SoundLineProps> = ({
   return (
     <>
       <primitive object={line} ref={lineRef} position={position} />
-      {currentPointsRef.current.length > 0 && (
+      {points.length > 0 && (
         <group ref={htmlGroupRef}>
-          <Html transform scale={4} rotation={[Math.PI / -2, 0, Math.PI / 2]}>
+          <Html
+            transform
+            scale={4}
+            rotation={[Math.PI / -2, 0, Math.PI / (currentTimeIndex ? -2 : 2)]}
+            position={[currentTimeIndex ? -5.5 : 0, 0, 0]}
+          >
             <div
-              ref={htmlRef} // <- now ref points to the DOM element, not Object3D
+              ref={currentTimeIndex ? null : htmlRef} // <- now ref points to the DOM element, not Object3D
               style={{ color: 'white', fontSize: '16px' }}
             >
-              {formatTime(lineTimeState)}
+              {currentTimeIndex ? formatTimeDuration(currentTime) : formatTime(lineTimeState)}
             </div>
           </Html>
         </group>
