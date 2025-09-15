@@ -6,6 +6,7 @@ import { useWorldStore } from '../store';
 import { latLonToVector3 } from '../geo';
 import { useFrame, useThree } from '@react-three/fiber';
 import { easeInOutQuad } from '../easing';
+import { useNavigate } from 'react-router';
 import Pin from './Pin';
 export interface WorldProps {
   geoPoints?: GeoPoint[];
@@ -28,6 +29,7 @@ const World: React.FC<WorldProps> = ({
   // onPointClick = (point: GeoPoint) => {}
 }) => {
   const { camera } = useThree(); // get active camera
+  const navigate = useNavigate();
   const worldRef = useRef<THREE.Mesh>(null);
   const pointsGroupRef = useRef<THREE.Group>(null);
   const previousHighlightedPoint = useRef<GeoPoint | undefined>(undefined);
@@ -104,8 +106,13 @@ const World: React.FC<WorldProps> = ({
   }, []);
 
   const handleClickPoint = (point: GeoPoint) => {
-    // Optionally, you can set the highlighted point in the store
+    // Set the highlighted point in the store
     setHighlightedPoint(point);
+
+    // Navigate to the point's URL if it exists
+    if (point.url) {
+      navigate(point.url);
+    }
   };
 
   return (

@@ -5,22 +5,30 @@ import World from './components/World';
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import Header from './components/Header';
-import { useSidebarStore } from './store';
+import { useSidebarStore, useThemeStore } from './store';
 import Footer from './components/Footer';
 import Sidebar from './components/Sidebar';
 import SoundEqualizerButton from './components/SoundEqualizerButton';
 import AboutPage from './pages/AboutPage';
 import SceneManager from './components/SceneManager';
 import { AvailableAudioItems } from './constants';
+import { useEffect } from 'react';
+import type { GeoPoint } from './types';
 function App() {
   const { isOpenSidebar } = useSidebarStore();
 
-  const geoPoints = AvailableAudioItems.map((item) => ({
+  const geoPoints: GeoPoint[] = AvailableAudioItems.map((item) => ({
     id: item.id,
+    url: item.url,
     name: item.name,
     lat: item.lat,
     lon: item.lon,
   }));
+  const refreshFromCSS = useThemeStore((s) => s.refreshFromCSS);
+
+  useEffect(() => {
+    refreshFromCSS();
+  }, []);
 
   return (
     <>
@@ -47,6 +55,7 @@ function App() {
               near={-1000}
               far={1000}
             />
+            z
             <ambientLight intensity={0.4} />
             <directionalLight
               castShadow
@@ -55,9 +64,7 @@ function App() {
               shadow-mapSize-width={1024}
               shadow-mapSize-height={1024}
             />
-
             <World geoPoints={geoPoints} radius={5.3} />
-
             <OrbitControls
               enablePan={false}
               enableRotate={true}

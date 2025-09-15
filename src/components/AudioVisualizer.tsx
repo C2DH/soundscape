@@ -8,6 +8,8 @@ const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }
   const currentTime = useAudioStore((s) => s.currentTime);
   const duration = useAudioStore((s) => s.duration);
   const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
+
+  const colors = useThemeStore((s) => s.colors);
   const totalLines = allLines.length;
   const visibleLines = Math.floor((currentTime / duration) * totalLines);
 
@@ -28,7 +30,7 @@ const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }
     });
 
     return () => unsubscribe();
-  }, [setCurrentTime]);
+  }, []);
 
   return (
     <>
@@ -36,13 +38,13 @@ const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }
         lines={translatedLines}
         lineIdx={visibleLines}
         position={[0, 0.5, 0]}
-        color={useThemeStore((s) => s.colors['--accent-3d'])}
+        color={colors['--accent-3d']}
       />
       <SoundLine
         points={translatedLines[visibleLines] || []}
         scale={[1, 1, 1]}
         position={[0, 1, 0]}
-        color={useThemeStore((s) => s.colors['--accent-3d-time'])}
+        color={colors['--accent-3d-time']}
         currentTimeIndex={true}
       />
     </>

@@ -11,6 +11,7 @@ type ProgressiveLinesProps = {
   opacity?: number;
   position?: [number, number, number];
   delay?: number; // delay between lines in ms
+  itemId?: string; // Add itemId prop for unique keys
 };
 
 const ProgressiveLines: React.FC<ProgressiveLinesProps> = ({
@@ -22,6 +23,7 @@ const ProgressiveLines: React.FC<ProgressiveLinesProps> = ({
   opacity = 0.5,
   position = [0, 0.1, 0],
   delay = 100,
+  itemId = 'default', // Default fallback
 }) => {
   //   const { size } = useThree();
 
@@ -68,9 +70,12 @@ const ProgressiveLines: React.FC<ProgressiveLinesProps> = ({
 
       const line = new THREE.Line(geometry, material);
 
-      return <primitive key={index} object={line} />;
+      // Generate unique key using itemId and index
+      const uniqueKey = `${itemId}_line_${index}_${timeLength}_${listLength}`;
+
+      return <primitive key={uniqueKey} object={line} />;
     });
-  }, [allLines, delayedVisible, color, scale, opacity]);
+  }, [allLines, delayedVisible, color, scale, opacity, itemId]);
 
   return <group position={position}>{lineObjects}</group>;
 };

@@ -30,7 +30,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const previousIntersectionListIndexRef = useRef<number>(0);
   const markerRef = useRef<THREE.Mesh>(null);
   const [bbox, setBbox] = useState({ min: new THREE.Vector3(), max: new THREE.Vector3() });
-  const theme = useThemeStore();
+  const getColorVec3 = useThemeStore((state) => state.getColorVec3);
 
   const raycaster = useRef(new THREE.Raycaster()).current;
   const mouse = useRef(new THREE.Vector2()).current;
@@ -226,8 +226,8 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
             vertexShader={vertexSoundScape}
             fragmentShader={fragmentSoundScape}
             uniforms={{
-              color1: { value: theme.getColorVec3('--dark') ?? new THREE.Vector3(0, 0, 0) },
-              color2: { value: theme.getColorVec3('--accent-3d') ?? new THREE.Vector3(0, 0, 0) },
+              color1: { value: getColorVec3('--dark') },
+              color2: { value: getColorVec3('--accent-3d') },
               uBboxMin: { value: bbox.min },
               uBboxMax: { value: bbox.max },
               uRoughness: { value: 0.5 },

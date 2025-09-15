@@ -80,6 +80,15 @@ const AudioControls: FC<AudioControlsProps> = ({
     }
   }, [isPlaying]);
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.src = src;
+      audioRef.current.load();
+      setIsPlaying(false); // reset to paused when source changes
+      setCurrentTime(0); // reset time
+    }
+  }, [src]);
+
   return (
     <nav
       className="AudioControls absolute bottom-[10%] left-[calc(50%-100px)] flex flex-col items-center justify-center gap-1 z-50"

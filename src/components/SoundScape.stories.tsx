@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import SoundScape from './SoundScape';
-import frequenceList from '../../src/assets/data/vis/sweden.json';
-import frequenceListDenmark from '../../src/assets/data/vis/denmark.json';
+import frequenceList from '../../public/data/sweden.json';
+import frequenceListDenmark from '../../public/data/denmark.json';
 
 const meta: Meta<typeof SoundScape> = {
   title: '3D/SoundScape',

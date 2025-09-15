@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { GeoPoint } from './types';
 import * as THREE from 'three';
+import { parseColor } from './colors';
 
 export const useStore = create<{
   currentParamItemId: string | null;
@@ -33,8 +34,22 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
-  colors: {},
-  threeColors: {},
+  colors: {
+    '--color-primary': 'rgb(126,90,197)',
+    '--light': 'rgb(249,241,228)',
+    '--dark': 'rgb(28,14,50)',
+    '--accent': 'rgb(255,222,124)',
+    '--accent-3d': 'rgb(255,133,239)',
+    '--accent-3d-time': 'rgb(95,255,242)',
+  },
+  threeColors: {
+    '--color-primary': parseColor('126,90,197'),
+    '--light': parseColor('249,241,228'),
+    '--dark': parseColor('28,14,50'),
+    '--accent': parseColor('255,222,124'),
+    '--accent-3d': parseColor('255,133,239'),
+    '--accent-3d-time': parseColor('95,255,242'),
+  },
   setColor: (name, value) => {
     const color = new THREE.Color(value); // convert to THREE.Color
     set((state) => ({
@@ -52,12 +67,6 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     const accent3dTimeRgb = root.getPropertyValue('--accent-3d-time').trim();
 
     const alpha = root.getPropertyValue('--alpha')?.trim() || '1';
-
-    // Helper to convert CSS rgb string → THREE.Color
-    const parseColor = (rgb: string) => {
-      const [r, g, b] = rgb.split(',').map((c) => parseFloat(c) / 255);
-      return new THREE.Color(r, g, b);
-    };
 
     set(() => ({
       colors: {
