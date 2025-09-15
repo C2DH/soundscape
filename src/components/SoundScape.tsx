@@ -6,6 +6,7 @@ import { useThemeStore, localSoundScapeStore, useAudioStore } from '../store';
 import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
+import { isMobile } from 'react-device-detect';
 
 type SoundScapeProps = {
   lists: number[][];
@@ -15,7 +16,7 @@ type SoundScapeProps = {
 
 const SoundScapeSoundlineWrapper: React.FC = () => {
   const points = localSoundScapeStore((state) => state.highlightedVectors);
-  if (points.length === 0) {
+  if (points.length === 0 || isMobile) {
     return null; // No points to render
   }
   return <SoundLine points={points} />;
@@ -64,9 +65,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   };
 
   const handlePointerDown = (event: React.PointerEvent) => {
-    event.stopPropagation();
-    event.preventDefault?.();
-
     localSoundScapeStore.getState().incrementClickCounter();
     if (!meshRef.current) return;
 
@@ -108,6 +106,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
 
       previousIntersectionListIndexRef.current = listIndex;
     }
+    console.log('Pointer down at list index:', listIndex);
   };
 
   useFrame(() => {

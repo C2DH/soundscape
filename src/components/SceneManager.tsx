@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useThemeStore, useModalStore } from '../store';
 import AudioControls from './AudioControls';
 import Scene from './Scene';
-import landscapeData from '../../src/assets/data/vis/sweden.json';
+import landscapeData from '../../src/assets/data/vis/poland.json';
 
 const SceneManager = () => {
   const { isOpenModal, closeModal } = useModalStore();
@@ -22,7 +22,7 @@ const SceneManager = () => {
             onPrevVis={() => {}}
             onNextCountry={() => {}}
             onPrevCountry={() => {}}
-            src="/audio/Sweden.mp3"
+            src="/audio/Poland.mp3"
           />
         ) : null}
         <Scene landscapeData={landscapeData} />
