@@ -11,29 +11,25 @@ import Sidebar from './components/Sidebar';
 import SoundEqualizerButton from './components/SoundEqualizerButton';
 import AboutPage from './pages/AboutPage';
 import SceneManager from './components/SceneManager';
-
+import { AvailableAudioItems } from './constants';
 function App() {
   const { isOpenSidebar } = useSidebarStore();
 
-  const geoPoints = [
-    { id: 'denmark', name: 'Denmark', lat: 56.2639, lon: 9.5018 },
-    { id: 'sweden', name: 'Sweden', lat: 60.1282, lon: 18.6435 },
-    { id: 'norway', name: 'Norway', lat: 60.472, lon: 8.4689 },
-    { id: 'luxembourg', name: 'Luxembourg', lat: 49.6118, lon: 6.1319 },
-    { id: 'finland', name: 'Finland', lat: 61.9241, lon: 25.7482 },
-    { id: 'iceland', name: 'Iceland', lat: 64.9631, lon: -19.0208 },
-    { id: 'italy', name: 'Italy', lat: 41.8719, lon: 12.5674 },
-    { id: 'spain', name: 'Spain', lat: 40.4637, lon: -3.7492 },
-    { id: 'portugal', name: 'Portugal', lat: 39.3999, lon: -8.2245 },
-    { id: 'belgium', name: 'Belgium', lat: 50.5039, lon: 4.4699 },
-    { id: 'netherlands', name: 'Netherlands', lat: 52.3676, lon: 4.9041 },
-  ];
+  const geoPoints = AvailableAudioItems.map((item) => ({
+    id: item.id,
+    name: item.name,
+    lat: item.lat,
+    lon: item.lon,
+  }));
+
   return (
     <>
       <LocationManager />
       <Routes>
         <Route index element={null} />
-        <Route path="/item/:itemId" element={null} />
+        {AvailableAudioItems.map((item) => (
+          <Route key={item.id} path={item.url} element={null} />
+        ))}
         <Route path="/about" element={<AboutPage />} />
       </Routes>
 

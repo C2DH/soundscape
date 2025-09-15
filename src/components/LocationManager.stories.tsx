@@ -1,0 +1,64 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { BrowserRouter, Link, Route, Routes } from 'react-router';
+
+import LocationManager from './LocationManager';
+import { AvailableAudioItems } from '../constants';
+
+// Test component that shows current state and allows navigation
+const LocationTester = () => {
+  return (
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <LocationManager debug />
+      <h2> Test Navigation </h2>
+      <Routes>
+        <Route index element={null} />
+        {AvailableAudioItems.map((item) => (
+          <Route key={item.id} path={item.url} element={null} />
+        ))}
+        <Route path="/" element={null} />
+        <Route path="/about" element={null} />
+      </Routes>
+      <ul>
+        <li>
+          <Link className="underline text-blue-600 hover:text-blue-800" to="/">
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link className="underline text-blue-600 hover:text-blue-800" to="/about">
+            About
+          </Link>
+        </li>
+        {AvailableAudioItems.map((item) => (
+          <li key={item.id}>
+            <Link className="underline text-blue-600 hover:text-blue-800" to={item.url}>
+              {item.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const meta: Meta<typeof LocationManager> = {
+  title: 'Managers/LocationManager',
+  component: LocationManager,
+  parameters: {
+    layout: 'fullscreen',
+  },
+  decorators: [
+    (Story) => (
+      <BrowserRouter>
+        <Story />
+      </BrowserRouter>
+    ),
+  ],
+};
+
+export default meta;
+type Story = StoryObj<typeof LocationManager>;
+
+export const Default: Story = {
+  render: () => <LocationTester />,
+};

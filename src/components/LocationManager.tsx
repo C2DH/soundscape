@@ -1,17 +1,33 @@
-import { useEffect } from 'react'
-import { useLocation } from 'react-router'
-import { useStore } from '../store.ts'
+import { useEffect } from 'react';
+import { useLocation } from 'react-router';
+import { useStore } from '../store.ts';
+import { AvailableAudioItems } from '../constants.ts';
 
-const LocationManager = () => {
-  const { pathname } = useLocation()
-  const setCurrentParamItemId = useStore((state) => state.setCurrentParamItemId)
+type LocationManagerProps = {
+  debug?: boolean;
+};
 
+const LocationManager: React.FC<LocationManagerProps> = ({ debug = false }) => {
+  const { pathname } = useLocation();
+  const setCurrentParamItemId = useStore((state) => state.setCurrentParamItemId);
+  const currentParamItemId = useStore((state) => state.currentParamItemId);
   useEffect(() => {
-    console.info('[LocationManager] Location changed:', pathname)
-    setCurrentParamItemId(pathname)
-  }, [pathname])
+    console.info('[LocationManager] Location changed:', pathname);
+    const matchedItem = AvailableAudioItems.find((item) => item.url === pathname);
+    setCurrentParamItemId(matchedItem ? matchedItem.id : null);
+  }, [pathname]);
 
-  return null
-}
+  if (!debug) {
+    return null;
+  }
 
-export default LocationManager
+  return (
+    <div>
+      <h2>Location Manager (Debug Mode)</h2>
+      <p>Current Path: {pathname}</p>
+      <p>Current Item ID: {currentParamItemId}</p>
+    </div>
+  );
+};
+
+export default LocationManager;

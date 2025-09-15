@@ -3,12 +3,11 @@ import type { GeoPoint } from './types';
 import * as THREE from 'three';
 
 export const useStore = create<{
-  currentParamItemId: string | undefined;
-  setCurrentParamItemId: (itemId: string | undefined) => void;
+  currentParamItemId: string | null;
+  setCurrentParamItemId: (itemId: string | null) => void;
 }>((set) => ({
-  currentParamItemId: undefined,
-  setCurrentParamItemId: (itemId: string | undefined) =>
-    set(() => ({ currentParamItemId: itemId })),
+  currentParamItemId: null,
+  setCurrentParamItemId: (itemId: string | null) => set(() => ({ currentParamItemId: itemId })),
 }));
 
 export const useWorldStore = create<{
