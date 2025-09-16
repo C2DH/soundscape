@@ -36,7 +36,7 @@ function App() {
       <Routes>
         <Route index element={null} />
         {AvailableAudioItems.map((item) => (
-          <Route key={item.id} path={item.url} element={null} />
+          <Route key={item.name} path={item.url} element={null} />
         ))}
         <Route path="/about" element={<AboutPage />} />
       </Routes>

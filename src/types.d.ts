@@ -1,7 +1,6 @@
 export type GeoPoint = {
   id?: string; // Optional ID for the point
   name?: string; // Optional name for the point
-  description?: string; // Optional description for the point
   url?: string; // Optional URL associated with the point
   lat: number; // in degrees
   lon: number; // in degrees

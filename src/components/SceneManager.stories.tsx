@@ -14,7 +14,7 @@ const LocationTester = () => {
       <Routes>
         <Route index element={null} />
         {AvailableAudioItems.map((item) => (
-          <Route key={item.id} path={item.url} element={null} />
+          <Route key={item.name} path={item.url} element={null} />
         ))}
         <Route path="/" element={null} />
         <Route path="/about" element={null} />
@@ -31,7 +31,7 @@ const LocationTester = () => {
           </Link>
         </li>
         {AvailableAudioItems.map((item) => (
-          <li key={item.id}>
+          <li key={item.name}>
             <Link className="underline text-blue-600 hover:text-blue-800" to={item.url}>
               {item.name}
             </Link>

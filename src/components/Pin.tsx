@@ -62,7 +62,7 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) 
           onPointerOver={() => (document.body.style.cursor = 'pointer')}
           onPointerOut={() => (document.body.style.cursor = 'default')}
         >
-          <p>{point.id || 'Unnamed'}</p>
+          <p>{point.name || 'Unnamed'}</p>
           <span className="Pin-line"></span>
           <div className="Pin-dot"></div>
 

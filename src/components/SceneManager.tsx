@@ -15,7 +15,7 @@ const SceneManager = () => {
 
   const currentParamItemId = useStore((s) => s.currentParamItemId);
   const setCurrentParamItemId = useStore((s) => s.setCurrentParamItemId);
-  const item = AvailableAudioItems.find((i) => i.id === currentParamItemId);
+  const item = AvailableAudioItems.find((i) => i.name === currentParamItemId);
 
   // Preload item data
   const {
@@ -40,7 +40,7 @@ const SceneManager = () => {
   const handleCloseModal = () => {
     closeModal();
     setCurrentParamItemId(null);
-    item?.url && navigate('/');
+    navigate('/');
   };
 
   const renderModalContent = () => {
@@ -74,7 +74,7 @@ const SceneManager = () => {
     }
 
     const audioSrc = item?.audioSrc || '';
-    console.info('Rendering SceneManager with item:', item?.id, 'audioSrc:', audioSrc);
+    console.info('Rendering SceneManager with item:', item?.name, 'audioSrc:', audioSrc);
     return (
       <>
         <p className="big-text font-medium tracking-[-0.06em] uppercase absolute top-[10%] left-0 w-full flex flex-col items-center text-[12vw] opacity-20">
