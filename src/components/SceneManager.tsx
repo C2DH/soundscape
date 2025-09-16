@@ -82,8 +82,8 @@ const SceneManager = () => {
         </p>
 
         <AudioControls
-          onNextVis={() => {}}
-          onPrevVis={() => {}}
+          onNextVis={() => {}} // Navigation handled internally
+          onPrevVis={() => {}} // Navigation handled internally
           onNextCountry={() => {}}
           onPrevCountry={() => {}}
           src={item?.audioSrc}
