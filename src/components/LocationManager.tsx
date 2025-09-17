@@ -14,7 +14,7 @@ const LocationManager: React.FC<LocationManagerProps> = ({ debug = false }) => {
   useEffect(() => {
     console.info('[LocationManager] Location changed:', pathname);
     const matchedItem = AvailableAudioItems.find((item) => item.url === pathname);
-    setCurrentParamItemId(matchedItem ? matchedItem.name : null);
+    setCurrentParamItemId(matchedItem ? matchedItem.id : null);
   }, [pathname]);
 
   if (!debug) {

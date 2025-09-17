@@ -15,14 +15,14 @@ const SceneManager = () => {
 
   const currentParamItemId = useStore((s) => s.currentParamItemId);
   const setCurrentParamItemId = useStore((s) => s.setCurrentParamItemId);
-  const item = AvailableAudioItems.find((i) => i.name === currentParamItemId);
+  const item = AvailableAudioItems.find((i) => i.id === currentParamItemId);
 
   // Preload item data
   const {
     data: itemData,
     loading: itemDataLoading,
     error: itemDataError,
-  } = useItemDataPreloader(currentParamItemId);
+  } = useItemDataPreloader(item ? item.json : null);
 
   useEffect(() => {
     if (item) {
@@ -73,7 +73,7 @@ const SceneManager = () => {
       );
     }
 
-    const audioSrc = item?.audioSrc || '';
+    const audioSrc = item?.audioSrc;
     console.info('Rendering SceneManager with item:', item?.name, 'audioSrc:', audioSrc);
     return (
       <>
@@ -86,7 +86,7 @@ const SceneManager = () => {
           onPrevVis={() => {}} // Navigation handled internally
           onNextCountry={() => {}}
           onPrevCountry={() => {}}
-          src={item?.audioSrc}
+          src={audioSrc}
         />
 
         <Scene landscapeData={itemData || landscapeData} />
