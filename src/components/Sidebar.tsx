@@ -9,7 +9,7 @@ export default function Sidebar() {
   const { isOpenSidebar } = useSidebarStore();
   const currentParamItemId = useStore((s) => s.currentParamItemId);
   // const setCurrentParamItemId = useStore((s) => s.setCurrentParamItemId);
-  const item = AvailableAudioItems.find((i) => i.name === currentParamItemId);
+  const item = AvailableAudioItems.find((i) => i.id === currentParamItemId);
 
   return (
     <div className=" Sidebar h-full z-80">
@@ -41,15 +41,16 @@ export default function Sidebar() {
 
             {/* Footer */}
             <footer className="p-6">
-              {/* {item?.link && ( */}
-              <Button
-                label={'Open link'}
-                link={item?.link}
-                className="w-full py-2 px-4 rounded bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition"
-              >
-                {item?.link}
-              </Button>
-              {/* )} */}
+              {item?.link && (
+                <Button
+                  label={'Open link'}
+                  href={undefined}
+                  rel="noopener noreferrer"
+                  className="w-full py-2 px-4 rounded bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition"
+                >
+                  {item?.link}
+                </Button>
+              )}
             </footer>
           </div>
         )}

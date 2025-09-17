@@ -54,7 +54,7 @@ function App() {
           className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full justify-center items-center`}
         >
           {path === '/' ? (
-            <div className="absolute w-screen h-auto top-[40vh]  text-center flex flex-col justify-center items-center z-30">
+            <div className="absolute w-screen h-screen  text-center flex flex-col justify-center items-center z-30">
               <h1 className="text-4xl font-semibold max-w-[700px] mb-8 uppercase">
                 The world's most complete collection of warning sounds
               </h1>
