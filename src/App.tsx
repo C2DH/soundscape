@@ -16,7 +16,6 @@ import { AvailableAudioItems } from './constants';
 import { useEffect } from 'react';
 import type { GeoPoint } from './types';
 import AnimatedOrbitControls from './components/AnimatedOrbitControls';
-import Button from './components/Button';
 import IndexPage from './pages/IndexPage';
 
 function App() {
