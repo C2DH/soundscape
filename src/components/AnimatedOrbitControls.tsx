@@ -3,6 +3,7 @@ import { OrbitControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import { isMobile } from 'react-device-detect';
 
 function AnimatedOrbitControls() {
   const controlsRef = useRef<any>(null);
@@ -16,7 +17,7 @@ function AnimatedOrbitControls() {
       '/': {
         position: new THREE.Vector3(5, 5, 5),
         target: new THREE.Vector3(0, 0, 0),
-        zoom: 50,
+        zoom: isMobile ? 40 : 50,
       },
       '/overview': {
         position: new THREE.Vector3(5, 5, 5),
