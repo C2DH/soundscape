@@ -1,3 +1,5 @@
+import { Link } from 'react-router';
+
 interface LogoProps {
   color?: string;
   width?: number;
@@ -13,7 +15,7 @@ const LogoSow: React.FC<LogoProps> = ({
   const height = width / ratio;
 
   return (
-    <a href="https://sonicwarnings.wordpress.com/" rel="no-referrer" target="_blank">
+    <Link to="/" rel="no-referrer">
       <div
         className={`Logo SVG ${className} flex cursor-pointer`}
         style={{ height: height + 'px', width: width + 'px' }}
@@ -30,7 +32,7 @@ const LogoSow: React.FC<LogoProps> = ({
           />
         </svg>
       </div>
-    </a>
+    </Link>
   );
 };
 

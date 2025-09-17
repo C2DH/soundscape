@@ -60,6 +60,11 @@
   font-display: swap;
 }
 
+body,
+#root {
+  overflow: hidden;
+}
+
 main {
   background-color: rgba(var(--dark), 1);
 }
@@ -67,15 +72,6 @@ main {
 header nav ul li a {
   color: rgba(var(--light), 1);
 }
-
-/* a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-} */
 
 body {
   font-family: 'Rajdhani', sans-serif;

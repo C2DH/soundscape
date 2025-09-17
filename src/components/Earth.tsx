@@ -7,6 +7,7 @@ import Atmosphere from './Atmosphere';
 import PlanetLines from './PlanetLines';
 import './Earth.css';
 import EarthRipple from './EarthRipple';
+import { useLocation } from 'react-router';
 
 export type EarthProps = {
   maskUrl?: string; // black&white texture: white = continents, black = water (you can flip with `invert`)
@@ -28,6 +29,8 @@ const Earth: React.FC<EarthProps> = ({
 }) => {
   const mesh = useRef<THREE.Mesh>(null!);
   const mask = useLoader(THREE.TextureLoader, maskUrl);
+  const location = useLocation(); // to trigger re-render on location change
+  const pathname = location.pathname;
   mask.wrapS = mask.wrapT = THREE.RepeatWrapping;
 
   // simple shader that mixes two colors based on mask texture (white = land)
@@ -54,7 +57,7 @@ const Earth: React.FC<EarthProps> = ({
             }}
           />
         </mesh>
-        {children}
+        {pathname == '/overview' && children}
       </group>
     </>
   );

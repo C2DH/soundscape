@@ -19,12 +19,14 @@ const ContactPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col py-[7rem] items-center justify-center w-screen h-screen absolute top-0 left-0 right-0 z-2">
-      <div className="w-screen p-6 max-h-screen ">
-        <h1 className="text-3xl font-bold mb-4">{data.title}</h1>
-        <p className="text-md max-w-3xl overflow-y-auto  font-medium leading-relaxed whitespace-pre-line">
-          {data.content}
-        </p>
+    <div className="content w-screen h-screen flex items-center justify-center absolute top-0 left-0 z-2">
+      <div className="wrapper  w-screen   h-[70vh] overflow-auto flex flex-col items-center ">
+        <div className="max-w-3xl px-4">
+          <h1 className="text-3xl font-bold">{data.title}</h1>
+          <p className="text-md font-medium leading-relaxed whitespace-pre-line mt-4">
+            {data.content}
+          </p>
+        </div>
       </div>
     </div>
   );

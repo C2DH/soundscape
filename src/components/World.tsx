@@ -35,6 +35,7 @@ const World: React.FC<WorldProps> = ({
   const previousHighlightedPoint = useRef<GeoPoint | undefined>(undefined);
   const [pointDirection] = useState(new THREE.Vector3(0, 1, 0)); // Up vector of the Earth
   const setHighlightedPoint = useWorldStore((state) => state.setHighlightedPoint);
+
   // Animation state for custom easing
   const animationState = useRef<AnimationState>({
     isAnimating: false,
