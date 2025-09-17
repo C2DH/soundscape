@@ -6,7 +6,11 @@ import { parseColor } from './colors';
 export const useStore = create<{
   currentParamItemId: string | null;
   setCurrentParamItemId: (itemId: string | null) => void;
+  pathname: string;
+  setPathname: (pathname: string) => void;
 }>((set) => ({
+  pathname: '/',
+  setPathname: (pathname) => set(() => ({ pathname })),
   currentParamItemId: null,
   setCurrentParamItemId: (itemId: string | null) => set(() => ({ currentParamItemId: itemId })),
 }));
