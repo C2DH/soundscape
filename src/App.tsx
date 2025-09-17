@@ -17,11 +17,10 @@ import { useEffect } from 'react';
 import type { GeoPoint } from './types';
 import AnimatedOrbitControls from './components/AnimatedOrbitControls';
 import Button from './components/Button';
+import IndexPage from './pages/IndexPage';
 
 function App() {
   const { isOpenSidebar } = useSidebarStore();
-  const location = useLocation();
-  const path = location.pathname;
 
   const geoPoints: GeoPoint[] = AvailableAudioItems.map((item) => ({
     id: item.id,
@@ -41,7 +40,7 @@ function App() {
     <>
       <LocationManager />
       <Routes>
-        <Route index element={null} />
+        <Route index element={<IndexPage />} />
         {AvailableAudioItems.map((item) => (
           <Route key={item.name} path={item.url} element={null} />
         ))}
@@ -53,14 +52,6 @@ function App() {
         <main
           className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full justify-center items-center`}
         >
-          {path === '/' ? (
-            <div className="absolute w-screen h-auto top-[40vh]  text-center flex flex-col justify-center items-center z-30">
-              <h1 className="text-4xl font-semibold max-w-[700px] mb-8">
-                The world's most complete collection of warning sounds
-              </h1>
-              <Button link="/overview" label="Dicover Soundscapes" className="top-4 left-4" />
-            </div>
-          ) : null}
           <SceneManager />
           <Header />
           <Canvas shadows>
