@@ -41,14 +41,14 @@ const ContactPage: React.FC = () => {
             <TeamMember
               image="/img/Daniele.jpg"
               title="Daniele Guido"
-              subtitle="Lead Designer"
+              subtitle="Developer, Lead Designer of C²DH, University of Luxembourg"
               href="https://www.uni.lu/c2dh-en/people/daniele-guido/"
             />
             <TeamMember
               className="md:col-start-0 col-start-0"
               image="/img/Kirill.jpg"
               title="Kirill MITSUROV"
-              subtitle="User Interface Developer"
+              subtitle="Designer / Developer, User Interface Developer of C²DH, University of Luxembourg"
               href="https://www.uni.lu/c2dh-en/people/kirill-mitsurov/"
             />
           </div>
