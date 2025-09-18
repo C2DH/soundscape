@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from 'react-router';
+import { Route, Routes } from 'react-router';
 import './App.css';
 import LocationManager from './components/LocationManager';
 import World from './components/World';
