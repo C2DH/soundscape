@@ -1,0 +1,28 @@
+.TeamMember a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  max-width: 240px;
+  margin: 0.5rem;
+}
+.TeamMember img {
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--accent), 0.2);
+  filter: grayscale(100%) sepia(20%) hue-rotate(220deg) saturate(300%);
+}
+
+.TeamMember h2 {
+  font-size: 1.1em;
+  font-weight: 600;
+  text-align: center;
+}
+.TeamMember span {
+  font-size: 0.9em;
+  color: rgba(var(--light), 0.7);
+  font-weight: 500;
+  line-height: 0.1rem !important;
+}

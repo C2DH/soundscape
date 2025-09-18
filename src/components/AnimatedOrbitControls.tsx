@@ -3,8 +3,9 @@ import { useFrame } from '@react-three/fiber';
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { useStore } from '../store';
+import { isMobile } from 'react-device-detect';
 
-const CameraPositionsByPathname: Record<
+const CameraPositionsByPathnameDesktop: Record<
   string,
   { position: THREE.Vector3; target: THREE.Vector3; zoom: number }
 > = {
@@ -29,6 +30,36 @@ const CameraPositionsByPathname: Record<
     zoom: 100,
   },
 };
+
+const CameraPositionsByPathnameMobile: Record<
+  string,
+  { position: THREE.Vector3; target: THREE.Vector3; zoom: number }
+> = {
+  '/': {
+    position: new THREE.Vector3(0, 5, 5),
+    target: new THREE.Vector3(0, 0, 0),
+    zoom: 60,
+  },
+  '/overview': {
+    position: new THREE.Vector3(0, 5, 5),
+    target: new THREE.Vector3(0, 0, 0),
+    zoom: 150,
+  },
+  '/about': {
+    position: new THREE.Vector3(0, 7, 5),
+    target: new THREE.Vector3(10, 15, -15),
+    zoom: 80,
+  },
+  '/contact': {
+    position: new THREE.Vector3(0, 15, 5),
+    target: new THREE.Vector3(0, 0, -25),
+    zoom: 120,
+  },
+};
+
+const CameraPositionsByPathname = isMobile
+  ? CameraPositionsByPathnameMobile
+  : CameraPositionsByPathnameDesktop;
 
 function AnimatedOrbitControls() {
   const controlsRef = useRef<any>(null);
@@ -69,18 +100,6 @@ function AnimatedOrbitControls() {
       controlsRef.current.update();
     }
   });
-
-  // useEffect(() => {
-  //   if (!controlsRef.current) return;
-
-  //   if (location.pathname === '/overview') {
-  //     controlsRef.current.enableRotate = true;
-  //     controlsRef.current.enableZoom = true;
-  //   } else {
-  //     controlsRef.current.enableRotate = false;
-  //     controlsRef.current.enableZoom = false;
-  //   }
-  // }, [location.pathname]);
 
   return (
     <OrbitControls ref={controlsRef} enablePan={false} minZoom={35} maxZoom={200} zoomSpeed={1} />

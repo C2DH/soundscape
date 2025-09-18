@@ -40,7 +40,7 @@ const SceneManager = () => {
   const handleCloseModal = () => {
     closeModal();
     setCurrentParamItemId(null);
-    navigate('/');
+    navigate('/overview');
   };
 
   const renderModalContent = () => {

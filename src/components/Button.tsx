@@ -21,6 +21,8 @@ const Button: React.FC<ButtonProps> = ({ label, icon, className, href, link, ...
         href={href}
         className={className + ' link-button'}
         aria-label={label}
+        target="_blank"
+        rel="noopener noreferrer"
         {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {content}
