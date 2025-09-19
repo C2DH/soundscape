@@ -8,10 +8,10 @@
   width: 500px;
   height: 100vh;
   transform: translateX(-500px);
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 .Sidebar.isOpenSidebar {
-  transform: translateX(0px);
+  transform: translateX(-250px);
 }
 
 .Sidebar .sound-code {
@@ -43,7 +43,7 @@
 }
 
 .more-info {
-  position: absolute;
+  position: fixed;
   top: 1.5rem;
   left: 1.2rem;
   z-index: 101;
@@ -126,6 +126,9 @@
     z-index: 100;
     background-color: rgba(var(--dark), 0.8);
   }
+  .Sidebar header {
+    padding: 0 1rem;
+  }
   .Sidebar .content p {
     color: rgba(var(--light), 1);
     padding: 1rem 1rem;
@@ -134,11 +137,17 @@
     margin: 0rem 1rem;
   }
   main.isOpenSidebar {
-    transform: translateX(0px) !important;
+    transform: translateX(0px);
   }
   .Sidebar {
     width: 100vw;
     transform: translateX(-100vw);
+  }
+  .isOpenSidebar .more-info {
+    position: fixed;
+    left: calc(100vw - 17rem);
+    transition: none;
+    transition: all 0.3s ease-in-out;
   }
 }
 

@@ -37,24 +37,23 @@ function App() {
 
   return (
     <>
-      <LocationManager />
-      <Routes>
-        <Route index element={<IndexPage />} />
-        {AvailableAudioItems.map((item) => (
-          <Route key={item.name} path={item.url} element={null} />
-        ))}
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-      </Routes>
-
       <div className="main-wrapper flex-1 relative flex flex-row-reverse h-full 'w-full'">
-        <SoundEqualizerButton />
-        <Sidebar />
         <main
           className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full justify-center items-center`}
         >
-          <SceneManager />
+          <LocationManager />
+          <Routes>
+            <Route index element={<IndexPage />} />
+            {AvailableAudioItems.map((item) => (
+              <Route key={item.name} path={item.url} element={null} />
+            ))}
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+          </Routes>
+          <SoundEqualizerButton />
+          <Sidebar />
           <Header />
+          <SceneManager />
           <Canvas shadows>
             <OrthographicCamera
               makeDefault
