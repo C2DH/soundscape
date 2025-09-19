@@ -1,0 +1,36 @@
+.Header {
+  opacity: 1;
+  pointer-events: all;
+  transition: all 0.5s ease-in-out;
+}
+
+.Header.isHome {
+  opacity: 1 !important;
+  pointer-events: none;
+  transform: translateY(calc(50vh - 250px));
+}
+
+.Header.isHome li:not(.logo-sow) {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.Header li.logo-sow {
+  transform: scale(1);
+  position: relative;
+}
+.Header.isHome li.logo-sow {
+  position: relative;
+  transform: scale(1.5);
+  transition: transform 0.3s ease-in-out;
+}
+
+.Header li {
+  padding: 0 0;
+  transition: all 0.3s 0.4s ease-in-out;
+}
+
+.Header.isHome li {
+  padding: 0 3rem;
+  transition: padding 0.3s ease-in-out;
+}

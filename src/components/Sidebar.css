@@ -1,10 +1,17 @@
-.Sidebar aside {
+.Sidebar {
+  position: absolute;
   z-index: 100;
   background-color: rgba(var(--dark), 1);
+  height: 100vh;
+  left: 0;
+  top: 0;
+  width: 500px;
+  height: 100vh;
+  transform: translateX(-500px);
+  transition: all 0.3s ease-in-out;
 }
-
-.Sidebar button {
-  z-index: 101;
+.Sidebar.isOpenSidebar {
+  transform: translateX(0px);
 }
 
 .Sidebar .sound-code {
@@ -35,7 +42,11 @@
   padding: 2rem 3rem;
 }
 
-.Sidebar .more-info {
+.more-info {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.2rem;
+  z-index: 101;
   transform: rotateZ(90deg) translateX(30px) translateY(40px);
   align-items: center;
   justify-content: center;
@@ -46,46 +57,50 @@
   color: rgba(var(--light), 1);
 }
 
-.Sidebar .more-info:hover,
-.Sidebar .more-info:focus {
+.more-info.isModalClosed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.more-info:hover,
+.more-info:focus {
   box-shadow: none;
   border: none;
 }
 
-.Sidebar .more-info p {
+.more-info p {
   transition: all 0.2s ease-in-out;
 }
 
-.Sidebar .more-info:hover p,
-.Sidebar .more-info:focus p {
+.more-info:hover p,
+.more-info:focus p {
   opacity: 1;
 }
 
-.Sidebar .more-info p {
+.more-info p {
   opacity: 0.6;
   transform: translateY(2px);
 }
-
-.Sidebar .more-info .bar {
+.more-info .bar {
   display: flex;
   width: 18px;
   height: 2px;
   background-color: rgba(var(--accent), 1);
 }
 
-.Sidebar .more-info i span {
+.more-info i span {
   transition: transform 0.3s ease-in-out;
 }
 
-.Sidebar .more-info i span:nth-child(1) {
+.more-info i span:nth-child(1) {
   transform: rotateZ(90deg);
 }
 
-.Sidebar .more-info i span:nth-child(2) {
+.more-info i span:nth-child(2) {
   transform: scaleX(1);
 }
 
-.Sidebar .more-info i span.open:nth-child(2) {
+.more-info i span.open:nth-child(2) {
   transform: scaleX(0);
 }
 
@@ -94,31 +109,8 @@
   transition: all 0.154s ease-in-out;
 } */
 
-.Sidebar {
-  transform: translateX(-600px);
-}
-
-.Sidebar > .isOpenSidebar {
-  transform: translateX(600px);
-  width: 600px;
-}
-
-.main-section.isOpenSidebar {
-  width: calc(100vw - 600px);
-}
-
-@media screen and (max-width: 1200px) {
-  .main-section.isOpenSidebar {
-    width: calc(100vw - 400px);
-  }
-  .Sidebar > .isOpenSidebar {
-    transform: translateX(400px);
-    width: 400px;
-  }
-  .Sidebar {
-    transform: translateX(-400px);
-  }
-}
+/* @media screen and (max-width: 1200px) {
+} */
 
 @media screen and (max-width: 820px) {
   .main-section.isOpenSidebar {

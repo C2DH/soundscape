@@ -7,6 +7,7 @@ import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { easeOutQuint } from '../easing';
 import { useThemeStore, useAudioStore, localSoundScapeStore } from '../store';
 import { Html } from '@react-three/drei';
+import { formatTime } from '../audio';
 
 type SoundLineProps = {
   points: THREE.Vector3[];
@@ -46,11 +47,6 @@ const SoundLine: React.FC<SoundLineProps> = ({
   const lineTime = (highlightedLineIndex / totalLines) * duration;
   const [lineTimeState] = useState(lineTime);
 
-  const formatTime = (time: number) => {
-    const seconds = Math.floor(time);
-    const milliseconds = Math.floor((time - seconds) * 60);
-    return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
-  };
   // Animation state
   const isAnimatingRef = useRef(false);
   const startPointsRef = useRef<THREE.Vector3[]>([]);

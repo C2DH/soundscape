@@ -1,6 +1,5 @@
 import Modal from './Modal';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import { useModalStore, useStore } from '../store';
 import AudioControls from './AudioControls';
 import Scene from './Scene';
@@ -9,14 +8,17 @@ import { AvailableAudioItems } from '../constants';
 import { useItemDataPreloader } from '../hooks/useItemDataPreloader';
 
 const SceneManager = () => {
-  const navigate = useNavigate();
-  const closeModal = useModalStore((state) => state.closeModal);
-  const isOpenModal = useModalStore((state) => state.isOpenModal);
-
   const currentParamItemId = useStore((s) => s.currentParamItemId);
-  const setCurrentParamItemId = useStore((s) => s.setCurrentParamItemId);
-  const item = AvailableAudioItems.find((i) => i.id === currentParamItemId);
 
+  let item: (typeof AvailableAudioItems)[number] | undefined;
+  let itemIndex = -1;
+  for (let i = 0; i < AvailableAudioItems.length; i++) {
+    if (AvailableAudioItems[i].id === currentParamItemId) {
+      item = AvailableAudioItems[i];
+      itemIndex = i;
+      break;
+    }
+  }
   // Preload item data
   const {
     data: itemData,
@@ -36,12 +38,6 @@ const SceneManager = () => {
       useModalStore.getState().closeModal();
     }
   }, [item]);
-
-  const handleCloseModal = () => {
-    closeModal();
-    setCurrentParamItemId(null);
-    navigate('/overview');
-  };
 
   const renderModalContent = () => {
     if (itemDataLoading) {
@@ -87,6 +83,8 @@ const SceneManager = () => {
           onNextCountry={() => {}}
           onPrevCountry={() => {}}
           src={audioSrc}
+          playlistIdx={itemIndex}
+          playListLength={AvailableAudioItems.length}
         />
 
         <Scene landscapeData={itemData || landscapeData} />
@@ -96,7 +94,7 @@ const SceneManager = () => {
 
   return (
     <div className="Scene absolute h-full w-full">
-      <Modal isOpen={isOpenModal} onClose={handleCloseModal}>
+      <Modal>
         <div className="w-full h-full">{renderModalContent()}</div>
       </Modal>
     </div>

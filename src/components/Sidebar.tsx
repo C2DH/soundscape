@@ -1,24 +1,33 @@
-import { useSidebarStore } from '../store';
+import { useSidebarStore, useStore, useModalStore } from '../store';
 import { AvailableAudioItems } from '../constants';
-import { useStore } from '../store';
-
 import './Sidebar.css';
-import Button from './Button';
 
 export default function Sidebar() {
-  const { isOpenSidebar } = useSidebarStore();
   const currentParamItemId = useStore((s) => s.currentParamItemId);
-  // const setCurrentParamItemId = useStore((s) => s.setCurrentParamItemId);
   const item = AvailableAudioItems.find((i) => i.id === currentParamItemId);
 
+  const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
+  const toggleSidebar = useSidebarStore((s) => s.toggleSidebar);
+  const isOpenModal = useModalStore((s) => s.isOpenModal);
+
+  console.log('Rendering Sidebar, isOpenSidebar:', isOpenSidebar, 'isOpenModal:', isOpenModal);
+
   return (
-    <div className=" Sidebar h-full z-80">
-      {/* Sidebar */}
-      <aside
-        className={`${isOpenSidebar ? 'isOpenSidebar' : ''} w-full h-full flex-shrink-0 
-        `}
+    <>
+      <button
+        onClick={toggleSidebar}
+        aria-expanded={isOpenSidebar}
+        className={`${isOpenModal ? '' : 'isModalClosed'} more-info p-2`}
       >
-        {isOpenSidebar && (
+        <i className="relative">
+          <span className="bar"></span>
+          <span className={`bar ${isOpenSidebar ? 'open' : ''}`}></span>
+        </i>
+        <p>MORE INFO</p>
+      </button>
+      <div className={`${isOpenSidebar ? 'isOpenSidebar' : ''}  Sidebar`}>
+        {/* Sidebar */}
+        <aside className="w-full h-full flex-shrink-0">
           <div className="flex relative flex-col h-full">
             <span className="sound-code absolute top-0 right-0">{item?.id}</span>
             {/* Header */}
@@ -42,19 +51,14 @@ export default function Sidebar() {
             {/* Footer */}
             <footer className="p-6">
               {item?.link && (
-                <Button
-                  label={'Open link'}
-                  href={undefined}
-                  rel="noopener noreferrer"
-                  className="w-full py-2 px-4 rounded bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition"
-                >
+                <a href="/" rel="noreferrer" className="link-button ">
                   {item?.link}
-                </Button>
+                </a>
               )}
             </footer>
           </div>
-        )}
-      </aside>
-    </div>
+        </aside>
+      </div>
+    </>
   );
 }

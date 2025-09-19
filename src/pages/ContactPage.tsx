@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import TeamMember from '../components/TeamMember';
 
 interface ContactPage {
