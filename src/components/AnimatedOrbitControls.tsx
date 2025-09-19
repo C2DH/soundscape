@@ -12,7 +12,7 @@ const CameraPositionsByPathnameDesktop: Record<
   '/': {
     position: new THREE.Vector3(5, 5, 5),
     target: new THREE.Vector3(0, 0, 0),
-    zoom: 40,
+    zoom: 50,
   },
   '/overview': {
     position: new THREE.Vector3(5, 5, 5),
@@ -38,12 +38,12 @@ const CameraPositionsByPathnameMobile: Record<
   '/': {
     position: new THREE.Vector3(0, 5, 5),
     target: new THREE.Vector3(0, 0, 0),
-    zoom: 60,
+    zoom: 30,
   },
   '/overview': {
-    position: new THREE.Vector3(0, 5, 5),
+    position: new THREE.Vector3(5, 5, 5),
     target: new THREE.Vector3(0, 0, 0),
-    zoom: 150,
+    zoom: 120,
   },
   '/about': {
     position: new THREE.Vector3(0, 7, 5),
@@ -66,7 +66,7 @@ function AnimatedOrbitControls() {
 
   // Fetch initial state
   const pathnameRef = useRef(useStore.getState().pathname);
-  const shouldAnimateCameraRef = useRef(false);
+  const shouldAnimateCameraRef = useRef(true);
 
   useEffect(
     () =>

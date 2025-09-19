@@ -7,77 +7,10 @@
   background-color: rgba(var(--dark), 0.3);
 }
 
-.isOpenModal.more-info {
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out 0.4s;
-}
-
 .Modal.isOpenModal {
   opacity: 1;
   transform: translateX(0);
   transition:
     opacity 0.2s ease-in-out 0.4s,
     transform 0s ease-in-out 0.4s;
-}
-
-.more-info {
-  transform: rotateZ(90deg) translateX(30px) translateY(40px);
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: rgba(var(--light), 1);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.isOpenModal.more-info {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.more-info:hover,
-.more-info:focus {
-  box-shadow: none;
-  border: none;
-}
-
-.more-info p {
-  transition: all 0.2s ease-in-out;
-}
-
-.more-info:hover p,
-.more-info:focus p {
-  opacity: 1;
-}
-
-.more-info p {
-  opacity: 0.6;
-  transform: translateY(2px);
-}
-
-.more-info .bar {
-  display: flex;
-  width: 18px;
-  height: 2px;
-  background-color: rgba(var(--accent), 1);
-}
-
-.more-info i span {
-  transition: transform 0.3s ease-in-out;
-}
-
-.more-info i span:nth-child(1) {
-  transform: rotateZ(90deg);
-}
-
-.more-info i span:nth-child(2) {
-  transform: scaleX(1);
-}
-
-.more-info i span.open:nth-child(2) {
-  transform: scaleX(0);
 }

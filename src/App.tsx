@@ -52,6 +52,7 @@ function App() {
           className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full justify-center items-center`}
         >
           <SceneManager />
+          <Sidebar />
           <Header />
           <Canvas shadows>
             <OrthographicCamera
@@ -66,7 +67,6 @@ function App() {
           </Canvas>
           <Footer />
         </main>
-        <Sidebar />
         <SoundEqualizerButton />
       </div>
     </>

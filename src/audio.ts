@@ -159,3 +159,24 @@ extractFrequencyLists(mp3Url, 256)
     console.error('Failed to extract frequency data:', error);
   });
 */
+
+/**
+ * Formats a time value (in seconds) into a string with seconds and milliseconds.
+ *
+ * The output string is in the format `SS:MM`, where `SS` is the zero-padded seconds
+ * and `MM` is the zero-padded milliseconds (calculated as a fraction of a second, scaled to 60).
+ *
+ * @param time - The time value in seconds (can be fractional).
+ * @returns A formatted string representing the time in `SS:MM` format.
+ *
+ * @example
+ * ```typescript
+ * formatTime(12.5); // "12:30"
+ * formatTime(3.01); // "03:00"
+ * ```
+ */
+export const formatTime = (time: number) => {
+  const seconds = Math.floor(time);
+  const milliseconds = Math.floor((time - seconds) * 60);
+  return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
+};

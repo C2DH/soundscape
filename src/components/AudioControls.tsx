@@ -6,6 +6,8 @@ import PauseSign from './svg/PauseSign';
 import NextVisSign from './svg/NextVisSign';
 import NextCountrySign from './svg/NextCountrySign';
 import { useAudioStore, localSoundScapeStore } from '../store';
+// import { formatTime } from '../audio';
+import AudioControlsProgress from './AudioControlsProgress';
 
 type AudioControlsProps = {
   onNextVis: () => void;
@@ -15,6 +17,8 @@ type AudioControlsProps = {
   onTimeUpdate?: (time: number) => void; // NEW
   onDuration?: (duration: number) => void; // NEW
   src?: string; // NEW
+  playlistIdx?: number; // NEW -1 means no playlist
+  playListLength?: number; // NEW total items in playlist
 };
 
 const AudioControls: FC<AudioControlsProps> = ({
@@ -23,20 +27,17 @@ const AudioControls: FC<AudioControlsProps> = ({
   onNextCountry,
   onPrevCountry,
   src = '',
+  // playlistIdx = -1,
+  // playListLength = 0,
 }) => {
-  const { currentTime, duration, setCurrentTime, setDuration } = useAudioStore();
+  const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
+  const setDuration = useAudioStore((s) => s.setDuration);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const formatTime = (time: number) => {
-    const seconds = Math.floor(time);
-    const milliseconds = Math.floor((time - seconds) * 60);
-    return `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
-  };
-
   useEffect(() => {
-    console.log('AudioControls render', formatTime(currentTime), duration);
+    console.log('AudioControls render');
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -132,7 +133,7 @@ const AudioControls: FC<AudioControlsProps> = ({
 
       {/* Optional: duration/time display */}
       <span className="duration">
-        {formatTime(currentTime)} /{formatTime(duration)}
+        <AudioControlsProgress />
       </span>
     </nav>
   );

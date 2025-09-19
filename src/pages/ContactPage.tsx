@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import TeamMember from '../components/TeamMember';
 
 interface ContactPage {
@@ -7,18 +6,6 @@ interface ContactPage {
 }
 
 const ContactPage: React.FC = () => {
-  const [data, setData] = useState<ContactPage | null>(null);
-
-  useEffect(() => {
-    import('../assets/data/pages/about.json').then((json) => {
-      setData(json as ContactPage);
-    });
-  }, []);
-
-  if (!data) {
-    return <p>Loading...</p>;
-  }
-
   return (
     <div className="content w-screen h-screen flex items-center  justify-center absolute top-0 left-0 z-2">
       <div className="wrapper  w-screen  pb-[2rem] h-[75vh] overflow-auto flex flex-col items-center ">

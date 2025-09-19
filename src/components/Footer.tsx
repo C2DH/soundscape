@@ -1,9 +1,16 @@
 import LogoUniLux from './svg/LogoUniLux';
 import LogoUniLinkoping from './svg/LogoUniLinkoping';
+import { useLocation } from 'react-router';
+import './Footer.css';
 
 const Footer: React.FC = () => {
+  const { pathname } = useLocation();
+  const footerIsVisible = pathname === '/' || pathname === '/about';
+
   return (
-    <footer className="absolute bottom-2 left-0 w-full bg-transparent gap-2">
+    <footer
+      className={`${footerIsVisible ? 'footerIsVisible' : ''} absolute bottom-2 left-0 w-full bg-transparent gap-2 z-2`}
+    >
       <div className="max-w-10xl mx-auto flex flex-col items-left px-2 md:px-8 py-3">
         {/* Left side: Logos */}
         <div className="flex items-center gap-4 my-2">

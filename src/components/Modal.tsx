@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
-import { useSidebarStore } from '../store';
 import CloseIcon from './svg/CloseIcon';
+import { useModalStore } from '../store';
 import './Modal.css';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-  const { isOpenSidebar, toggleSidebar } = useSidebarStore();
+const Modal: React.FC<ModalProps> = ({ children }) => {
+  const isOpen = useModalStore((s) => s.isOpenModal);
+  const onClose = useModalStore((s) => s.closeModal);
+  const navigate = useNavigate();
   // Close on Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -22,18 +23,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
   return (
     <>
-      <button
-        onClick={toggleSidebar}
-        aria-expanded={isOpenSidebar}
-        className={`${isOpen ? 'isOpenModal' : ''} more-info absolute top-6 left-4 z-90 p-2 rounded bg-indigo-600 text-white shadow-lg`}
-      >
-        <i className="relative">
-          <span className="bar"></span>
-          <span className={`bar ${isOpenSidebar ? 'open' : ''}`}></span>
-        </i>
-        <p>MORE INFO</p>
-      </button>
-
       <div
         className={` ${isOpen ? 'isOpenModal' : ''} z-50 Modal flex absolute top-0 left-0 items-center justify-center w-full h-screen`}
       >
@@ -44,7 +33,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
               className="CloseIconButton absolute top-5 right-5 p-2 z-60"
               onClick={() => {
                 onClose();
-                isOpenSidebar ? toggleSidebar() : null;
+                navigate('/overview');
               }}
               aria-label="Close modal"
             >
