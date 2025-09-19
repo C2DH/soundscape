@@ -1,5 +1,5 @@
 import CloseIcon from './svg/CloseIcon';
-import { useModalStore } from '../store';
+import { useModalStore, useSidebarStore } from '../store';
 import './Modal.css';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
@@ -9,9 +9,11 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ children }) => {
+  const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
   const isOpen = useModalStore((s) => s.isOpenModal);
   const onClose = useModalStore((s) => s.closeModal);
   const navigate = useNavigate();
+  const toggleSidebar = useSidebarStore((s) => s.toggleSidebar);
   // Close on Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -32,6 +34,7 @@ const Modal: React.FC<ModalProps> = ({ children }) => {
             <button
               className="CloseIconButton absolute top-5 right-5 p-2 z-60"
               onClick={() => {
+                isOpenSidebar ? toggleSidebar() : null;
                 onClose();
                 navigate('/overview');
               }}

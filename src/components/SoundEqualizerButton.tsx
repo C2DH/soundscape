@@ -40,11 +40,10 @@ const SoundEqualizerButton: React.FC<SoundEqualizerButtonProps> = ({
   return (
     <div
       onClick={toggleAnimation}
-      className="flex flex-col justify-center items-center cursor-pointer absolute bottom-13 sm:bottom-10  right-6 sm:right-10"
+      className="SoundEqualizerButton flex flex-col justify-center items-center cursor-pointer absolute bottom-13 sm:bottom-10  right-6 sm:right-10 z-51"
       style={{
         width: width,
         height: height,
-        zIndex: 120,
       }}
     >
       <Lottie

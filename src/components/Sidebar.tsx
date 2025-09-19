@@ -25,7 +25,7 @@ export default function Sidebar() {
         </i>
         <p>MORE INFO</p>
       </button>
-      <div className={`${isOpenSidebar ? 'isOpenSidebar' : ''}  Sidebar`}>
+      <div className={`${isOpenSidebar && isOpenModal ? 'isOpenSidebar' : ''}  Sidebar`}>
         {/* Sidebar */}
         <aside className="w-full h-full flex-shrink-0">
           <div className="flex relative flex-col h-full">
@@ -49,9 +49,9 @@ export default function Sidebar() {
             </div>
 
             {/* Footer */}
-            <footer className="p-6">
+            <footer className="flex justify-center items-center p-6 z-90">
               {item?.link && (
-                <a href="/" rel="noreferrer" className="link-button ">
+                <a href="/" rel="noreferrer" className="link-button">
                   {item?.link}
                 </a>
               )}

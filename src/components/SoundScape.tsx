@@ -1,5 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import * as THREE from 'three';
 import SoundLine from './SoundLine';
 import { useThemeStore, localSoundScapeStore, useAudioStore } from '../store';
@@ -38,8 +38,12 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const { camera, gl } = useThree();
 
   const handlePointerMove = (event: React.PointerEvent) => {
-    mouse.x = (event.clientX / gl.domElement.clientWidth) * 2 - 1;
-    mouse.y = -(event.clientY / gl.domElement.clientHeight) * 2 + 1;
+    // compute canvas-local coordinates to account for any page offsets/transforms
+    const rect = gl.domElement.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    mouse.x = x * 2 - 1;
+    mouse.y = -(y * 2 - 1);
   };
 
   const getClosestVectors = (point: THREE.Vector3) => {
@@ -68,9 +72,12 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     localSoundScapeStore.getState().incrementClickCounter();
     if (!meshRef.current) return;
 
-    // Convert click coords
-    mouse.x = (event.clientX / gl.domElement.clientWidth) * 2 - 1;
-    mouse.y = -(event.clientY / gl.domElement.clientHeight) * 2 + 1;
+    // Convert click coords using canvas bounding rect (handles translated canvas)
+    const rect = gl.domElement.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    mouse.x = x * 2 - 1;
+    mouse.y = -(y * 2 - 1);
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObject(meshRef.current, true);
@@ -207,9 +214,24 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
       });
     }
 
-    setHighlightedVectors(vectors[0], 0); // Set initial highlighted vectors
+    // setHighlightedVectors(vectors[0], 0); // Set initial highlighted vectors
     return geometry;
   }, [lists]);
+
+  // initialize highlighted vectors AFTER render
+  useEffect(() => {
+    if (lists.length === 0) return;
+
+    const timeLength = lists.length;
+    const listLength = lists[0]?.length ?? 0;
+
+    const centeredVectors = lists[0].map(
+      (y, x) => new THREE.Vector3(x - listLength / 2, y, 0 - timeLength / 2)
+    );
+
+    setHighlightedVectors(centeredVectors, 0);
+    previousIntersectionListIndexRef.current = 0;
+  }, [lists, setHighlightedVectors]);
   const lines = lists.map((yList, t) => yList.map((y, x) => new THREE.Vector3(x, y, t)));
 
   return (
@@ -237,11 +259,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
             side={THREE.DoubleSide}
           />
         </mesh>
-        {/* Marker for intersection point */}
-        {/* <mesh ref={markerRef} visible={false}>
-        <sphereGeometry args={[0.05, 32, 32]} />
-        <meshStandardMaterial color="yellow" />
-      </mesh> */}
+
         <AudioVisualizer allLines={lines} />
       </group>
       <SoundScapeSoundlineWrapper />

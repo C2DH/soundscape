@@ -48,11 +48,12 @@ function App() {
       </Routes>
 
       <div className="main-wrapper flex-1 relative flex flex-row-reverse h-full 'w-full'">
+        <SoundEqualizerButton />
+        <Sidebar />
         <main
           className={` ${isOpenSidebar ? 'isOpenSidebar' : ''} main-section w-full relative h-full justify-center items-center`}
         >
           <SceneManager />
-          <Sidebar />
           <Header />
           <Canvas shadows>
             <OrthographicCamera
@@ -67,7 +68,6 @@ function App() {
           </Canvas>
           <Footer />
         </main>
-        <SoundEqualizerButton />
       </div>
     </>
   );
