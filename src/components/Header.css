@@ -29,6 +29,18 @@
   padding: 0 0;
   transition: all 0.3s 0.4s ease-in-out;
 }
+.Header li a {
+  padding: 0.2rem 0;
+}
+
+.Header li a.active {
+  color: rgba(var(--accent), 1);
+  background-color: rgba(var(--accent), 0.1);
+}
+
+.Header li a:hover {
+  color: rgba(var(--accent), 1);
+}
 
 .Header.isHome li {
   padding: 0 3rem;

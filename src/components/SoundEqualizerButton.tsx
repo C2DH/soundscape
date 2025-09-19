@@ -17,12 +17,44 @@ const SoundEqualizerButton: React.FC<SoundEqualizerButtonProps> = ({
   const ratio = 115 / 80;
   const height = width / ratio;
 
+  // store previous volumes per audio element so we can restore them
+  const prevVolumesRef = useRef<Map<HTMLAudioElement, number>>(new Map());
+
   const toggleAnimation = () => {
+    // toggle Lottie visual state
     if (isPlaying) {
       lottieRef.current?.pause();
     } else {
       lottieRef.current?.play();
     }
+
+    // find all audio elements on the page
+    const audios = Array.from(document.querySelectorAll('audio')) as HTMLAudioElement[];
+
+    if (isPlaying) {
+      // muting: save current volume then set to 0
+      audios.forEach((a) => {
+        try {
+          prevVolumesRef.current.set(a, a.volume);
+          a.volume = 0;
+        } catch {
+          /* ignore */
+        }
+      });
+    } else {
+      // unmuting: restore previous volumes (fallback to 1)
+      audios.forEach((a) => {
+        try {
+          const prev = prevVolumesRef.current.get(a);
+          a.volume = typeof prev === 'number' ? prev : 1;
+        } catch {
+          /* ignore */
+        }
+      });
+      // clear saved volumes (optional)
+      prevVolumesRef.current.clear();
+    }
+
     setIsPlaying(!isPlaying);
   };
 
@@ -40,11 +72,10 @@ const SoundEqualizerButton: React.FC<SoundEqualizerButtonProps> = ({
   return (
     <div
       onClick={toggleAnimation}
-      className="flex flex-col justify-center items-center cursor-pointer absolute bottom-13 sm:bottom-10  right-6 sm:right-10"
+      className="SoundEqualizerButton flex flex-col justify-center items-center cursor-pointer absolute bottom-13 sm:bottom-10  right-6 sm:right-10 z-51"
       style={{
         width: width,
         height: height,
-        zIndex: 120,
       }}
     >
       <Lottie

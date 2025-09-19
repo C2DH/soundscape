@@ -27,8 +27,8 @@ const AudioControls: FC<AudioControlsProps> = ({
   onNextCountry,
   onPrevCountry,
   src = '',
-  // playlistIdx = -1,
-  // playListLength = 0,
+  playlistIdx = -1,
+  playListLength = 0,
 }) => {
   const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
   const setDuration = useAudioStore((s) => s.setDuration);
@@ -37,7 +37,7 @@ const AudioControls: FC<AudioControlsProps> = ({
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    console.log('AudioControls render');
+    console.log('AudioControls render', { playlistIdx, playListLength });
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -96,7 +96,9 @@ const AudioControls: FC<AudioControlsProps> = ({
       aria-label="Audio controls"
     >
       {/* Hidden audio element */}
-      <audio ref={audioRef} src={src} preload="auto" loop />
+      <audio ref={audioRef} preload="auto" loop>
+        <source src={src === '' ? undefined : src} type="audio/mpeg" />
+      </audio>
 
       <div className="button-group flex items-center justify-center gap-6">
         {/* Previous catalogue */}

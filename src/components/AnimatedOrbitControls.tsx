@@ -38,7 +38,7 @@ const CameraPositionsByPathnameMobile: Record<
   '/': {
     position: new THREE.Vector3(0, 5, 5),
     target: new THREE.Vector3(0, 0, 0),
-    zoom: 30,
+    zoom: 40,
   },
   '/overview': {
     position: new THREE.Vector3(5, 5, 5),

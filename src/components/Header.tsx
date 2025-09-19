@@ -1,6 +1,5 @@
 import LogoSow from './svg/LogoSow';
-import { Link } from 'react-router';
-import { useLocation } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -9,16 +8,16 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`Header ${isHome ? 'isHome' : ''} w-full absolute top-0 left-0 right-0 z-10`}
+      className={`Header ${isHome ? 'isHome' : ''} w-full absolute top-0 left-0 right-0 z-20`}
     >
       <nav className="flex items-center justify-center px-6 py-4">
         <ul className="flex items-center space-x-5 sm:space-x-8 text-gray-700 font-medium">
           {/* Left side */}
           <li>
-            <Link to="/">Home</Link>
+            <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <Link to="/overview">Overview</Link>
+            <NavLink to="/overview">Overview</NavLink>
           </li>
 
           {/* Center logo */}
@@ -28,10 +27,10 @@ const Header: React.FC = () => {
 
           {/* Right side */}
           <li>
-            <Link to="/about">About</Link>
+            <NavLink to="/about">About</NavLink>
           </li>
           <li>
-            <Link to="/contact">Contact</Link>
+            <NavLink to="/contact">Contact</NavLink>
           </li>
         </ul>
       </nav>

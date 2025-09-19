@@ -1,6 +1,6 @@
 import Modal from './Modal';
 import { useEffect } from 'react';
-import { useModalStore, useStore } from '../store';
+import { useModalStore, useStore, useSidebarStore } from '../store';
 import AudioControls from './AudioControls';
 import Scene from './Scene';
 import landscapeData from '../../public/data/sweden.json';
@@ -9,6 +9,8 @@ import { useItemDataPreloader } from '../hooks/useItemDataPreloader';
 
 const SceneManager = () => {
   const currentParamItemId = useStore((s) => s.currentParamItemId);
+  const isOpen = useModalStore((s) => s.isOpenModal);
+  const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
 
   let item: (typeof AvailableAudioItems)[number] | undefined;
   let itemIndex = -1;
@@ -53,33 +55,26 @@ const SceneManager = () => {
 
     if (itemDataError) {
       return (
-        <div className="w-full h-full flex items-center justify-center">
-          <div className="flex flex-col items-center space-y-4 text-center">
-            <div className="text-red-500 text-6xl">⚠️</div>
-            <p className="text-lg font-medium">Failed to load data</p>
-            <p className="text-sm opacity-70 max-w-md">{itemDataError}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-accent text-dark rounded hover:opacity-80 transition-opacity"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
+        <div className="w-full h-full flex items-center justify-center">{/* error content */}</div>
       );
     }
 
     const audioSrc = item?.audioSrc;
-    console.info('Rendering SceneManager with item:', item?.name, 'audioSrc:', audioSrc);
+
+    // ✅ Only render Scene (Canvas) if itemData exists and modal is open
+    if (!itemData || !isOpen) {
+      return null; // avoid rendering Canvas too early
+    }
+
     return (
-      <>
+      <div className={`${isOpenSidebar ? 'modal-open' : ''} SceneManager h-full w-full`}>
         <p className="big-text font-medium tracking-[-0.06em] uppercase absolute top-[10%] left-0 w-full flex flex-col items-center text-[12vw] opacity-20">
           {item?.name}
         </p>
 
         <AudioControls
-          onNextVis={() => {}} // Navigation handled internally
-          onPrevVis={() => {}} // Navigation handled internally
+          onNextVis={() => {}}
+          onPrevVis={() => {}}
           onNextCountry={() => {}}
           onPrevCountry={() => {}}
           src={audioSrc}
@@ -88,7 +83,7 @@ const SceneManager = () => {
         />
 
         <Scene landscapeData={itemData || landscapeData} />
-      </>
+      </div>
     );
   };
 
