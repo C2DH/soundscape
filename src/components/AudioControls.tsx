@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import PlaySign from './svg/PlaySign';
 import './AudioControls.css';
 import PauseSign from './svg/PauseSign';
@@ -8,7 +8,8 @@ import NextCountrySign from './svg/NextCountrySign';
 import { useAudioStore, localSoundScapeStore } from '../store';
 // import { formatTime } from '../audio';
 import AudioControlsProgress from './AudioControlsProgress';
-import { div } from 'three/tsl';
+import { AvailableAudioItems } from '../constants'; // added
+import PrevNextLabel from './PrevNextLabel';
 
 type AudioControlsProps = {
   // onNextVis: () => void;
@@ -36,6 +37,25 @@ const AudioControls: FC<AudioControlsProps> = ({
 
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Hover state for tooltips
+  const [hoverPrev, setHoverPrev] = useState(false);
+  const [hoverNext, setHoverNext] = useState(false);
+
+  // derive prev/next names from playlistIdx & playListLength
+  const prevName = useMemo(() => {
+    if (playListLength <= 0 || AvailableAudioItems.length === 0) return '';
+    const idx = playlistIdx >= 0 && playlistIdx < playListLength ? playlistIdx : -1;
+    const prevIndex = idx === -1 ? playListLength - 1 : (idx - 1 + playListLength) % playListLength;
+    return AvailableAudioItems[prevIndex]?.name ?? '';
+  }, [playlistIdx, playListLength]);
+
+  const nextName = useMemo(() => {
+    if (playListLength <= 0 || AvailableAudioItems.length === 0) return '';
+    const idx = playlistIdx >= 0 && playlistIdx < playListLength ? playlistIdx : -1;
+    const nextIndex = idx === -1 ? 0 : (idx + 1) % playListLength;
+    return AvailableAudioItems[nextIndex]?.name ?? '';
+  }, [playlistIdx, playListLength]);
 
   useEffect(() => {
     console.log('AudioControls render', { playlistIdx, playListLength });
@@ -102,16 +122,27 @@ const AudioControls: FC<AudioControlsProps> = ({
           <source src={src === '' ? undefined : src} type="audio/mpeg" />
         </audio>
 
-        <div className="button-group flex items-center justify-center gap-6">
-          {/* Previous catalogue */}
-          <button onClick={onPrevCountry} aria-label="Previous catalogue">
-            <NextCountrySign className="transform rotate-180 mr-2" />
-          </button>
-
-          {/* Previous song */}
-          {/* <button onClick={onPrevVis} aria-label="Previous song">
-          <NextVisSign className="transform rotate-180 mr-2" />
-        </button> */}
+        <div
+          className="button-group flex items-center justify-center gap-6"
+          style={{ position: 'relative' }}
+        >
+          <PrevNextLabel
+            hoverPrev={hoverPrev}
+            hoverNext={hoverNext}
+            prevName={prevName}
+            nextName={nextName}
+          />
+          {/* Previous catalogue (wrapped for hover state) */}
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <button
+              onClick={onPrevCountry}
+              aria-label="Previous catalogue"
+              onMouseEnter={() => setHoverPrev(true)}
+              onMouseLeave={() => setHoverPrev(false)}
+            >
+              <NextCountrySign className="transform rotate-180 mr-2" />
+            </button>
+          </div>
 
           {/* Play / Pause toggle */}
           {isPlaying ? (
@@ -124,15 +155,17 @@ const AudioControls: FC<AudioControlsProps> = ({
             </button>
           )}
 
-          {/* Next song */}
-          {/* <button onClick={onNextVis} aria-label="Next song">
-          <NextVisSign />
-        </button> */}
-
-          {/* Next catalogue */}
-          <button onClick={onNextCountry} aria-label="Next catalogue">
-            <NextCountrySign />
-          </button>
+          {/* Next catalogue (wrapped for hover state) */}
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <button
+              onClick={onNextCountry}
+              aria-label="Next catalogue"
+              onMouseEnter={() => setHoverNext(true)}
+              onMouseLeave={() => setHoverNext(false)}
+            >
+              <NextCountrySign />
+            </button>
+          </div>
         </div>
 
         {/* Optional: duration/time display */}
