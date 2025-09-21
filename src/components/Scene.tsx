@@ -3,6 +3,7 @@ import { amplifyLists } from './SoundScapePlayer';
 import { OrbitControls, Grid } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { useThemeStore } from '../store';
+import { useEffect } from 'react';
 
 interface SceneProps {
   landscapeData: any;
@@ -15,6 +16,12 @@ const Scene: React.FC<SceneProps> = ({ landscapeData }) => {
   };
 
   const color = useThemeStore((s) => s.colors['--light']);
+
+  useEffect(() => {
+    return () => {
+      document.body.style.cursor = 'default';
+    };
+  }, []);
 
   return (
     <Canvas shadows camera={{ position: [100, 100, 50], fov: 50 }} touch-action="none">

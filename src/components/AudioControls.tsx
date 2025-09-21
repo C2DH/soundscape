@@ -3,15 +3,16 @@ import { useState, useRef, useEffect } from 'react';
 import PlaySign from './svg/PlaySign';
 import './AudioControls.css';
 import PauseSign from './svg/PauseSign';
-import NextVisSign from './svg/NextVisSign';
+// import NextVisSign from './svg/NextVisSign';
 import NextCountrySign from './svg/NextCountrySign';
 import { useAudioStore, localSoundScapeStore } from '../store';
 // import { formatTime } from '../audio';
 import AudioControlsProgress from './AudioControlsProgress';
+import { div } from 'three/tsl';
 
 type AudioControlsProps = {
-  onNextVis: () => void;
-  onPrevVis: () => void;
+  // onNextVis: () => void;
+  // onPrevVis: () => void;
   onNextCountry: () => void;
   onPrevCountry: () => void;
   onTimeUpdate?: (time: number) => void; // NEW
@@ -22,8 +23,8 @@ type AudioControlsProps = {
 };
 
 const AudioControls: FC<AudioControlsProps> = ({
-  onNextVis,
-  onPrevVis,
+  // onNextVis,
+  // onPrevVis,
   onNextCountry,
   onPrevCountry,
   src = '',
@@ -91,53 +92,55 @@ const AudioControls: FC<AudioControlsProps> = ({
   }, [src]);
 
   return (
-    <nav
-      className="AudioControls absolute bottom-[10%] left-[calc(50%-100px)] flex flex-col items-center justify-center gap-1 z-50"
-      aria-label="Audio controls"
-    >
-      {/* Hidden audio element */}
-      <audio ref={audioRef} preload="auto" loop>
-        <source src={src === '' ? undefined : src} type="audio/mpeg" />
-      </audio>
+    <div className="nav-wrapper absolute bottom-[10%] w-screen flex flex-col items-center justify-center gap-1 z-50">
+      <nav
+        className="AudioControls flex flex-col items-center justify-center"
+        aria-label="Audio controls"
+      >
+        {/* Hidden audio element */}
+        <audio ref={audioRef} preload="auto" loop>
+          <source src={src === '' ? undefined : src} type="audio/mpeg" />
+        </audio>
 
-      <div className="button-group flex items-center justify-center gap-6">
-        {/* Previous catalogue */}
-        <button onClick={onPrevCountry} aria-label="Previous catalogue">
-          <NextCountrySign className="transform rotate-180" />
-        </button>
+        <div className="button-group flex items-center justify-center gap-6">
+          {/* Previous catalogue */}
+          <button onClick={onPrevCountry} aria-label="Previous catalogue">
+            <NextCountrySign className="transform rotate-180 mr-2" />
+          </button>
 
-        {/* Previous song */}
-        <button onClick={onPrevVis} aria-label="Previous song">
+          {/* Previous song */}
+          {/* <button onClick={onPrevVis} aria-label="Previous song">
           <NextVisSign className="transform rotate-180 mr-2" />
-        </button>
+        </button> */}
 
-        {/* Play / Pause toggle */}
-        {isPlaying ? (
-          <button className="no-opacity" onClick={handleToggle} aria-label="Pause">
-            <PauseSign />
-          </button>
-        ) : (
-          <button className="no-opacity" onClick={handleToggle} aria-label="Play">
-            <PlaySign />
-          </button>
-        )}
+          {/* Play / Pause toggle */}
+          {isPlaying ? (
+            <button className="no-opacity" onClick={handleToggle} aria-label="Pause">
+              <PauseSign />
+            </button>
+          ) : (
+            <button className="no-opacity" onClick={handleToggle} aria-label="Play">
+              <PlaySign />
+            </button>
+          )}
 
-        {/* Next song */}
-        <button onClick={onNextVis} aria-label="Next song">
+          {/* Next song */}
+          {/* <button onClick={onNextVis} aria-label="Next song">
           <NextVisSign />
-        </button>
+        </button> */}
 
-        {/* Next catalogue */}
-        <button onClick={onNextCountry} aria-label="Next catalogue">
-          <NextCountrySign />
-        </button>
-      </div>
+          {/* Next catalogue */}
+          <button onClick={onNextCountry} aria-label="Next catalogue">
+            <NextCountrySign />
+          </button>
+        </div>
 
-      {/* Optional: duration/time display */}
-      <span className="duration">
-        <AudioControlsProgress />
-      </span>
-    </nav>
+        {/* Optional: duration/time display */}
+        <span className="duration">
+          <AudioControlsProgress />
+        </span>
+      </nav>
+    </div>
   );
 };
 
