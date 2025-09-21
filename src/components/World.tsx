@@ -4,8 +4,8 @@ import type { GeoPoint } from '../types';
 import { useEffect, useRef, useState } from 'react';
 import { useWorldStore } from '../store';
 import { latLonToVector3 } from '../geo';
-import { useFrame, useThree } from '@react-three/fiber';
-import { easeInOutQuad } from '../easing';
+// import { useFrame, useThree } from '@react-three/fiber';
+// import { easeInOutQuad } from '../easing';
 import { useNavigate } from 'react-router';
 import Pin from './Pin';
 export interface WorldProps {
@@ -28,7 +28,7 @@ const World: React.FC<WorldProps> = ({
   scale = [1, 1, 1],
   // onPointClick = (point: GeoPoint) => {}
 }) => {
-  const { camera } = useThree(); // get active camera
+  // const { camera } = useThree(); // get active camera
   const navigate = useNavigate();
   const worldRef = useRef<THREE.Mesh>(null);
   const pointsGroupRef = useRef<THREE.Group>(null);
@@ -43,37 +43,37 @@ const World: React.FC<WorldProps> = ({
     duration: 1500, // 1.5 seconds
   });
 
-  useFrame(() => {
-    if (!worldRef.current) return;
+  // useFrame(() => {
+  //   if (!worldRef.current) return;
 
-    const animation = animationState.current;
-    if (animation.isAnimating) {
-      const elapsed = Date.now() - animation.startTime;
-      const t = Math.min(elapsed / animation.duration, 1); // Clamp t to [0, 1]
-      const progress = easeInOutQuad(t); // Apply easing function
-      // End animation when complete
-      if (progress >= 1) {
-        animation.isAnimating = false;
-      }
+  //   const animation = animationState.current;
+  //   if (animation.isAnimating) {
+  //     const elapsed = Date.now() - animation.startTime;
+  //     const t = Math.min(elapsed / animation.duration, 1); // Clamp t to [0, 1]
+  //     const progress = easeInOutQuad(t); // Apply easing function
+  //     // End animation when complete
+  //     if (progress >= 1) {
+  //       animation.isAnimating = false;
+  //     }
 
-      // World direction from sphere center to camera
-      const toCamera = new THREE.Vector3()
-        .subVectors(camera.position, worldRef.current.position)
-        .normalize();
-      // change the toCamera vector, fake a vertical movement
-      toCamera.add(new THREE.Vector3(0, 0.5, 0)).normalize();
-      // Create a quaternion that rotates pointDirection → toCamera
-      const quaternion = new THREE.Quaternion();
-      quaternion.setFromUnitVectors(pointDirection, toCamera);
-      // apply an agle to the quaternon only on one axis, e.g. 15 degrees if the pointDirection is towards north
-      // or 30 degrees if the pointDirection is towards south
+  //     // World direction from sphere center to camera
+  //     const toCamera = new THREE.Vector3()
+  //       .subVectors(camera.position, worldRef.current.position)
+  //       .normalize();
+  //     // change the toCamera vector, fake a vertical movement
+  //     toCamera.add(new THREE.Vector3(0, 0.5, 0)).normalize();
+  //     // Create a quaternion that rotates pointDirection → toCamera
+  //     const quaternion = new THREE.Quaternion();
+  //     quaternion.setFromUnitVectors(pointDirection, toCamera);
+  //     // apply an agle to the quaternon only on one axis, e.g. 15 degrees if the pointDirection is towards north
+  //     // or 30 degrees if the pointDirection is towards south
 
-      // Apply rotation with easing
-      worldRef.current.quaternion.slerp(quaternion, progress); // Smoothly rotate towards camera
-      // worldRef.current.quaternion.setFromUnitVectors(pointDirection, toCamera) // Directly set the quaternion
-      // worldRef.current.quaternion.copy(quaternion)
-    }
-  });
+  //     // Apply rotation with easing
+  //     worldRef.current.quaternion.slerp(quaternion, progress); // Smoothly rotate towards camera
+  //     // worldRef.current.quaternion.setFromUnitVectors(pointDirection, toCamera) // Directly set the quaternion
+  //     // worldRef.current.quaternion.copy(quaternion)
+  //   }
+  // });
 
   // Subscribe to highlightedPoint without triggering React re-renders
   useEffect(() => {

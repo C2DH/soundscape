@@ -1,5 +1,6 @@
 import Modal from './Modal';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { useModalStore, useStore, useSidebarStore } from '../store';
 import AudioControls from './AudioControls';
 import Scene from './Scene';
@@ -8,7 +9,9 @@ import { AvailableAudioItems } from '../constants';
 import { useItemDataPreloader } from '../hooks/useItemDataPreloader';
 
 const SceneManager = () => {
+  const navigate = useNavigate();
   const currentParamItemId = useStore((s) => s.currentParamItemId);
+  const setCurrentParamItemId = useStore((s) => s.setCurrentParamItemId);
   const isOpen = useModalStore((s) => s.isOpenModal);
   const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
 
@@ -66,6 +69,37 @@ const SceneManager = () => {
       return null; // avoid rendering Canvas too early
     }
 
+    // Function to handle navigation to a specific item by id
+    const goToItem = (itemId: string) => {
+      const target = AvailableAudioItems.find((i) => i.id === itemId);
+      if (!target) return;
+      // update store so components depending on the id update immediately
+      setCurrentParamItemId(target.id);
+      // change the URL so LocationManager and router-aware components update
+      navigate(target.url);
+      // ensure modal is visible
+      useModalStore.getState().openModal();
+    };
+
+    const handleNextCountry = () => {
+      if (AvailableAudioItems.length === 0) return;
+      const idx = AvailableAudioItems.findIndex((i) => i.id === currentParamItemId);
+      const nextIndex = idx === -1 ? 0 : (idx + 1) % AvailableAudioItems.length;
+      const nextItem = AvailableAudioItems[nextIndex];
+      if (nextItem) goToItem(nextItem.id);
+    };
+
+    const handlePrevCountry = () => {
+      if (AvailableAudioItems.length === 0) return;
+      const idx = AvailableAudioItems.findIndex((i) => i.id === currentParamItemId);
+      const prevIndex =
+        idx === -1
+          ? AvailableAudioItems.length - 1
+          : (idx - 1 + AvailableAudioItems.length) % AvailableAudioItems.length;
+      const prevItem = AvailableAudioItems[prevIndex];
+      if (prevItem) goToItem(prevItem.id);
+    };
+
     return (
       <div className={`${isOpenSidebar ? 'modal-open' : ''} SceneManager h-full w-full`}>
         <p className="big-text font-medium tracking-[-0.06em] uppercase absolute top-[10%] left-0 w-full flex flex-col items-center text-[12vw] opacity-20">
@@ -73,10 +107,10 @@ const SceneManager = () => {
         </p>
 
         <AudioControls
-          onNextVis={() => {}}
-          onPrevVis={() => {}}
-          onNextCountry={() => {}}
-          onPrevCountry={() => {}}
+          //   onNextVis={() => {}}
+          //   onPrevVis={() => {}}
+          onNextCountry={handleNextCountry}
+          onPrevCountry={handlePrevCountry}
           src={audioSrc}
           playlistIdx={itemIndex}
           playListLength={AvailableAudioItems.length}

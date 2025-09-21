@@ -1,0 +1,40 @@
+.tooltip-container {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tooltip-text {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(5px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.tooltip-text.fade-in {
+  opacity: 0.95;
+  transform: translateY(0);
+}
+
+.tooltip-text.fade-out {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+.tooltip-container span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}

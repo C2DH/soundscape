@@ -81,6 +81,10 @@ function AnimatedOrbitControls() {
 
   useFrame(() => {
     if (!controlsRef.current) return;
+
+    // Disable user interaction while animating
+    controlsRef.current.enabled = !shouldAnimateCameraRef.current;
+
     if (shouldAnimateCameraRef.current) {
       const pathname = pathnameRef.current;
       const pageDefaults = CameraPositionsByPathname[pathname] || CameraPositionsByPathname['/'];
@@ -90,9 +94,11 @@ function AnimatedOrbitControls() {
         camera.position.distanceTo(pageDefaults.position) < 0.01 &&
         Math.abs(camera.zoom - pageDefaults.zoom) < 0.01 &&
         controlsRef.current.target.distanceTo(pageDefaults.target) < 0.01;
+
       if (closeEnough) {
         shouldAnimateCameraRef.current = false;
       }
+
       camera.position.lerp(pageDefaults.position, 0.1);
       camera.zoom = THREE.MathUtils.lerp(camera.zoom, pageDefaults.zoom, 0.1);
       camera.updateProjectionMatrix();
@@ -105,4 +111,5 @@ function AnimatedOrbitControls() {
     <OrbitControls ref={controlsRef} enablePan={false} minZoom={35} maxZoom={200} zoomSpeed={1} />
   );
 }
+
 export default AnimatedOrbitControls;
