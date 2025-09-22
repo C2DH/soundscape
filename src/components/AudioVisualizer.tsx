@@ -13,11 +13,14 @@ const AudioVisualizer: React.FC<{ allLines: THREE.Vector3[][] }> = ({ allLines }
   const totalLines = allLines.length;
   const visibleLines = Math.floor((currentTime / duration) * totalLines);
 
-  const translatedLines = allLines.map((points, index) =>
-    points.map((p) => new THREE.Vector3(p.x - points.length / 2, p.y, index - totalLines / 2))
-  );
+  const midpoint = Math.floor(totalLines / 2);
 
-  // const { setCurrentTime } = useAudioStore();
+  // Adjust only the current index (visibleLines) if it's past midpoint by adding +1 to its z.
+  const translatedLines = allLines.map((points, index) => {
+    const baseZ = index - totalLines / 2;
+    const z = index > midpoint && index === visibleLines ? baseZ - 1 : baseZ;
+    return points.map((p) => new THREE.Vector3(p.x - points.length / 2, p.y, z));
+  });
 
   useEffect(() => {
     let prevClickCounter = localSoundScapeStore.getState().clickCounter;

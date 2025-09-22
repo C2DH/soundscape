@@ -3,6 +3,7 @@ import { useModalStore, useSidebarStore } from '../store';
 import './Modal.css';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import ListNavigation from './ListNavigation';
 
 interface ModalProps {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ const Modal: React.FC<ModalProps> = ({ children }) => {
         <div className="z-50 flex flex-col items-center justify-center backdrop-blur-sm w-full h-screen">
           {/* Toggle Button */}
           <div className="bg-transparent w-full h-full shadow-lg flex flex-col">
+            <ListNavigation />
             <button
               className="CloseIconButton absolute top-5 right-5 p-2 z-60"
               onClick={() => {

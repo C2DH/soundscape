@@ -31,6 +31,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const markerRef = useRef<THREE.Mesh>(null);
   const [bbox, setBbox] = useState({ min: new THREE.Vector3(), max: new THREE.Vector3() });
   const getColorVec3 = useThemeStore((state) => state.getColorVec3);
+  const highlightedLineIndex = localSoundScapeStore((state) => state.highlightedLineIndex);
 
   const raycaster = useRef(new THREE.Raycaster()).current;
   const mouse = useRef(new THREE.Vector2()).current;
@@ -113,7 +114,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
 
       previousIntersectionListIndexRef.current = listIndex;
     }
-    console.log('Pointer down at list index:', listIndex);
+    console.log('Pointer down at list index:', listIndex, highlightedLineIndex);
   };
 
   useFrame(() => {
