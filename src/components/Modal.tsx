@@ -29,25 +29,25 @@ const Modal: React.FC<ModalProps> = ({ children }) => {
       <div
         className={` ${isOpen ? 'isOpenModal' : ''} z-50 Modal flex absolute top-0 left-0 items-center justify-center w-full h-screen`}
       >
+        <button
+          className={`${isOpenSidebar ? 'isOpenSidebar' : ''} CloseIconButton absolute right-[-0.9rem] sm:right-0 top-5  p-2 z-60`}
+          onClick={() => {
+            isOpenSidebar ? toggleSidebar() : null;
+            onClose();
+            navigate('/overview');
+          }}
+          aria-label="Close modal"
+        >
+          <CloseIcon width={28} />
+          <div className="cross-group">
+            <span className="bar"></span>
+            <span className="bar"></span>
+          </div>
+        </button>
         <div className="z-50 flex flex-col items-center justify-center backdrop-blur-sm w-full h-screen">
           {/* Toggle Button */}
           <div className="bg-transparent w-full h-full shadow-lg flex flex-col">
             <ListNavigation />
-            <button
-              className="CloseIconButton absolute top-5 right-5 p-2 z-60"
-              onClick={() => {
-                isOpenSidebar ? toggleSidebar() : null;
-                onClose();
-                navigate('/overview');
-              }}
-              aria-label="Close modal"
-            >
-              <CloseIcon width={32} />
-              <div className="cross-group">
-                <span className="bar"></span>
-                <span className="bar"></span>
-              </div>
-            </button>
 
             {children}
           </div>

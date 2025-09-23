@@ -23,7 +23,7 @@ export default function Sidebar() {
           <span className="bar"></span>
           <span className={`bar ${isOpenSidebar ? 'open' : ''}`}></span>
         </i>
-        <p>MORE INFO</p>
+        <p>{isOpenSidebar ? 'LESS' : 'MORE'} INFO</p>
       </button>
       <div className={`${isOpenSidebar && isOpenModal ? 'isOpenSidebar' : ''}  Sidebar`}>
         {/* Sidebar */}

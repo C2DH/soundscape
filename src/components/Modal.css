@@ -14,3 +14,13 @@
     opacity 0.2s ease-in-out 0.4s,
     transform 0s ease-in-out 0.4s;
 }
+
+.Modal .CloseIconButton {
+  transform: translateX(-30px);
+  transition: transform 0.3s ease-in-out;
+}
+
+.Modal .isOpenSidebar.CloseIconButton {
+  transform: translateX(-265px);
+  transition: transform 0.3s ease-in-out;
+}

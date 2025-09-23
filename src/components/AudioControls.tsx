@@ -169,7 +169,7 @@ const AudioControls: FC<AudioControlsProps> = ({
         </div>
 
         {/* Optional: duration/time display */}
-        <span className="duration">
+        <span className="duration mt-2">
           <AudioControlsProgress />
         </span>
       </nav>

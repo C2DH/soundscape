@@ -1,5 +1,8 @@
 .ListNavigation {
   position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 80vh;
   top: 10vh;
   right: 0;
@@ -65,8 +68,41 @@
   font-weight: 700;
 }
 
+.nav-list {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.4s ease,
+    opacity 0.4s ease;
+}
+
+/* When opened */
+.visible .nav-list {
+  max-height: 500px; /* pick a value big enough for your list */
+  opacity: 1;
+}
+
+/* Optional for smoothness */
+.hidden .nav-list {
+  pointer-events: none;
+}
+.open-country-list {
+  position: absolute;
+  height: 40px;
+  width: 180px;
+  top: 35vh;
+  right: -3rem;
+}
+.visible button.no-style {
+  transform: translateX(3rem) rotateZ(90deg);
+}
+
 @media screen and (max-width: 768px) {
   .ListNavigation {
     padding: 0 0.5rem;
+  }
+  .open-country-list {
+    right: -4.3rem;
   }
 }

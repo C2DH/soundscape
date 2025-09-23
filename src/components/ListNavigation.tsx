@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { NavLink } from 'react-router';
 import { AvailableAudioItems } from '../constants';
 import './ListNavigation.css';
@@ -7,12 +7,12 @@ type ListNavigationProps = {
   className?: string;
 };
 
-const REPEAT_COUNT = 20; // repeat items to make a long loop
+const REPEAT_COUNT = 20;
 
 const ListNavigation: React.FC<ListNavigationProps> = ({ className = '' }) => {
   const containerRef = useRef<HTMLUListElement>(null);
+  const [isOpen, setIsOpen] = useState(false); // <-- visibility state
 
-  // build a long list of repeated items
   const loopedItems = Array.from({ length: REPEAT_COUNT }).flatMap(() => AvailableAudioItems);
 
   useEffect(() => {
@@ -20,19 +20,14 @@ const ListNavigation: React.FC<ListNavigationProps> = ({ className = '' }) => {
     if (!container) return;
 
     const half = container.scrollHeight / 2;
-
-    // start in the middle
     container.scrollTop = half;
 
     const handleScroll = () => {
       const { scrollTop, scrollHeight } = container;
 
-      // when near the top → push back to middle
       if (scrollTop < scrollHeight * 0.25) {
         container.scrollTop = scrollTop + half;
-      }
-      // when near the bottom → pull back to middle
-      else if (scrollTop > scrollHeight * 0.75) {
+      } else if (scrollTop > scrollHeight * 0.75) {
         container.scrollTop = scrollTop - half;
       }
     };
@@ -42,13 +37,28 @@ const ListNavigation: React.FC<ListNavigationProps> = ({ className = '' }) => {
   }, []);
 
   return (
-    <nav aria-label="Soundscape navigation" className={`ListNavigation ${className}`}>
-      <ul ref={containerRef} className="nav-list infinite-scroll">
+    <nav
+      aria-label="Soundscape navigation"
+      className={`ListNavigation ${className} ${isOpen ? 'visible' : 'hidden'}`}
+    >
+      <button
+        className="open-country-list relative no-style z-50"
+        aria-label="Toggle country list"
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
+        <span className="bar"></span>
+        country list
+        <span className="bar"></span>
+      </button>
+
+      {/* Toggle visibility via class */}
+      <ul ref={containerRef} className={`nav-list infinite-scroll`}>
         {loopedItems.map((item, idx) => (
           <li key={`${item.id}-${idx}`} className="nav-item">
             <NavLink
               to={item.url}
               className={({ isActive }) => (isActive ? 'nav-link nav-link--active' : 'nav-link')}
+              onClick={() => setIsOpen((prev) => !prev)}
             >
               {item.name}
             </NavLink>
