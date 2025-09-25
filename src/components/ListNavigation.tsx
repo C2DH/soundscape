@@ -37,10 +37,26 @@ const ListNavigation: React.FC<ListNavigationProps> = ({ className = '' }) => {
   }, []);
 
   return (
-    <nav
-      aria-label="Soundscape navigation"
-      className={`ListNavigation ${className} ${isOpen ? 'visible' : 'hidden'}`}
-    >
+    <>
+      <nav
+        aria-label="Soundscape navigation"
+        className={`ListNavigation ${className} ${isOpen ? 'visible' : 'hidden'}`}
+      >
+        {/* Toggle visibility via class */}
+        <ul ref={containerRef} className={`nav-list infinite-scroll`}>
+          {loopedItems.map((item, idx) => (
+            <li key={`${item.id}-${idx}`} className="nav-item">
+              <NavLink
+                to={item.url}
+                className={({ isActive }) => (isActive ? 'nav-link nav-link--active' : 'nav-link')}
+                onClick={() => setIsOpen((prev) => !prev)}
+              >
+                {item.name}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
       <button
         className="open-country-list relative no-style z-50"
         aria-label="Toggle country list"
@@ -50,22 +66,7 @@ const ListNavigation: React.FC<ListNavigationProps> = ({ className = '' }) => {
         country list
         <span className="bar"></span>
       </button>
-
-      {/* Toggle visibility via class */}
-      <ul ref={containerRef} className={`nav-list infinite-scroll`}>
-        {loopedItems.map((item, idx) => (
-          <li key={`${item.id}-${idx}`} className="nav-item">
-            <NavLink
-              to={item.url}
-              className={({ isActive }) => (isActive ? 'nav-link nav-link--active' : 'nav-link')}
-              onClick={() => setIsOpen((prev) => !prev)}
-            >
-              {item.name}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    </>
   );
 };
 

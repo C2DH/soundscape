@@ -1,5 +1,6 @@
-import { useSidebarStore, useStore, useModalStore } from '../store';
+import { useSidebarStore, useStore, useModalStore, useMeshStore } from '../store';
 import { AvailableAudioItems } from '../constants';
+import GeometryExporter from './GeometryExporter';
 import './Sidebar.css';
 
 export default function Sidebar() {
@@ -9,6 +10,7 @@ export default function Sidebar() {
   const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
   const toggleSidebar = useSidebarStore((s) => s.toggleSidebar);
   const isOpenModal = useModalStore((s) => s.isOpenModal);
+  const mesh = useMeshStore((s) => s.mesh);
 
   console.log('Rendering Sidebar, isOpenSidebar:', isOpenSidebar, 'isOpenModal:', isOpenModal);
 
@@ -50,6 +52,7 @@ export default function Sidebar() {
 
             {/* Footer */}
             <footer className="flex justify-center items-center p-6 z-90">
+              <div className="px-3">{mesh && <GeometryExporter ref={{ current: mesh }} />}</div>
               {item?.link && (
                 <a href="/" rel="noreferrer" className="link-button">
                   {item?.link}

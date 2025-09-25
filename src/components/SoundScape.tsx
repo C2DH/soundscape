@@ -1,5 +1,12 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import React, { useMemo, useRef, useState, useEffect } from 'react';
+import React, {
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import * as THREE from 'three';
 import SoundLine from './SoundLine';
 import { useThemeStore, localSoundScapeStore, useAudioStore } from '../store';
@@ -22,14 +29,17 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
   return <SoundLine points={points} />;
 };
 
-const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
+const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position }, ref) => {
   const setHighlightedVectors = localSoundScapeStore((state) => state.setHighlightedVectors);
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null!);
   const intersectionRef = useRef<THREE.Vector3 | null>(null);
   const previousIntersectionListIndexRef = useRef<number>(0);
   const markerRef = useRef<THREE.Mesh>(null);
-  const [bbox, setBbox] = useState({ min: new THREE.Vector3(), max: new THREE.Vector3() });
+  const [bbox, setBbox] = useState({
+    min: new THREE.Vector3(),
+    max: new THREE.Vector3(),
+  });
   const getColorVec3 = useThemeStore((state) => state.getColorVec3);
   const highlightedLineIndex = localSoundScapeStore((state) => state.highlightedLineIndex);
 
@@ -39,7 +49,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
   const { camera, gl } = useThree();
 
   const handlePointerMove = (event: React.PointerEvent) => {
-    // compute canvas-local coordinates to account for any page offsets/transforms
     const rect = gl.domElement.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width;
     const y = (event.clientY - rect.top) / rect.height;
@@ -51,16 +60,13 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     const timeLength = lists.length;
     const listLength = lists[0]?.length ?? 0;
 
-    // Adjust for centered coordinates
-
     const adjustedZ = point.z + timeLength / 2;
     const listIndex = Math.max(0, Math.floor(adjustedZ));
 
     if (previousIntersectionListIndexRef.current === listIndex) {
-      return; // No change in list index, skip processing
+      return;
     }
 
-    // Create vectors with centered coordinates
     const centeredVectors = lists[listIndex].map(
       (y, x) => new THREE.Vector3(x - listLength / 2, y, listIndex - timeLength / 2)
     );
@@ -73,7 +79,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     localSoundScapeStore.getState().incrementClickCounter();
     if (!meshRef.current) return;
 
-    // Convert click coords using canvas bounding rect (handles translated canvas)
     const rect = gl.domElement.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width;
     const y = (event.clientY - rect.top) / rect.height;
@@ -84,7 +89,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     const intersects = raycaster.intersectObject(meshRef.current, true);
     if (intersects.length === 0) return;
 
-    // Convert to local space
     const localPoint = meshRef.current.worldToLocal(intersects[0].point.clone());
     const scale = meshRef.current.scale;
     const normalizedPoint = new THREE.Vector3(
@@ -93,12 +97,10 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
       localPoint.z / scale.z
     );
 
-    // Calculate listIndex
     const timeLength = lists.length;
     const listLength = lists[0]?.length ?? 0;
     const listIndex = Math.max(0, Math.floor(normalizedPoint.z + timeLength / 2));
 
-    // Always update on first click
     const previousIndex = previousIntersectionListIndexRef.current;
     if (previousIndex !== listIndex || previousIndex === undefined) {
       const centeredVectors = lists[listIndex].map(
@@ -124,13 +126,9 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
 
     const intersects = raycaster.intersectObject(meshRef.current, true);
     if (intersects.length > 0) {
-      // Clone intersection point
       const point = intersects[0].point.clone();
 
-      // Convert to local space
       const localPoint = meshRef.current.worldToLocal(point.clone());
-
-      // Normalize by scale
       const scale = meshRef.current.scale;
       const normalizedPoint = new THREE.Vector3(
         localPoint.x / scale.x,
@@ -141,7 +139,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
       intersectionRef.current = normalizedPoint;
       getClosestVectors(normalizedPoint);
 
-      // Marker stays in world space
       if (markerRef.current) {
         markerRef.current.position.copy(point);
         markerRef.current.visible = true;
@@ -159,32 +156,27 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     const indices: number[] = [];
     const vectors = [] as THREE.Vector3[][];
 
-    // Calculate center offsets
     const xCenter = listLength / 2;
     const zCenter = timeLength / 2;
 
-    // Generate vertex positions (centered around origin)
     for (let t = 0; t < timeLength; t++) {
       const yList = lists[t];
       if (!vectors[t]) vectors[t] = [];
       for (let x = 0; x < listLength; x++) {
         const y = yList[x];
-        // Center the coordinates around the origin
         vertices.push(x - xCenter, y, t - zCenter);
-
         vectors[t].push(new THREE.Vector3(x - xCenter, y, t - zCenter));
       }
     }
 
-    // Generate indices to form triangles
     for (let t = 0; t < timeLength - 1; t++) {
       for (let x = 0; x < listLength - 1; x++) {
         const a = t * listLength + x;
         const b = a + 1;
         const c = a + listLength;
         const d = c + 1;
-        indices.push(a, b, c); // triangle 1
-        indices.push(b, d, c); // triangle 2
+        indices.push(a, b, c);
+        indices.push(b, d, c);
       }
     }
 
@@ -194,8 +186,6 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     geometry.computeVertexNormals();
 
     const uvs: number[] = [];
-
-    // Generate UV coordinates
     for (let t = 0; t < timeLength; t++) {
       for (let x = 0; x < listLength; x++) {
         const u = x / (listLength - 1);
@@ -205,9 +195,8 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     }
 
     geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-
-    // After creating geometry, compute its bounding box
     geometry.computeBoundingBox();
+
     if (geometry.boundingBox) {
       setBbox({
         min: geometry.boundingBox.min.clone(),
@@ -215,11 +204,9 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
       });
     }
 
-    // setHighlightedVectors(vectors[0], 0); // Set initial highlighted vectors
     return geometry;
   }, [lists]);
 
-  // initialize highlighted vectors AFTER render
   useEffect(() => {
     if (lists.length === 0) return;
 
@@ -233,7 +220,11 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
     setHighlightedVectors(centeredVectors, 0);
     previousIntersectionListIndexRef.current = 0;
   }, [lists, setHighlightedVectors]);
+
   const lines = lists.map((yList, t) => yList.map((y, x) => new THREE.Vector3(x, y, t)));
+
+  // expose the meshRef to parent
+  useImperativeHandle(ref, () => meshRef.current as THREE.Mesh);
 
   return (
     <>
@@ -242,7 +233,7 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
           geometry={geometry}
           ref={meshRef}
           onPointerMove={handlePointerMove}
-          onPointerDown={handlePointerDown} // mouse & pointer
+          onPointerDown={handlePointerDown}
         >
           <shaderMaterial
             ref={materialRef}
@@ -260,12 +251,11 @@ const SoundScape: React.FC<SoundScapeProps> = ({ lists, position }) => {
             side={THREE.DoubleSide}
           />
         </mesh>
-
         <AudioVisualizer allLines={lines} />
       </group>
       <SoundScapeSoundlineWrapper />
     </>
   );
-};
+});
 
 export default SoundScape;
