@@ -4,12 +4,16 @@
   align-items: center;
   justify-content: center;
   height: 80vh;
-  top: 10vh;
+  top: 13vh;
   right: 0;
   display: flex;
   align-items: stretch; /* fill height */
   padding: 0 1.5rem;
   z-index: 90;
+}
+
+.ListNavigation.hidden {
+  right: -8rem;
 }
 
 .ListNavigation .nav-list {
@@ -91,10 +95,10 @@
   position: absolute;
   height: 40px;
   width: 180px;
-  top: 35vh;
+  top: 45vh;
   right: -3rem;
 }
-.visible button.no-style {
+.visible ~ button.no-style {
   transform: translateX(3rem) rotateZ(90deg);
 }
 

@@ -177,3 +177,13 @@ export const localSoundScapeStore = create<{
 
   incrementClickCounter: () => set((state) => ({ clickCounter: state.clickCounter + 1 })), // NEW
 }));
+
+interface MeshState {
+  mesh: THREE.Mesh | null;
+  setMesh: (mesh: THREE.Mesh | null) => void;
+}
+
+export const useMeshStore = create<MeshState>((set) => ({
+  mesh: null,
+  setMesh: (mesh) => set({ mesh }),
+}));
