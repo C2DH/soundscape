@@ -228,12 +228,13 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
 
   return (
     <>
-      <group rotation={[0, Math.PI / 1, 0]} scale={[0.6, 1, 0.8]} position={position}>
+      <group rotation={[0, 0, 0]} scale={[0.6, 1, -0.8]} position={position}>
         <mesh
           geometry={geometry}
           ref={meshRef}
           onPointerMove={handlePointerMove}
           onPointerDown={handlePointerDown}
+          rotateZ={-Math.PI}
         >
           <shaderMaterial
             ref={materialRef}

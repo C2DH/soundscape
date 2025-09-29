@@ -21,7 +21,9 @@ const GeometryExporter: React.FC<GeometryExporterProps> = ({ ref }) => {
     if (mesh.geometry) {
       // Flip normals by mirroring geometry
       mesh.geometry = mesh.geometry.clone(); // make sure we don't share buffers
-      mesh.geometry.scale(-1, 1, 1); // flip across X axis
+      mesh.geometry.scale(0.6, 1, -0.8); // flip across X axis
+      //   mesh.geometry.rotateX(Math.PI); // rotate 180 degrees around Z axis
+      //   mesh.geometry.scale(1, -1, 1); // flip across X axis
       mesh.geometry.computeVertexNormals();
     }
 

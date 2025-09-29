@@ -21,7 +21,7 @@ const ContactPage: React.FC = () => {
             />
             <TeamMember
               image="/img/Johan.jpg"
-              title="Jonas LINDSTRÖM"
+              title="Johan MALMSTEDT"
               subtitle="Ph D and researcher in Media and Communication Studies and Digital Humanities, and affiliate member of the Meta Lab, Harvard University."
               href="https://mlml.io/m/johan-malmstedt/"
             />

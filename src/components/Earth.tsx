@@ -19,7 +19,7 @@ export type EarthProps = {
 };
 
 const Earth: React.FC<EarthProps> = ({
-  maskUrl = '/textures/continents_mask.jpg',
+  maskUrl = '/textures/continents_mask.png',
   landColor = '#58526A',
   waterColor = '#2A263C',
   invert = true,
@@ -40,7 +40,7 @@ const Earth: React.FC<EarthProps> = ({
     <>
       <group {...props} position={[0, 0, 0]} scale={[1.5, 1.5, 1.5]}>
         <EarthRipple size={1300} />
-        <PlanetLines radius={radius} maskUrl={'/textures/continents_mask.jpg'} />
+        <PlanetLines radius={radius} maskUrl={'/textures/continents_mask.png'} />
         <Atmosphere radius={radius} />
         <mesh ref={mesh} rotation={[0, 0, 0]}>
           <sphereGeometry args={[radius, 64, 64]} />
