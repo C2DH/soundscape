@@ -35,7 +35,7 @@ const Scene: React.FC<SceneProps> = ({ landscapeData }) => {
   return (
     <>
       <Canvas shadows camera={{ position: [100, 100, 50], fov: 50 }} touch-action="none">
-        <OrbitControls />
+        <OrbitControls minDistance={40} maxDistance={250} />
         <group>
           <SoundScape {...args} ref={meshRef} />
           <Grid

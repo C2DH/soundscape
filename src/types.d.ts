@@ -27,6 +27,8 @@ export type AudioItem = {
   json: string;
   /** Description of the audio item */
   desc: string;
+  /** Sources for the audio item */
+  sources: string;
   /** Optional link for more information */
-  link?: string;
-}
+  link?: string[];
+};
