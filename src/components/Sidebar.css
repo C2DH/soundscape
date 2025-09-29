@@ -18,7 +18,7 @@
   font-size: 3rem;
   letter-spacing: 0.001em;
   color: rgba(var(--light), 1);
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 3rem;
   opacity: 0.3;
 }
 
@@ -32,6 +32,16 @@
 .Sidebar .content p {
   color: rgba(var(--light), 1);
   padding: 1rem 3rem;
+}
+
+.Sidebar .content p a {
+  color: rgba(var(--accent), 1);
+  text-decoration: underline;
+}
+
+.Sidebar .content h3 {
+  margin: 0;
+  padding: 0rem 3rem;
 }
 
 .Sidebar hr {
@@ -133,6 +143,11 @@
     color: rgba(var(--light), 1);
     padding: 1rem 1rem;
   }
+
+  .Sidebar .content h3 {
+    margin: 0;
+    padding: 0rem 1rem;
+  }
   .Sidebar hr {
     margin: 0rem 1rem;
   }
@@ -148,6 +163,13 @@
     left: calc(100vw - 17rem);
     transition: none;
     transition: all 0.3s ease-in-out;
+  }
+  .Sidebar .sound-code {
+    padding: 0.5rem 1rem;
+  }
+
+  .Sidebar footer {
+    padding: 2rem 1rem;
   }
 }
 
