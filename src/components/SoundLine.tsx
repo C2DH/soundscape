@@ -34,7 +34,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
   lineWidth = 0.2,
   tweenDuration = 200,
   easing = easeOutQuint,
-  scale = [-0.6, 1.05, -0.8],
+  scale = [0.6, 1.05, -0.8],
   position = [0, 1, 0],
   currentTimeIndex = false,
 }) => {
@@ -154,6 +154,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
       resolution,
       worldUnits: true,
       transparent: true,
+      side: THREE.DoubleSide,
     });
     const line = new Line2(geometry, material);
     line.computeLineDistances();
@@ -168,8 +169,8 @@ const SoundLine: React.FC<SoundLineProps> = ({
           <Html
             transform
             scale={4}
-            rotation={[Math.PI / -2, 0, Math.PI / (currentTimeIndex ? -2 : 2)]}
-            position={[currentTimeIndex ? -5.5 : 0, 0, 0]}
+            rotation={[currentTimeIndex ? Math.PI / 2 : Math.PI / -2, 0, Math.PI / 2]}
+            position={[currentTimeIndex ? 96 : 58, 0, 0]}
           >
             <div
               ref={currentTimeIndex ? null : htmlRef} // <- now ref points to the DOM element, not Object3D
