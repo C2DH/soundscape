@@ -12,7 +12,10 @@ const About: React.FC = () => {
       <div className="wrapper  w-screen h-[70vh] overflow-auto flex flex-col items-center ">
         <div className="max-w-3xl px-4">
           <h1 className="text-3xl font-bold">{title}</h1>
-          <p className="text-md font-medium leading-relaxed whitespace-pre-line mt-4">{content}</p>
+          <p
+            className="text-md font-medium leading-relaxed whitespace-pre-line mt-4"
+            dangerouslySetInnerHTML={{ __html: content }}
+          ></p>
         </div>
       </div>
     </div>

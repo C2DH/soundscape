@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   height: 80vh;
-  top: 13vh;
+  top: 10vh;
   right: 0;
   display: flex;
   align-items: stretch; /* fill height */
@@ -21,6 +21,7 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
+  font-size: 1.2rem;
   text-transform: capitalize;
   font-weight: 500;
   height: 100%;
@@ -83,7 +84,8 @@
 
 /* When opened */
 .visible .nav-list {
-  max-height: 500px; /* pick a value big enough for your list */
+  align-self: center;
+  max-height: 700px; /* pick a value big enough for your list */
   opacity: 1;
 }
 
