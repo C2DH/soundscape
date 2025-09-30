@@ -34,11 +34,6 @@
   padding: 1rem 3rem;
 }
 
-.Sidebar .content p a {
-  color: rgba(var(--accent), 1);
-  text-decoration: underline;
-}
-
 .Sidebar .content h3 {
   margin: 0;
   padding: 0rem 3rem;

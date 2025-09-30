@@ -85,6 +85,11 @@ h1 {
   line-height: 1;
 }
 
+.content p a {
+  color: rgba(var(--accent), 1);
+  text-decoration: underline;
+}
+
 button,
 a.link-button {
   display: inline-flex;
