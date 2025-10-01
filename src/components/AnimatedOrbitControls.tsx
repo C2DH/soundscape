@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { useStore } from '../store';
 import { isMobile } from 'react-device-detect';
+import { useCameraStore } from '../store';
 
 const CameraPositionsByPathnameDesktop: Record<
   string,
@@ -46,12 +47,12 @@ const CameraPositionsByPathnameMobile: Record<
     zoom: 120,
   },
   '/about': {
-    position: new THREE.Vector3(0, 7, 5),
+    position: new THREE.Vector3(0, -5, 20),
     target: new THREE.Vector3(10, 15, -15),
     zoom: 80,
   },
   '/contact': {
-    position: new THREE.Vector3(0, 15, 5),
+    position: new THREE.Vector3(0, 7, 5),
     target: new THREE.Vector3(0, 0, -25),
     zoom: 120,
   },
@@ -62,11 +63,14 @@ const CameraPositionsByPathname = isMobile
   : CameraPositionsByPathnameDesktop;
 
 function AnimatedOrbitControls() {
+  const setZoom = useCameraStore((state) => state.setZoom);
   const controlsRef = useRef<any>(null);
 
   // Fetch initial state
   const pathnameRef = useRef(useStore.getState().pathname);
   const shouldAnimateCameraRef = useRef(true);
+  const prevZoomRef = useRef<number>(0);
+  const EPSILON = 0.01; // adjust sensitivity
 
   useEffect(
     () =>
@@ -81,6 +85,14 @@ function AnimatedOrbitControls() {
 
   useFrame(() => {
     if (!controlsRef.current) return;
+
+    const camera = controlsRef.current.object as THREE.OrthographicCamera;
+    const currentZoom = camera.zoom;
+
+    if (Math.abs(prevZoomRef.current - currentZoom) > EPSILON) {
+      prevZoomRef.current = currentZoom;
+      setZoom(currentZoom);
+    }
 
     // Disable user interaction while animating
     controlsRef.current.enabled = !shouldAnimateCameraRef.current;

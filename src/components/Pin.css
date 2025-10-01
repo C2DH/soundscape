@@ -8,6 +8,7 @@
   transform-origin: right;
   opacity: 0.6;
   transform: translateX(25px);
+  position: relative;
 }
 .Pin:hover {
   opacity: 1;
@@ -19,14 +20,40 @@
   color: rgba(var(--light), 1);
   font-weight: 600;
   text-transform: capitalize;
+  position: absolute;
+  top: -20px;
+  transition: all 0.5s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.Pin.Pin-visible p {
+  opacity: 1;
+  pointer-events: all;
 }
 
 .Pin-line {
   display: inline-block;
   width: 1px;
-  height: 20px;
+  height: 10px;
   background-color: rgba(var(--light), 1);
   margin: 0px 0 0 0px;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+  pointer-events: none;
+}
+
+.Pin-visible .Pin-line {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.Pin-line.Pin-line-bottom {
+  transform: translateY(18px);
+}
+
+.Pin-label.Pin-label-bottom {
+  transform: translateY(46px);
 }
 
 .Pin-dot {
