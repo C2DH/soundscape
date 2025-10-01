@@ -6,34 +6,56 @@ import type { GeoPoint } from '../types';
 import { Html } from '@react-three/drei';
 import './Pin.css';
 import { useModalStore } from '../store';
+import { useCameraStore } from '../store';
 
 export interface PinProps {
   point: GeoPoint;
   position: Vector3; // already computed local position
+  toBottom?: boolean;
   color?: string;
   onClick: (point: GeoPoint) => void;
   children?: React.ReactNode;
 }
 
-const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) => {
+const Pin: React.FC<PinProps> = ({
+  point,
+  toBottom = false,
+  position,
+  color,
+  onClick,
+  children,
+}) => {
   const ref = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Object3D<THREE.Object3DEventMap>>(null);
-  const [isInRange, setInRange] = useState(false);
-  const [isOccluded, setOccluded] = useState(false);
+  const isInRangeRef = useRef(false);
+  const isOccludedRef = useRef(false);
+  const isVisibleRef = useRef(true);
   const [isVisible, setVisible] = useState(true); // controlled by distance + occlusion
-  const { openModal } = useModalStore();
+  const openModal = useModalStore((s) => s.openModal);
+  const zoom = useCameraStore((state) => state.zoom);
 
   const vec = new THREE.Vector3();
+
+  const onOcclude = (occluded: boolean) => {
+    isOccludedRef.current = occluded;
+  };
 
   useFrame((state) => {
     if (ref.current) {
       const distance = state.camera.position.distanceTo(ref.current.getWorldPosition(vec));
 
       const inRange = distance <= 100; // your existing range limit
-      if (inRange !== isInRange) setInRange(inRange);
-
-      // Hide Html if occluded or too far
-      setVisible(inRange && !isOccluded && distance <= 4);
+      if (isInRangeRef.current !== inRange) {
+        isInRangeRef.current = inRange;
+      }
+      if (isOccludedRef.current) {
+        isVisibleRef.current = false;
+      } else {
+        isVisibleRef.current = inRange && distance <= 10;
+      }
+      if (isVisibleRef.current !== isVisible) {
+        setVisible(isVisibleRef.current);
+      }
     }
   });
 
@@ -44,7 +66,7 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) 
     >
       <Html
         distanceFactor={0.01} // scale factor relative to scene
-        onOcclude={setOccluded}
+        onOcclude={onOcclude}
         zIndexRange={[0, 20]} // 👈 limit z-index
         style={{
           transition: 'all 0.2s',
@@ -54,7 +76,7 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) 
         }}
       >
         <div
-          className="Pin"
+          className={`Pin ${zoom > 60 ? 'Pin-visible' : ''}`}
           onClick={() => {
             onClick(point);
             openModal();
@@ -62,13 +84,12 @@ const Pin: React.FC<PinProps> = ({ point, position, color, onClick, children }) 
           onPointerOver={() => (document.body.style.cursor = 'pointer')}
           onPointerOut={() => (document.body.style.cursor = 'default')}
         >
-          <p>{point.name || 'Unnamed'}</p>
-          <span className="Pin-line"></span>
-          <div className="Pin-dot"></div>
+          <span className={`Pin-line ${toBottom ? 'Pin-line-bottom' : ''}`}></span>
+          <p className={`Pin-label ${toBottom ? 'Pin-label-bottom' : ''}`}>
+            {point.name || 'Unnamed'}
+          </p>
 
-          {/* <p className="text-xs text-gray-600">
-            {point.description || 'No description available.'}
-          </p> */}
+          <div className="Pin-dot"></div>
         </div>
         {children}
       </Html>

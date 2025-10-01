@@ -197,6 +197,7 @@ export const AvailableAudioItems: AudioItem[] = [
     sources:
       'Government of Slovenia, SI-ALERT system: <a href="https://www.gov.si/en/" target="_blank">gov.si – SI-ALERT public warning</a>; Total Slovenia News (2019), overview of siren tests and functions (<a href="https://totalslovenia-news.com" target="_blank">totalslovenia-news.com</a>).',
     link: ['https://en.wikipedia.org/wiki/Civil_defense_siren#Slovenia'],
+    toBottom: true,
   },
   {
     id: 'SE-001',
@@ -223,6 +224,7 @@ export const AvailableAudioItems: AudioItem[] = [
     sources:
       'Alertswiss, Federal Office for Civil Protection (FOCP): <a href="https://alert.swiss/en/precaution/respond-correctly-when-in-danger.html" target="_blank">alert.swiss</a>',
     link: ['https://en.wikipedia.org/wiki/Civil_defense_siren#Switzerland'],
+    toBottom: true,
   },
   {
     id: 'US-001',

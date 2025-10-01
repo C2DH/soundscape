@@ -125,6 +125,7 @@ const World: React.FC<WorldProps> = ({
             return (
               <Pin
                 key={point.id || i}
+                toBottom={point.toBottom}
                 position={position}
                 point={point}
                 onClick={handleClickPoint}

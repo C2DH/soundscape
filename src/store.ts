@@ -187,3 +187,13 @@ export const useMeshStore = create<MeshState>((set) => ({
   mesh: null,
   setMesh: (mesh) => set({ mesh }),
 }));
+
+interface CameraState {
+  zoom: number;
+  setZoom: (zoom: number) => void;
+}
+
+export const useCameraStore = create<CameraState>((set) => ({
+  zoom: 0,
+  setZoom: (zoom) => set({ zoom }),
+}));

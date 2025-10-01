@@ -27,6 +27,7 @@ function App() {
     name: item.name,
     lat: item.lat,
     lon: item.lon,
+    toBottom: item.toBottom,
   }));
 
   const refreshFromCSS = useThemeStore((s) => s.refreshFromCSS);

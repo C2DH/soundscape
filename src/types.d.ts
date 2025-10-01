@@ -5,6 +5,7 @@ export type GeoPoint = {
   lat: number; // in degrees
   lon: number; // in degrees
   color?: string;
+  toBottom?: boolean;
 };
 
 /**
@@ -31,4 +32,5 @@ export type AudioItem = {
   sources: string;
   /** Optional link for more information */
   link?: string[];
+  toBottom?: boolean;
 };
