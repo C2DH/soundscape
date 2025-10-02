@@ -14,6 +14,7 @@
 
 .ListNavigation.hidden {
   right: -8rem;
+  pointer-events: none;
 }
 
 .ListNavigation .nav-list {
