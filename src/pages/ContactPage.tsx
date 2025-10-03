@@ -8,7 +8,7 @@ interface ContactPage {
 const ContactPage: React.FC = () => {
   return (
     <div className="content w-screen h-screen flex items-center  justify-center absolute top-0 left-0 z-2">
-      <div className="wrapper  w-screen  pb-[2rem] h-[75vh] overflow-auto flex flex-col items-center ">
+      <div className="Page wrapper  w-screen  pb-[2rem] h-[75vh] overflow-auto flex flex-col items-center ">
         <div className=" flex flex-col align-center px-4">
           <h1 className="text-3xl font-bold text-center">Team</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 mt-8">

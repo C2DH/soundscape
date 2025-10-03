@@ -1,8 +1,24 @@
 .Header {
   opacity: 1;
   pointer-events: all;
-  transition: all 0.5s ease-in-out;
+  transform: translateY(0);
+  transition: transform 0.5s ease-in-out;
+}
+
+.Header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
   background: linear-gradient(rgba(var(--dark), 1), rgba(var(--dark), 0) 100%);
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out 0.3s;
+}
+.isHome .Header-background {
+  opacity: 0;
+  transition: opacity 0s ease-in-out 0s;
 }
 
 .Header.isHome {

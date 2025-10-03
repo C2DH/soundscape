@@ -34,6 +34,7 @@ const Header: React.FC = () => {
           </li>
         </ul>
       </nav>
+      <div className="Header-background" />
     </header>
   );
 };
