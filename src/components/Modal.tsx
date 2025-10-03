@@ -44,7 +44,7 @@ const Modal: React.FC<ModalProps> = ({ children }) => {
             <span className="bar"></span>
           </div>
         </button>
-        <div className="z-50 flex flex-col items-center justify-center backdrop-blur-sm w-full h-screen">
+        <div className="content-modal-wrapper z-50 flex flex-col items-center justify-center w-full h-screen">
           {/* Toggle Button */}
           <div className="bg-transparent w-full h-full shadow-lg flex flex-col">
             <ListNavigation />

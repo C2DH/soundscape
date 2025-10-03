@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import { Mesh } from 'three';
 import SoundScape from './SoundScape';
 import { amplifyLists } from './SoundScapePlayer';
+import { isMobile } from 'react-device-detect';
 
 interface SceneProps {
   landscapeData: any;
@@ -27,22 +28,28 @@ const Scene: React.FC<SceneProps> = ({ landscapeData }) => {
       setMesh(meshRef.current);
     }
   }, [meshRef.current]);
+  // set orbit once when meshRef changes
+  useEffect(() => {
+    if (meshRef.current && orbitRef.current) {
+      const controls = orbitRef.current;
+      setOrbit(
+        controls.object.position.toArray() as [number, number, number],
+        controls.target.toArray() as [number, number, number]
+      );
+    }
+  }, [meshRef.current]);
 
   return (
-    <Canvas shadows camera={{ position: cameraPos, fov: 50 }} touch-action="none">
+    <Canvas
+      shadows
+      camera={{ position: cameraPos, fov: 20, far: -100, near: 0.1 }}
+      touch-action="none"
+    >
       <OrbitControls
         ref={orbitRef}
         minDistance={40}
-        maxDistance={400}
+        maxDistance={isMobile ? 1200 : 400}
         target={target}
-        onChange={(e) => {
-          if (!e || !e.target) return;
-          const controls = e.target;
-          setOrbit(
-            controls.object.position.toArray() as [number, number, number],
-            controls.target.toArray() as [number, number, number]
-          );
-        }}
       />
       <group>
         <SoundScape {...args} ref={meshRef} />

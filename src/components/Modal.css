@@ -1,9 +1,18 @@
+.content-modal-wrapper {
+  backdrop-filter: blur(0px);
+  transition: backdrop-filter 0.3s ease-in-out 0.5s;
+}
+
+.Modal.isOpenModal .content-modal-wrapper {
+  backdrop-filter: blur(10px);
+}
+
 .Modal {
   opacity: 0;
   transform: translateX(-100vw);
   transition:
     opacity 0.2s ease-in-out,
-    transform 0s ease-in-out 0.4s; /* ⬅ delay of 0.4s only on translateX */
+    transform 0s ease-in-out 0.5s; /* ⬅ delay of 0.5s only on translateX */
   background-color: rgba(var(--dark), 0.3);
 }
 
@@ -11,8 +20,8 @@
   opacity: 1;
   transform: translateX(0);
   transition:
-    opacity 0.2s ease-in-out 0.4s,
-    transform 0s ease-in-out 0.4s;
+    opacity 0.2s ease-in-out 0.5s,
+    transform 0s ease-in-out 0.5s;
 }
 
 .Modal .CloseIconButton {

@@ -205,7 +205,7 @@ interface OrbitState {
 }
 
 export const useOrbitStore = create<OrbitState>((set) => ({
-  cameraPos: [100, 100, 50],
+  cameraPos: [300, 200, 150],
   target: [0, 0, 0],
   setOrbit: (cameraPos, target) => set({ cameraPos, target }),
 }));
