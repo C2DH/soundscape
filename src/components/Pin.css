@@ -7,7 +7,7 @@
   text-align: center;
   transform-origin: right;
   opacity: 0.6;
-  transform: translateX(25px);
+  transform: translateX(10px);
   position: relative;
 }
 .Pin:hover {

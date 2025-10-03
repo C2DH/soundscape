@@ -1,5 +1,5 @@
 import Modal from './Modal';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useModalStore, useStore, useSidebarStore } from '../store';
 import AudioControls from './AudioControls';
@@ -14,6 +14,7 @@ const SceneManager = () => {
   const setCurrentParamItemId = useStore((s) => s.setCurrentParamItemId);
   const isOpen = useModalStore((s) => s.isOpenModal);
   const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
+  const [showContent, setShowContent] = useState(false); // NEW
 
   let item: (typeof AvailableAudioItems)[number] | undefined;
   let itemIndex = -1;
@@ -33,18 +34,29 @@ const SceneManager = () => {
 
   useEffect(() => {
     if (item) {
-      // Open modal when item is set
-      // Slight delay to ensure modal opens after any route changes
-      setTimeout(() => {
-        useModalStore.getState().openModal();
-      }, 100);
+      // if user reloads and item exists in store/url → open modal again
+      useModalStore.getState().openModal();
     } else {
-      // Close modal if no item
       useModalStore.getState().closeModal();
     }
   }, [item]);
 
+  useEffect(() => {
+    if (isOpen) {
+      // reset first
+      setShowContent(false);
+
+      // delay rendering content
+      const timer = setTimeout(() => setShowContent(true), 1000);
+
+      return () => clearTimeout(timer);
+    } else {
+      setShowContent(false);
+    }
+  }, [isOpen]); // include isOpen as dependency
+
   const renderModalContent = () => {
+    if (!showContent) return null; // ⏱ wait 1s before rendering
     if (itemDataLoading) {
       return (
         <div className="w-full h-full flex items-center justify-center">

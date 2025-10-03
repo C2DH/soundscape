@@ -197,3 +197,15 @@ export const useCameraStore = create<CameraState>((set) => ({
   zoom: 0,
   setZoom: (zoom) => set({ zoom }),
 }));
+
+interface OrbitState {
+  cameraPos: [number, number, number];
+  target: [number, number, number];
+  setOrbit: (pos: [number, number, number], target: [number, number, number]) => void;
+}
+
+export const useOrbitStore = create<OrbitState>((set) => ({
+  cameraPos: [300, 200, 150],
+  target: [0, 0, 0],
+  setOrbit: (cameraPos, target) => set({ cameraPos, target }),
+}));
