@@ -1,5 +1,6 @@
 import LogoUniLux from './svg/LogoUniLux';
 import LogoUniLinkoping from './svg/LogoUniLinkoping';
+import ThreeDsLogo from './svg/threeDsLogo';
 import { useLocation } from 'react-router';
 import './Footer.css';
 
@@ -11,11 +12,12 @@ const Footer: React.FC = () => {
     <footer
       className={`${footerIsVisible ? 'footerIsVisible' : ''} absolute bottom-2 left-0 w-full bg-transparent gap-2 z-2`}
     >
-      <div className="max-w-10xl mx-auto flex flex-col items-left px-2 md:px-8 py-3">
+      <div className="max-w-10xl mx-auto flex flex-col items-left px-2 md:px-8 py-1 md:py-3">
         {/* Left side: Logos */}
-        <div className="flex items-center gap-4 my-2">
+        <div className="flex flex-wrap items-center gap-4 my-2">
           <LogoUniLux width={120} />
           <LogoUniLinkoping width={110} />
+          <ThreeDsLogo width={110} />
         </div>
 
         <span className="text-[0.7rem] font-medium text-[rgba(var(--light),1)]">
