@@ -1,15 +1,16 @@
 import { Html } from '@react-three/drei';
 import { useSprings, animated } from '@react-spring/web';
 import React from 'react';
-// import { useLocation } from 'react-router';
+import { useModalStore } from '../store';
 
 const EarthRipple: React.FC<{ count?: number; size?: number; duration?: number }> = ({
   count = 5,
   size = 1300,
   duration = 5000,
 }) => {
-  // const location = useLocation();
-  // const path = location.pathname;
+  const isOpen = useModalStore((s) => s.isOpenModal);
+  const shouldAnimate = isOpen;
+
   // Create N springs for continuous ripples
   const springs = useSprings(
     count,
@@ -19,6 +20,7 @@ const EarthRipple: React.FC<{ count?: number; size?: number; duration?: number }
       loop: true,
       delay: duration / i,
       config: { duration },
+      pause: shouldAnimate, // ✅ pause when not allowed
     }))
   );
 
@@ -39,12 +41,11 @@ const EarthRipple: React.FC<{ count?: number; size?: number; duration?: number }
             key={i}
             className="absolute w-full h-full rounded-full border-[26px] border-[rgba(var(--light),0.7)]"
             style={{
-              ...props, // animated values (opacity, scale)
+              ...props,
               transform: props.scale.to((s) => `scale(${s})`),
             }}
           />
         ))}
-        {/* Optional center dot */}
       </div>
     </Html>
   );

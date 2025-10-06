@@ -4,7 +4,7 @@ interface LogoProps {
   className?: string;
 }
 
-const threeDsLogo: React.FC<LogoProps> = ({
+const ThreeDsLogo: React.FC<LogoProps> = ({
   color = 'rgba(var(--light),1)',
   width = 100,
   className,
@@ -32,4 +32,4 @@ const threeDsLogo: React.FC<LogoProps> = ({
   );
 };
 
-export default threeDsLogo;
+export default ThreeDsLogo;

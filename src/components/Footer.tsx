@@ -1,8 +1,8 @@
 import LogoUniLux from './svg/LogoUniLux';
 import LogoUniLinkoping from './svg/LogoUniLinkoping';
-import ThreeDsLogo from './svg/threeDsLogo';
 import { useLocation } from 'react-router';
 import './Footer.css';
+import ThreeDsLogo from './svg/ThreeDsLogo';
 
 const Footer: React.FC = () => {
   const { pathname } = useLocation();
