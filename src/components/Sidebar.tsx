@@ -16,18 +16,18 @@ export default function Sidebar() {
 
   return (
     <>
-      <button
-        onClick={toggleSidebar}
-        aria-expanded={isOpenSidebar}
-        className={`${isOpenModal ? '' : 'isModalClosed'} more-info p-2`}
-      >
-        <i className="relative">
-          <span className="bar"></span>
-          <span className={`bar ${isOpenSidebar ? 'open' : ''}`}></span>
-        </i>
-        <p>{isOpenSidebar ? 'LESS' : 'MORE'} INFO</p>
-      </button>
       <div className={`${isOpenSidebar && isOpenModal ? 'isOpenSidebar' : ''}  Sidebar`}>
+        <button
+          onClick={toggleSidebar}
+          aria-expanded={isOpenSidebar}
+          className={`${isOpenModal ? '' : 'isModalClosed'} more-info p-2`}
+        >
+          <i className="relative">
+            <span className="bar"></span>
+            <span className={`bar ${isOpenSidebar ? 'open' : ''}`}></span>
+          </i>
+          <p>{isOpenSidebar ? 'LESS' : 'MORE'} INFO</p>
+        </button>
         {/* Sidebar */}
         <aside className="w-full h-full flex-shrink-0">
           <div className="flex relative flex-col h-full">

@@ -112,9 +112,9 @@ const AudioControls: FC<AudioControlsProps> = ({
   }, [src]);
 
   return (
-    <div className="nav-wrapper absolute bottom-[10%] w-screen flex flex-col items-center justify-center gap-1 z-50">
+    <div className="nav-wrapper absolute bottom-[10%] w-screen flex flex-col items-center justify-center gap-1 z-50 pointer-events-none">
       <nav
-        className="AudioControls flex flex-col items-center justify-center"
+        className="AudioControls flex flex-col items-center justify-center pointer-events-auto"
         aria-label="Audio controls"
       >
         {/* Hidden audio element */}

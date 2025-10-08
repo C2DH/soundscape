@@ -14,6 +14,7 @@ import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
 import { isMobile } from 'react-device-detect';
+import { Html } from '@react-three/drei';
 
 type SoundScapeProps = {
   lists: number[][];
@@ -255,6 +256,36 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
         <AudioVisualizer allLines={lines} />
       </group>
       <SoundScapeSoundlineWrapper />
+      <Html
+        occlude
+        transform
+        scale={7}
+        rotation={[Math.PI / -2, 0, Math.PI / 2]}
+        position={[34, 0, 78]}
+        className="opacity-60"
+      >
+        TIME &gt;
+      </Html>
+      <Html
+        occlude
+        transform
+        scale={7}
+        rotation={[Math.PI / -2, 0, Math.PI]}
+        position={[22, 0, 84]}
+        className="opacity-60"
+      >
+        FREQUENCY &gt;
+      </Html>
+      <Html
+        occlude
+        transform
+        scale={7}
+        rotation={[0, Math.PI / 2, Math.PI / 2]}
+        position={[-29, 6, 82]}
+        className="opacity-60"
+      >
+        VOLUME &gt;
+      </Html>
     </>
   );
 });

@@ -209,3 +209,14 @@ export const useOrbitStore = create<OrbitState>((set) => ({
   target: [0, 0, 0],
   setOrbit: (cameraPos, target) => set({ cameraPos, target }),
 }));
+
+// New: Scene UI / settings slice
+interface SceneState {
+  reversed: boolean;
+  setReversed: (v: boolean) => void;
+}
+
+export const useSceneStore = create<SceneState>((set) => ({
+  reversed: true,
+  setReversed: (v: boolean) => set({ reversed: v }),
+}));
