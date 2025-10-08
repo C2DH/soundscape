@@ -1,7 +1,7 @@
 import Modal from './Modal';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useModalStore, useStore, useSidebarStore } from '../store';
+import { useModalStore, useStore, useSidebarStore, useSceneStore } from '../store';
 import AudioControls from './AudioControls';
 import Scene from './Scene';
 import { AvailableAudioItems } from '../constants';
@@ -14,7 +14,7 @@ const SceneManager = () => {
   const isOpen = useModalStore((s) => s.isOpenModal);
   const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
   const [showContent, setShowContent] = useState(false); // NEW
-  const [reversed] = useState(true);
+  const reversed = useSceneStore((s) => s.reversed);
 
   let item: (typeof AvailableAudioItems)[number] | undefined;
   let itemIndex = -1;
@@ -58,7 +58,7 @@ const SceneManager = () => {
   const finalLandscapeData = useMemo(() => {
     if (!itemData) return [];
     if (!reversed) return itemData;
-    return itemData.map((arr) => [...arr].reverse());
+    return itemData.map((arr: unknown[]) => [...arr].reverse());
   }, [reversed, itemData]);
 
   const renderModalContent = () => {

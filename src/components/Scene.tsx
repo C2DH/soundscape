@@ -48,19 +48,21 @@ const Scene: React.FC<SceneProps> = ({ landscapeData }) => {
       <OrbitControls
         ref={orbitRef}
         minDistance={40}
-        maxDistance={isMobile ? 1200 : 400}
+        maxDistance={isMobile ? 1200 : 600}
         target={target}
+        minPolarAngle={0} // 0 = looking straight down from above
+        maxPolarAngle={Math.PI / 2}
       />
       <group>
         <SoundScape {...args} ref={meshRef} />
         <Grid
-          args={[160, 160]}
+          args={[164, 164]}
           cellSize={5}
           cellColor={color}
-          sectionSize={80}
+          sectionSize={82}
           sectionColor={color}
-          fadeDistance={200}
-          fadeStrength={2}
+          fadeDistance={600}
+          fadeStrength={1}
         />
       </group>
     </Canvas>
