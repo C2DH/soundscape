@@ -1,10 +1,9 @@
 import Modal from './Modal';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useModalStore, useStore, useSidebarStore } from '../store';
 import AudioControls from './AudioControls';
 import Scene from './Scene';
-import landscapeData from '../../public/data/sweden.json';
 import { AvailableAudioItems } from '../constants';
 import { useItemDataPreloader } from '../hooks/useItemDataPreloader';
 
@@ -15,6 +14,7 @@ const SceneManager = () => {
   const isOpen = useModalStore((s) => s.isOpenModal);
   const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
   const [showContent, setShowContent] = useState(false); // NEW
+  const [reversed] = useState(true);
 
   let item: (typeof AvailableAudioItems)[number] | undefined;
   let itemIndex = -1;
@@ -54,6 +54,12 @@ const SceneManager = () => {
       setShowContent(false);
     }
   }, [isOpen]); // include isOpen as dependency
+
+  const finalLandscapeData = useMemo(() => {
+    if (!itemData) return [];
+    if (!reversed) return itemData;
+    return itemData.map((arr) => [...arr].reverse());
+  }, [reversed, itemData]);
 
   const renderModalContent = () => {
     if (!showContent) return null; // ⏱ wait 1s before rendering
@@ -128,7 +134,7 @@ const SceneManager = () => {
           playListLength={AvailableAudioItems.length}
         />
 
-        <Scene landscapeData={itemData || landscapeData} />
+        <Scene landscapeData={finalLandscapeData} />
       </div>
     );
   };
