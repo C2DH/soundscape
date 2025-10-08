@@ -159,7 +159,7 @@
   }
   .more-info {
     transform: rotateZ(90deg) translateX(26px) translateY(0px);
-    left: 390px;
+    left: calc(100vw - 15px);
   }
   .isOpenSidebar .more-info {
     left: calc(100vw - 70px);
