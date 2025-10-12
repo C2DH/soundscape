@@ -42,7 +42,7 @@ const Scene: React.FC<SceneProps> = ({ landscapeData }) => {
   return (
     <Canvas
       shadows
-      camera={{ position: cameraPos, fov: 20, far: -100, near: 0.1 }}
+      camera={{ position: cameraPos, fov: 20, far: 1000, near: 0.1 }}
       touch-action="none"
     >
       <OrbitControls

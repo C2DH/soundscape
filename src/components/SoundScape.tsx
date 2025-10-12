@@ -9,12 +9,13 @@ import React, {
 } from 'react';
 import * as THREE from 'three';
 import SoundLine from './SoundLine';
-import { useThemeStore, localSoundScapeStore, useAudioStore } from '../store';
+import { useThemeStore, localSoundScapeStore, useAudioStore, useSceneStore } from '../store';
 import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
 import { isMobile } from 'react-device-detect';
 import { Html } from '@react-three/drei';
+import ReverseSign from './svg/ReverseSign';
 
 type SoundScapeProps = {
   lists: number[][];
@@ -32,6 +33,8 @@ const SoundScapeSoundlineWrapper: React.FC = () => {
 
 const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position }, ref) => {
   const setHighlightedVectors = localSoundScapeStore((state) => state.setHighlightedVectors);
+  const reversed = useSceneStore((s) => s.reversed);
+  const setReversed = useSceneStore((s) => s.setReversed);
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null!);
   const intersectionRef = useRef<THREE.Vector3 | null>(null);
@@ -55,6 +58,9 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     const y = (event.clientY - rect.top) / rect.height;
     mouse.x = x * 2 - 1;
     mouse.y = -(y * 2 - 1);
+  };
+  const reverseSignClicked = () => {
+    setReversed(!reversed);
   };
 
   const getClosestVectors = (point: THREE.Vector3) => {
@@ -271,20 +277,29 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
         transform
         scale={7}
         rotation={[Math.PI / -2, 0, Math.PI]}
-        position={[22, 0, 84]}
+        position={[0, 0, 84]}
         className="opacity-60"
       >
-        FREQUENCY &gt;
+        {reversed ? 'LOW' : 'HI'}&ensp; &lt; FREQUENCY &gt; &ensp;{reversed ? 'HI' : 'LOW'}
+      </Html>
+      <Html
+        occlude
+        transform
+        scale={5}
+        rotation={[Math.PI / -2, 0, Math.PI]}
+        position={[26.5, 0, 84]}
+      >
+        <ReverseSign onClick={reverseSignClicked} />
       </Html>
       <Html
         occlude
         transform
         scale={7}
         rotation={[0, Math.PI / 2, Math.PI / 2]}
-        position={[-29, 6, 82]}
+        position={[-29, 8, 82]}
         className="opacity-60"
       >
-        VOLUME &gt;
+        AMPLITUDE &gt;
       </Html>
     </>
   );

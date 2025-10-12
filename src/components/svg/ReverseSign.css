@@ -1,0 +1,8 @@
+.ReverseSign {
+  opacity: 0.6;
+  transition: all 0.3s ease-in-out;
+}
+
+.ReverseSign:hover {
+  opacity: 1;
+}

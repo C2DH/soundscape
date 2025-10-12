@@ -11,7 +11,7 @@ const Header: React.FC = () => {
       className={`Header ${isHome ? 'isHome' : ''} w-full absolute top-0 left-0 right-0 z-20`}
     >
       <nav className="flex items-center justify-center px-6 py-4">
-        <ul className="flex items-center space-x-5 sm:space-x-8 text-gray-700 font-medium">
+        <ul className="flex items-center space-x-3 sm:space-x-8 text-gray-700 font-medium">
           {/* Left side */}
           <li>
             <NavLink to="/">Home</NavLink>
