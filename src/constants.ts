@@ -1,5 +1,10 @@
 import type { AudioItem } from './types';
 
+export const SiteBasename = import.meta.env.BASE_URL || '/';
+export const EarthMaskUrl = String(SiteBasename + '/textures/continents_mask.png').replace(
+  /\/\//g,
+  '/'
+);
 /**
  * List of available audio items with their metadata.
  */

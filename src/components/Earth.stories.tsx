@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import Earth from '../components/Earth'; // Adjust the import path to your project
 
 import { OrbitControls } from '@react-three/drei';
+import { EarthMaskUrl } from '../constants';
 
 const meta: Meta<typeof Earth> = {
   title: 'Components/Earth',
@@ -25,7 +26,7 @@ export const Default: Story = {
         {/* <ambientLight/>
         <directionalLight position={[15, 10, 5]} /> */}
 
-        <Earth maskUrl={'/textures/continents_mask.png'} />
+        <Earth maskUrl={EarthMaskUrl} />
 
         <OrbitControls />
       </Canvas>

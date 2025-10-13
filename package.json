@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev-with-base": "vite --base /soundscape/ ",
+    "build": "tsc -b && vite build ",
+    "build-with-base": "tsc -b && vite build --base /soundscape/ ",
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",

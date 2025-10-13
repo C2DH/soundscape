@@ -8,6 +8,7 @@ import PlanetLines from './PlanetLines';
 import './Earth.css';
 import EarthRipple from './EarthRipple';
 import { useLocation } from 'react-router';
+import { EarthMaskUrl } from '../constants';
 
 export type EarthProps = {
   maskUrl?: string; // black&white texture: white = continents, black = water (you can flip with `invert`)
@@ -19,7 +20,7 @@ export type EarthProps = {
 };
 
 const Earth: React.FC<EarthProps> = ({
-  maskUrl = '/textures/continents_mask.png',
+  maskUrl = EarthMaskUrl,
   landColor = '#58526A',
   waterColor = '#2A263C',
   invert = true,
@@ -40,7 +41,7 @@ const Earth: React.FC<EarthProps> = ({
     <>
       <group {...props} position={[0, 0, 0]} scale={[1.5, 1.5, 1.5]}>
         <EarthRipple size={1300} />
-        <PlanetLines radius={radius} maskUrl={'/textures/continents_mask.png'} />
+        <PlanetLines radius={radius} maskUrl={maskUrl} />
         <Atmosphere radius={radius} />
         <mesh ref={mesh} rotation={[0, 0, 0]}>
           <sphereGeometry args={[radius, 64, 64]} />
