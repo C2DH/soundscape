@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { useModalStore, useStore, useSidebarStore, useSceneStore } from '../store';
 import AudioControls from './AudioControls';
 import Scene from './Scene';
-import { AvailableAudioItems } from '../constants';
+import { AvailableAudioItems, SiteBasename } from '../constants';
 import { useItemDataPreloader } from '../hooks/useItemDataPreloader';
 
 const SceneManager = () => {
@@ -30,7 +30,7 @@ const SceneManager = () => {
     data: itemData,
     loading: itemDataLoading,
     error: itemDataError,
-  } = useItemDataPreloader(item ? item.json : null);
+  } = useItemDataPreloader(item ? String(SiteBasename + item.json).replace('//', '/') : null);
 
   useEffect(() => {
     if (item) {
@@ -80,7 +80,7 @@ const SceneManager = () => {
       );
     }
 
-    const audioSrc = item?.audioSrc;
+    const audioSrc = String(SiteBasename + item?.audioSrc).replace(/\/\//g, '/');
 
     // ✅ Only render Scene (Canvas) if itemData exists and modal is open
     if (!itemData || !isOpen) {
