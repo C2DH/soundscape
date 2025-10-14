@@ -68,6 +68,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
 
   useEffect(() => {
     const lineTime = (highlightedLineIndex / totalLines) * duration;
+    console.log('lineTime-XXX', lineTime, highlightedLineIndex);
 
     setLineTime(lineTime); // update global store
   }, [highlightedLineIndex, duration, totalLines, setLineTime, currentTime]);

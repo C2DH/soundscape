@@ -9,13 +9,14 @@ import React, {
 } from 'react';
 import * as THREE from 'three';
 import SoundLine from './SoundLine';
-import { useThemeStore, localSoundScapeStore, useAudioStore, useSceneStore } from '../store';
+import { useThemeStore, localSoundScapeStore, useSceneStore, useAudioStore } from '../store';
 import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
 import { isMobile } from 'react-device-detect';
 import { Html } from '@react-three/drei';
 import ReverseSign from './svg/ReverseSign';
+import CurrentTimeLine from './CurrentTimeLine';
 
 type SoundScapeProps = {
   lists: number[][];
@@ -25,7 +26,7 @@ type SoundScapeProps = {
 
 const SoundScapeSoundlineWrapper: React.FC = () => {
   const points = localSoundScapeStore((state) => state.highlightedVectors);
-  if (points.length === 0 || isMobile) {
+  if (points.length === 0) {
     return null; // No points to render
   }
   return <SoundLine points={points} />;
@@ -40,17 +41,35 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
   const intersectionRef = useRef<THREE.Vector3 | null>(null);
   const previousIntersectionListIndexRef = useRef<number>(0);
   const markerRef = useRef<THREE.Mesh>(null);
+  const setLineTime = localSoundScapeStore((s) => s.setLineTime);
+  const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
+  const highlightedLineIndex = localSoundScapeStore((s) => s.highlightedLineIndex);
+  const { currentTime } = useAudioStore();
+  const lineTime = localSoundScapeStore((s) => s.lineTime);
   const [bbox, setBbox] = useState({
     min: new THREE.Vector3(),
     max: new THREE.Vector3(),
   });
   const getColorVec3 = useThemeStore((state) => state.getColorVec3);
-  const highlightedLineIndex = localSoundScapeStore((state) => state.highlightedLineIndex);
 
   const raycaster = useRef(new THREE.Raycaster()).current;
   const mouse = useRef(new THREE.Vector2()).current;
 
   const { camera, gl } = useThree();
+
+  useEffect(() => {
+    if (lists.length === 0) return;
+
+    const timeLength = lists.length;
+    const listLength = lists[0]?.length ?? 0;
+
+    const centeredVectors = lists[0].map(
+      (y, x) => new THREE.Vector3(x - listLength / 2, y, 0 - timeLength / 2)
+    );
+
+    setHighlightedVectors(centeredVectors, 0);
+    previousIntersectionListIndexRef.current = 0;
+  }, [lists, setHighlightedVectors]);
 
   const handlePointerMove = (event: React.PointerEvent) => {
     const rect = gl.domElement.getBoundingClientRect();
@@ -92,38 +111,11 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     mouse.x = x * 2 - 1;
     mouse.y = -(y * 2 - 1);
 
+    setCurrentTime(lineTime);
+
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObject(meshRef.current, true);
     if (intersects.length === 0) return;
-
-    const localPoint = meshRef.current.worldToLocal(intersects[0].point.clone());
-    const scale = meshRef.current.scale;
-    const normalizedPoint = new THREE.Vector3(
-      localPoint.x / scale.x,
-      localPoint.y / scale.y,
-      localPoint.z / scale.z
-    );
-
-    const timeLength = lists.length;
-    const listLength = lists[0]?.length ?? 0;
-    const listIndex = Math.max(0, Math.floor(normalizedPoint.z + timeLength / 2));
-
-    const previousIndex = previousIntersectionListIndexRef.current;
-    if (previousIndex !== listIndex || previousIndex === undefined) {
-      const centeredVectors = lists[listIndex].map(
-        (y, x) => new THREE.Vector3(x - listLength / 2, y, listIndex - timeLength / 2)
-      );
-
-      setHighlightedVectors(centeredVectors, listIndex);
-
-      const duration = useAudioStore.getState().duration;
-      const lineTime = (listIndex / timeLength) * duration;
-
-      localSoundScapeStore.getState().setLineTime(lineTime);
-
-      previousIntersectionListIndexRef.current = listIndex;
-    }
-    console.log('Pointer down at list index:', listIndex, highlightedLineIndex);
   };
 
   useFrame(() => {
@@ -213,20 +205,6 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
 
     return geometry;
   }, [lists]);
-
-  useEffect(() => {
-    if (lists.length === 0) return;
-
-    const timeLength = lists.length;
-    const listLength = lists[0]?.length ?? 0;
-
-    const centeredVectors = lists[0].map(
-      (y, x) => new THREE.Vector3(x - listLength / 2, y, 0 - timeLength / 2)
-    );
-
-    setHighlightedVectors(centeredVectors, 0);
-    previousIntersectionListIndexRef.current = 0;
-  }, [lists, setHighlightedVectors]);
 
   const lines = lists.map((yList, t) => yList.map((y, x) => new THREE.Vector3(x, y, t)));
 
