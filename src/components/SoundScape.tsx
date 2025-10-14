@@ -13,10 +13,8 @@ import { useThemeStore, localSoundScapeStore, useSceneStore, useAudioStore } fro
 import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
-import { isMobile } from 'react-device-detect';
 import { Html } from '@react-three/drei';
 import ReverseSign from './svg/ReverseSign';
-import CurrentTimeLine from './CurrentTimeLine';
 
 type SoundScapeProps = {
   lists: number[][];
@@ -38,14 +36,12 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
   const setReversed = useSceneStore((s) => s.setReversed);
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null!);
-  const intersectionRef = useRef<THREE.Vector3 | null>(null);
   const previousIntersectionListIndexRef = useRef<number>(0);
   const markerRef = useRef<THREE.Mesh>(null);
-  const setLineTime = localSoundScapeStore((s) => s.setLineTime);
   const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
-  const highlightedLineIndex = localSoundScapeStore((s) => s.highlightedLineIndex);
-  const { currentTime } = useAudioStore();
-  const lineTime = localSoundScapeStore((s) => s.lineTime);
+  // const highlightedLineIndex = localSoundScapeStore((s) => s.highlightedLineIndex);
+  // const { currentTime } = useAudioStore();
+  // const lineTime = localSoundScapeStore((s) => s.lineTime);
   const [bbox, setBbox] = useState({
     min: new THREE.Vector3(),
     max: new THREE.Vector3(),
@@ -78,19 +74,32 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     mouse.x = x * 2 - 1;
     mouse.y = -(y * 2 - 1);
   };
-  const reverseSignClicked = () => {
-    setReversed(!reversed);
-  };
 
-  const getClosestVectors = (point: THREE.Vector3) => {
+  /**
+   * Updates the highlighted vectors based on the provided 3D point.
+   *
+   * Calculates the corresponding list index from the z-coordinate of the point,
+   * then generates a new set of centered vectors for that list. If the list index
+   * has not changed since the last update, the function returns early to avoid
+   * unnecessary updates.
+   *
+   * @param point - The THREE.Vector3 point used to determine which list of vectors to highlight.
+   *
+   * @remarks
+   * - Assumes `lists` is a 2D array where each sub-array contains y-values.
+   * - Uses `previousIntersectionListIndexRef` to track the last highlighted list index.
+   * - Calls `setHighlightedVectors` with the new vectors and the current list index.
+   *
+   * @returns The current list index that was highlighted.
+   */
+  const updateHighlightedVectors = (point: THREE.Vector3): number => {
     const timeLength = lists.length;
     const listLength = lists[0]?.length ?? 0;
 
     const adjustedZ = point.z + timeLength / 2;
     const listIndex = Math.max(0, Math.floor(adjustedZ));
-
     if (previousIntersectionListIndexRef.current === listIndex) {
-      return;
+      return listIndex;
     }
 
     const centeredVectors = lists[listIndex].map(
@@ -99,44 +108,55 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
 
     setHighlightedVectors(centeredVectors, listIndex);
     previousIntersectionListIndexRef.current = listIndex;
+    return listIndex;
   };
 
-  const handlePointerDown = (event: React.PointerEvent) => {
-    localSoundScapeStore.getState().incrementClickCounter();
-    if (!meshRef.current) return;
-
-    const rect = gl.domElement.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    mouse.x = x * 2 - 1;
-    mouse.y = -(y * 2 - 1);
-
-    setCurrentTime(lineTime);
+  const handlePointerUp = (event: React.PointerEvent) => {
+    handlePointerMove(event);
 
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObject(meshRef.current, true);
+    const intersects = raycaster.intersectObject(meshRef.current!, true);
     if (intersects.length === 0) return;
+    const point = intersects[0].point.clone();
+    const normalizedPoint = getNormalizedPointFromIntersection(point);
+    if (!normalizedPoint) return;
+    console.info('[SoundScape] Clicked point:', normalizedPoint);
+
+    const highlightedIndex = updateHighlightedVectors(normalizedPoint);
+    setCurrentTime(highlightedIndex);
+  };
+
+  /**
+   * Converts a world-space intersection point to a normalized local-space point relative to the mesh.
+   *
+   * The function first transforms the given `THREE.Vector3` point from world coordinates to the mesh's local coordinates,
+   * then normalizes it by dividing each component by the mesh's scale. This is useful for mapping intersection points
+   * to a normalized space within the mesh, for example when working with scaled meshes in 3D scenes.
+   *
+   * @param point - The intersection point in world coordinates.
+   * @returns A normalized local-space `THREE.Vector3` if the mesh reference exists; otherwise, returns `undefined`.
+   */
+  const getNormalizedPointFromIntersection = (point: THREE.Vector3) => {
+    if (!meshRef.current) return;
+    const localPoint = meshRef.current.worldToLocal(point.clone());
+    const scale = meshRef.current.scale;
+    return new THREE.Vector3(
+      localPoint.x / scale.x,
+      localPoint.y / scale.y,
+      localPoint.z / scale.z
+    );
   };
 
   useFrame(() => {
     if (!meshRef.current) return;
-
     raycaster.setFromCamera(mouse, camera);
-
     const intersects = raycaster.intersectObject(meshRef.current, true);
     if (intersects.length > 0) {
-      const point = intersects[0].point.clone();
+      const point: THREE.Vector3 = intersects[0].point.clone();
+      const normalizedPoint = getNormalizedPointFromIntersection(point);
+      if (!normalizedPoint) return;
 
-      const localPoint = meshRef.current.worldToLocal(point.clone());
-      const scale = meshRef.current.scale;
-      const normalizedPoint = new THREE.Vector3(
-        localPoint.x / scale.x,
-        localPoint.y / scale.y,
-        localPoint.z / scale.z
-      );
-
-      intersectionRef.current = normalizedPoint;
-      getClosestVectors(normalizedPoint);
+      updateHighlightedVectors(normalizedPoint);
 
       if (markerRef.current) {
         markerRef.current.position.copy(point);
@@ -218,7 +238,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
           geometry={geometry}
           ref={meshRef}
           onPointerMove={handlePointerMove}
-          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
           rotateZ={-Math.PI}
         >
           <shaderMaterial
@@ -267,7 +287,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
         rotation={[Math.PI / -2, 0, Math.PI]}
         position={[26.5, 0, 84]}
       >
-        <ReverseSign onClick={reverseSignClicked} />
+        <ReverseSign onClick={() => setReversed(!reversed)} />
       </Html>
       <Html
         occlude

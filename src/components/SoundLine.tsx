@@ -17,7 +17,7 @@ type SoundLineProps = {
   easing?: (t: number) => number;
   scale?: [number, number, number];
   position?: [number, number, number];
-  currentTimeIndex?: boolean;
+  showCurrentTimeAsHtml?: boolean;
 };
 
 const lerpVector3 = (start: THREE.Vector3, end: THREE.Vector3, t: number): THREE.Vector3 => {
@@ -36,7 +36,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
   easing = easeOutQuint,
   scale = [0.6, 1.05, -0.8],
   position = [0, 1, 0],
-  currentTimeIndex = false,
+  showCurrentTimeAsHtml = false,
 }) => {
   const lineRef = useRef<Line2 | null>(null);
   const { size } = useThree();
@@ -64,14 +64,6 @@ const SoundLine: React.FC<SoundLineProps> = ({
 
   const resolution = useMemo(() => new THREE.Vector2(size.width, size.height), [size]);
 
-  const setLineTime = localSoundScapeStore((s) => s.setLineTime);
-
-  useEffect(() => {
-    const lineTime = (highlightedLineIndex / totalLines) * duration;
-    console.log('lineTime-XXX', lineTime, highlightedLineIndex);
-
-    setLineTime(lineTime); // update global store
-  }, [highlightedLineIndex, duration, totalLines, setLineTime, currentTime]);
   // Initialize buffer
   const updatePositionsBuffer = (pts: THREE.Vector3[]) => {
     pts.forEach((p, i) => {
@@ -158,7 +150,6 @@ const SoundLine: React.FC<SoundLineProps> = ({
       side: THREE.DoubleSide,
     });
     const line = new Line2(geometry, material);
-    line.computeLineDistances();
     return line;
   }, [color, lineWidth, resolution]);
 
@@ -170,14 +161,14 @@ const SoundLine: React.FC<SoundLineProps> = ({
           <Html
             transform
             scale={4}
-            rotation={[currentTimeIndex ? Math.PI / 2 : Math.PI / -2, 0, Math.PI / 2]}
-            position={[currentTimeIndex ? 96 : 58, 0, 0]}
+            rotation={[showCurrentTimeAsHtml ? Math.PI / 2 : Math.PI / -2, 0, Math.PI / 2]}
+            // position={[showCurrentTimeAsHtml ? 96 : 58, 0, 0]}
           >
             <div
-              ref={currentTimeIndex ? null : htmlRef} // <- now ref points to the DOM element, not Object3D
+              ref={htmlRef} // <- now ref points to the DOM element, not Object3D
               style={{ color: 'white', fontSize: '16px' }}
             >
-              {currentTimeIndex ? formatTime(currentTime) : formatTime(lineTimeState)}
+              {showCurrentTimeAsHtml ? formatTime(currentTime) : formatTime(lineTimeState)}
             </div>
           </Html>
         </group>
