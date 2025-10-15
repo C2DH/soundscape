@@ -37,7 +37,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null!);
   const previousIntersectionListIndexRef = useRef<number>(0);
-  const markerRef = useRef<THREE.Mesh>(null);
+
   const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
   const duration = useAudioStore((s) => s.duration);
 
@@ -150,20 +150,14 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     if (!meshRef.current) return;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObject(meshRef.current, true);
-    if (intersects.length > 0) {
-      const point: THREE.Vector3 = intersects[0].point.clone();
-      const normalizedPoint = getNormalizedPointFromIntersection(point);
-      if (!normalizedPoint) return;
-
-      updateHighlightedVectors(normalizedPoint);
-
-      if (markerRef.current) {
-        markerRef.current.position.copy(point);
-        markerRef.current.visible = true;
-      }
-    } else {
-      if (markerRef.current) markerRef.current.visible = false;
+    if (intersects.length === 0) {
+      return;
     }
+
+    const normalizedPoint = getNormalizedPointFromIntersection(intersects[0].point.clone());
+    if (!normalizedPoint) return;
+
+    updateHighlightedVectors(normalizedPoint);
   });
 
   const geometry = useMemo(() => {
