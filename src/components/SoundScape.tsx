@@ -39,9 +39,8 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
   const previousIntersectionListIndexRef = useRef<number>(0);
   const markerRef = useRef<THREE.Mesh>(null);
   const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
-  // const highlightedLineIndex = localSoundScapeStore((s) => s.highlightedLineIndex);
-  // const { currentTime } = useAudioStore();
-  // const lineTime = localSoundScapeStore((s) => s.lineTime);
+  const duration = useAudioStore((s) => s.duration);
+
   const [bbox, setBbox] = useState({
     min: new THREE.Vector3(),
     max: new THREE.Vector3(),
@@ -65,7 +64,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
 
     setHighlightedVectors(centeredVectors, 0);
     previousIntersectionListIndexRef.current = 0;
-  }, [lists, setHighlightedVectors]);
+  }, [lists]);
 
   const handlePointerMove = (event: React.PointerEvent) => {
     const rect = gl.domElement.getBoundingClientRect();
@@ -123,7 +122,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     console.info('[SoundScape] Clicked point:', normalizedPoint);
 
     const highlightedIndex = updateHighlightedVectors(normalizedPoint);
-    setCurrentTime(highlightedIndex);
+    setCurrentTime((highlightedIndex / lists.length) * duration);
   };
 
   /**
