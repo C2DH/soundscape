@@ -162,7 +162,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
             transform
             scale={4}
             rotation={[showCurrentTimeAsHtml ? Math.PI / 2 : Math.PI / -2, 0, Math.PI / 2]}
-            // position={[showCurrentTimeAsHtml ? 96 : 58, 0, 0]}
+            position={[showCurrentTimeAsHtml ? 96 : 58, 0, 0]}
           >
             <div
               ref={htmlRef} // <- now ref points to the DOM element, not Object3D

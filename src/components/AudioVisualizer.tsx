@@ -23,20 +23,6 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ soundLinesVectors }) 
   /** Number of lines to display based on playback progress */
   const progressBasedLineCount = Math.floor((currentTime / duration) * totalLinesCount);
 
-  /**
-   * Index adjusted for centered visualization (orbit controller centers the view).
-   * Offset by 1 when past midpoint to maintain visual alignment.
-   */
-  const currentTimeLineIndex =
-    progressBasedLineCount >= totalLinesCount / 2
-      ? progressBasedLineCount - 1
-      : progressBasedLineCount;
-
-  console.log('AudioVisualizer render:', {
-    currentTime,
-    duration,
-  });
-
   return (
     <>
       <SoundLines
@@ -46,7 +32,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ soundLinesVectors }) 
         color={colors['--accent-3d']}
       />
       <SoundLine
-        points={soundLinesVectors[currentTimeLineIndex] || []}
+        points={soundLinesVectors[progressBasedLineCount] || []}
         scale={[1, 1, 1]}
         position={[0, 1, 0]}
         color={colors['--accent-3d-time']}
