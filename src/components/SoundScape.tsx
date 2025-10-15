@@ -38,7 +38,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
   const materialRef = useRef<THREE.ShaderMaterial>(null!);
   const previousIntersectionListIndexRef = useRef<number>(0);
 
-  const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
+  const setSeekTime = useAudioStore((s) => s.setSeekTime);
   const duration = useAudioStore((s) => s.duration);
 
   const [bbox, setBbox] = useState({
@@ -119,10 +119,11 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     const point = intersects[0].point.clone();
     const normalizedPoint = getNormalizedPointFromIntersection(point);
     if (!normalizedPoint) return;
-    console.info('[SoundScape] Clicked point:', normalizedPoint);
 
     const highlightedIndex = updateHighlightedVectors(normalizedPoint);
-    setCurrentTime((highlightedIndex / lists.length) * duration);
+    const currentTime = (highlightedIndex / lists.length) * duration;
+    console.info('[SoundScape] set currentTime:', currentTime);
+    setSeekTime(currentTime);
   };
 
   /**
