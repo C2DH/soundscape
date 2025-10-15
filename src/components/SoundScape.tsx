@@ -219,7 +219,29 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     return geometry;
   }, [lists]);
 
-  const lines = lists.map((yList, t) => yList.map((y, x) => new THREE.Vector3(x, y, t)));
+  /**
+   * Transforms a 2D array of y-coordinates into 3D vector positions for sound visualization.
+   *
+   * @remarks
+   * This creates a grid of THREE.Vector3 points where:
+   * - The outer array (`lists`) represents different time slices (z-axis/depth)
+   * - Each inner array (`yList`) contains y-coordinates for points along a line
+   * - X-coordinates are centered around 0 by subtracting half the list length
+   * - Z-coordinates (time) are centered around 0 by subtracting half the total number of lists
+   *
+   * @example
+   * For a 3x3 grid:
+   * - x ranges from -1.5 to 1.5 (centered)
+   * - y values come from the input lists
+   * - z ranges from -1 to 1 (centered)
+   *
+   * @type {THREE.Vector3[][]}
+   */
+  const soundLinesVectors: THREE.Vector3[][] = lists.map((yList, t) =>
+    yList.map(
+      (y, x) => new THREE.Vector3(x - yList.length / 2, y, t - Math.floor(lists.length / 2))
+    )
+  );
 
   // expose the meshRef to parent
   useImperativeHandle(ref, () => meshRef.current as THREE.Mesh);
@@ -250,7 +272,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
             side={THREE.DoubleSide}
           />
         </mesh>
-        <AudioVisualizer allLines={lines} />
+        <AudioVisualizer soundLinesVectors={soundLinesVectors} />
       </group>
       <SoundScapeSoundlineWrapper />
       <Html
