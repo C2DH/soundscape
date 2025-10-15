@@ -165,10 +165,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
             rotation={[showCurrentTimeAsHtml ? Math.PI / 2 : Math.PI / -2, 0, Math.PI / 2]}
             position={[showCurrentTimeAsHtml ? 96 : 58, 0, 0]}
           >
-            <div
-              ref={htmlRef} // <- now ref points to the DOM element, not Object3D
-              style={{ color: 'white', fontSize: '16px' }}
-            >
+            <div ref={htmlRef} style={{ color: 'white', fontSize: '16px' }}>
               {showCurrentTimeAsHtml ? formatTime(currentTime) : formatTime(lineTimeState)}
             </div>
           </Html>

@@ -5,7 +5,7 @@ import './AudioControls.css';
 import PauseSign from './svg/PauseSign';
 // import NextVisSign from './svg/NextVisSign';
 import NextCountrySign from './svg/NextCountrySign';
-import { useAudioStore, localSoundScapeStore } from '../store';
+import { useAudioStore } from '../store';
 // import { formatTime } from '../audio';
 import AudioControlsProgress from './AudioControlsProgress';
 import { AvailableAudioItems } from '../constants'; // added
