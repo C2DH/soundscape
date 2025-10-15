@@ -1,7 +1,7 @@
 import Modal from './Modal';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useModalStore, useStore, useSidebarStore, useSceneStore } from '../store';
+import { useModalStore, useStore, useSidebarStore, useSceneStore, useAudioStore } from '../store';
 import AudioControls from './AudioControls';
 import Scene from './Scene';
 import { AvailableAudioItems, SiteBasename } from '../constants';
@@ -15,6 +15,8 @@ const SceneManager = () => {
   const isOpenSidebar = useSidebarStore((s) => s.isOpenSidebar);
   const [showContent, setShowContent] = useState(false); // NEW
   const reversed = useSceneStore((s) => s.reversed);
+  const setSeekTime = useAudioStore((s) => s.setSeekTime);
+  const seekTime = useAudioStore((s) => s.seekTime);
 
   let item: (typeof AvailableAudioItems)[number] | undefined;
   let itemIndex = -1;
@@ -34,6 +36,8 @@ const SceneManager = () => {
 
   useEffect(() => {
     if (item) {
+      setSeekTime(0);
+      console.log('[SceneManager] Reset seekTime to 0 on item change', seekTime);
       // if user reloads and item exists in store/url → open modal again
       useModalStore.getState().openModal();
     } else {

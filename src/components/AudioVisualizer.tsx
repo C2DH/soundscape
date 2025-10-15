@@ -21,7 +21,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ soundLinesVectors }) 
   const totalLinesCount = soundLinesVectors.length;
 
   /** Number of lines to display based on playback progress */
-  const progressBasedLineCount = Math.floor((currentTime / duration) * totalLinesCount);
+  const progressBasedLineCount = Math.ceil((currentTime / duration) * totalLinesCount);
 
   return (
     <>
