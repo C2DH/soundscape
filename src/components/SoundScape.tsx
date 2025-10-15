@@ -9,11 +9,10 @@ import React, {
 } from 'react';
 import * as THREE from 'three';
 import SoundLine from './SoundLine';
-import { useThemeStore, localSoundScapeStore, useAudioStore, useSceneStore } from '../store';
+import { useThemeStore, localSoundScapeStore, useSceneStore, useAudioStore } from '../store';
 import vertexSoundScape from '../shaders/soundscape/vertex.glsl?raw';
 import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
-import { isMobile } from 'react-device-detect';
 import { Html } from '@react-three/drei';
 import ReverseSign from './svg/ReverseSign';
 
@@ -25,7 +24,7 @@ type SoundScapeProps = {
 
 const SoundScapeSoundlineWrapper: React.FC = () => {
   const points = localSoundScapeStore((state) => state.highlightedVectors);
-  if (points.length === 0 || isMobile) {
+  if (points.length === 0) {
     return null; // No points to render
   }
   return <SoundLine points={points} />;
@@ -37,20 +36,35 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
   const setReversed = useSceneStore((s) => s.setReversed);
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null!);
-  const intersectionRef = useRef<THREE.Vector3 | null>(null);
   const previousIntersectionListIndexRef = useRef<number>(0);
-  const markerRef = useRef<THREE.Mesh>(null);
+
+  const setSeekTime = useAudioStore((s) => s.setSeekTime);
+  const duration = useAudioStore((s) => s.duration);
+
   const [bbox, setBbox] = useState({
     min: new THREE.Vector3(),
     max: new THREE.Vector3(),
   });
   const getColorVec3 = useThemeStore((state) => state.getColorVec3);
-  const highlightedLineIndex = localSoundScapeStore((state) => state.highlightedLineIndex);
 
   const raycaster = useRef(new THREE.Raycaster()).current;
   const mouse = useRef(new THREE.Vector2()).current;
 
   const { camera, gl } = useThree();
+
+  useEffect(() => {
+    if (lists.length === 0) return;
+
+    const timeLength = lists.length;
+    const listLength = lists[0]?.length ?? 0;
+
+    const centeredVectors = lists[0].map(
+      (y, x) => new THREE.Vector3(x - listLength / 2, y, 0 - timeLength / 2)
+    );
+
+    setHighlightedVectors(centeredVectors, 0);
+    previousIntersectionListIndexRef.current = 0;
+  }, [lists]);
 
   const handlePointerMove = (event: React.PointerEvent) => {
     const rect = gl.domElement.getBoundingClientRect();
@@ -59,19 +73,32 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     mouse.x = x * 2 - 1;
     mouse.y = -(y * 2 - 1);
   };
-  const reverseSignClicked = () => {
-    setReversed(!reversed);
-  };
 
-  const getClosestVectors = (point: THREE.Vector3) => {
+  /**
+   * Updates the highlighted vectors based on the provided 3D point.
+   *
+   * Calculates the corresponding list index from the z-coordinate of the point,
+   * then generates a new set of centered vectors for that list. If the list index
+   * has not changed since the last update, the function returns early to avoid
+   * unnecessary updates.
+   *
+   * @param point - The THREE.Vector3 point used to determine which list of vectors to highlight.
+   *
+   * @remarks
+   * - Assumes `lists` is a 2D array where each sub-array contains y-values.
+   * - Uses `previousIntersectionListIndexRef` to track the last highlighted list index.
+   * - Calls `setHighlightedVectors` with the new vectors and the current list index.
+   *
+   * @returns The current list index that was highlighted.
+   */
+  const updateHighlightedVectors = (point: THREE.Vector3): number => {
     const timeLength = lists.length;
     const listLength = lists[0]?.length ?? 0;
 
     const adjustedZ = point.z + timeLength / 2;
     const listIndex = Math.max(0, Math.floor(adjustedZ));
-
     if (previousIntersectionListIndexRef.current === listIndex) {
-      return;
+      return listIndex;
     }
 
     const centeredVectors = lists[listIndex].map(
@@ -80,79 +107,58 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
 
     setHighlightedVectors(centeredVectors, listIndex);
     previousIntersectionListIndexRef.current = listIndex;
+    return listIndex;
   };
 
-  const handlePointerDown = (event: React.PointerEvent) => {
-    localSoundScapeStore.getState().incrementClickCounter();
-    if (!meshRef.current) return;
-
-    const rect = gl.domElement.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    mouse.x = x * 2 - 1;
-    mouse.y = -(y * 2 - 1);
+  const handlePointerUp = (event: React.PointerEvent) => {
+    handlePointerMove(event);
 
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObject(meshRef.current, true);
+    const intersects = raycaster.intersectObject(meshRef.current!, true);
     if (intersects.length === 0) return;
+    const point = intersects[0].point.clone();
+    const normalizedPoint = getNormalizedPointFromIntersection(point);
+    if (!normalizedPoint) return;
 
-    const localPoint = meshRef.current.worldToLocal(intersects[0].point.clone());
+    const highlightedIndex = updateHighlightedVectors(normalizedPoint);
+    const currentTime = (highlightedIndex / lists.length) * duration;
+    console.info('[SoundScape] set currentTime:', currentTime);
+    setSeekTime(currentTime);
+  };
+
+  /**
+   * Converts a world-space intersection point to a normalized local-space point relative to the mesh.
+   *
+   * The function first transforms the given `THREE.Vector3` point from world coordinates to the mesh's local coordinates,
+   * then normalizes it by dividing each component by the mesh's scale. This is useful for mapping intersection points
+   * to a normalized space within the mesh, for example when working with scaled meshes in 3D scenes.
+   *
+   * @param point - The intersection point in world coordinates.
+   * @returns A normalized local-space `THREE.Vector3` if the mesh reference exists; otherwise, returns `undefined`.
+   */
+  const getNormalizedPointFromIntersection = (point: THREE.Vector3) => {
+    if (!meshRef.current) return;
+    const localPoint = meshRef.current.worldToLocal(point.clone());
     const scale = meshRef.current.scale;
-    const normalizedPoint = new THREE.Vector3(
+    return new THREE.Vector3(
       localPoint.x / scale.x,
       localPoint.y / scale.y,
       localPoint.z / scale.z
     );
-
-    const timeLength = lists.length;
-    const listLength = lists[0]?.length ?? 0;
-    const listIndex = Math.max(0, Math.floor(normalizedPoint.z + timeLength / 2));
-
-    const previousIndex = previousIntersectionListIndexRef.current;
-    if (previousIndex !== listIndex || previousIndex === undefined) {
-      const centeredVectors = lists[listIndex].map(
-        (y, x) => new THREE.Vector3(x - listLength / 2, y, listIndex - timeLength / 2)
-      );
-
-      setHighlightedVectors(centeredVectors, listIndex);
-
-      const duration = useAudioStore.getState().duration;
-      const lineTime = (listIndex / timeLength) * duration;
-
-      localSoundScapeStore.getState().setLineTime(lineTime);
-
-      previousIntersectionListIndexRef.current = listIndex;
-    }
-    console.log('Pointer down at list index:', listIndex, highlightedLineIndex);
   };
 
   useFrame(() => {
     if (!meshRef.current) return;
-
     raycaster.setFromCamera(mouse, camera);
-
     const intersects = raycaster.intersectObject(meshRef.current, true);
-    if (intersects.length > 0) {
-      const point = intersects[0].point.clone();
-
-      const localPoint = meshRef.current.worldToLocal(point.clone());
-      const scale = meshRef.current.scale;
-      const normalizedPoint = new THREE.Vector3(
-        localPoint.x / scale.x,
-        localPoint.y / scale.y,
-        localPoint.z / scale.z
-      );
-
-      intersectionRef.current = normalizedPoint;
-      getClosestVectors(normalizedPoint);
-
-      if (markerRef.current) {
-        markerRef.current.position.copy(point);
-        markerRef.current.visible = true;
-      }
-    } else {
-      if (markerRef.current) markerRef.current.visible = false;
+    if (intersects.length === 0) {
+      return;
     }
+
+    const normalizedPoint = getNormalizedPointFromIntersection(intersects[0].point.clone());
+    if (!normalizedPoint) return;
+
+    updateHighlightedVectors(normalizedPoint);
   });
 
   const geometry = useMemo(() => {
@@ -214,21 +220,29 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
     return geometry;
   }, [lists]);
 
-  useEffect(() => {
-    if (lists.length === 0) return;
-
-    const timeLength = lists.length;
-    const listLength = lists[0]?.length ?? 0;
-
-    const centeredVectors = lists[0].map(
-      (y, x) => new THREE.Vector3(x - listLength / 2, y, 0 - timeLength / 2)
-    );
-
-    setHighlightedVectors(centeredVectors, 0);
-    previousIntersectionListIndexRef.current = 0;
-  }, [lists, setHighlightedVectors]);
-
-  const lines = lists.map((yList, t) => yList.map((y, x) => new THREE.Vector3(x, y, t)));
+  /**
+   * Transforms a 2D array of y-coordinates into 3D vector positions for sound visualization.
+   *
+   * @remarks
+   * This creates a grid of THREE.Vector3 points where:
+   * - The outer array (`lists`) represents different time slices (z-axis/depth)
+   * - Each inner array (`yList`) contains y-coordinates for points along a line
+   * - X-coordinates are centered around 0 by subtracting half the list length
+   * - Z-coordinates (time) are centered around 0 by subtracting half the total number of lists
+   *
+   * @example
+   * For a 3x3 grid:
+   * - x ranges from -1.5 to 1.5 (centered)
+   * - y values come from the input lists
+   * - z ranges from -1 to 1 (centered)
+   *
+   * @type {THREE.Vector3[][]}
+   */
+  const soundLinesVectors: THREE.Vector3[][] = lists.map((yList, t) =>
+    yList.map(
+      (y, x) => new THREE.Vector3(x - yList.length / 2, y, t - Math.floor(lists.length / 2))
+    )
+  );
 
   // expose the meshRef to parent
   useImperativeHandle(ref, () => meshRef.current as THREE.Mesh);
@@ -240,7 +254,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
           geometry={geometry}
           ref={meshRef}
           onPointerMove={handlePointerMove}
-          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
           rotateZ={-Math.PI}
         >
           <shaderMaterial
@@ -259,7 +273,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
             side={THREE.DoubleSide}
           />
         </mesh>
-        <AudioVisualizer allLines={lines} />
+        <AudioVisualizer soundLinesVectors={soundLinesVectors} />
       </group>
       <SoundScapeSoundlineWrapper />
       <Html
@@ -289,7 +303,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
         rotation={[Math.PI / -2, 0, Math.PI]}
         position={[26.5, 0, 84]}
       >
-        <ReverseSign onClick={reverseSignClicked} />
+        <ReverseSign onClick={() => setReversed(!reversed)} />
       </Html>
       <Html
         occlude

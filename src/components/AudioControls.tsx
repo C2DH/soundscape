@@ -5,7 +5,7 @@ import './AudioControls.css';
 import PauseSign from './svg/PauseSign';
 // import NextVisSign from './svg/NextVisSign';
 import NextCountrySign from './svg/NextCountrySign';
-import { useAudioStore, localSoundScapeStore } from '../store';
+import { useAudioStore } from '../store';
 // import { formatTime } from '../audio';
 import AudioControlsProgress from './AudioControlsProgress';
 import { AvailableAudioItems } from '../constants'; // added
@@ -34,7 +34,7 @@ const AudioControls: FC<AudioControlsProps> = ({
 }) => {
   const setCurrentTime = useAudioStore((s) => s.setCurrentTime);
   const setDuration = useAudioStore((s) => s.setDuration);
-
+  const seekTimeRef = useRef(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -79,17 +79,18 @@ const AudioControls: FC<AudioControlsProps> = ({
   };
 
   useEffect(() => {
-    let prevCount = localSoundScapeStore.getState().clickCounter;
-    const unsubscribe = localSoundScapeStore.subscribe((s) => {
-      if (s.clickCounter > prevCount && audioRef.current) {
-        const { lineTime } = s;
-        audioRef.current.currentTime = lineTime; // jump playback
-        setCurrentTime(lineTime); // update store so lines update immediately
+    const unsubscribe = useAudioStore.subscribe((s) => {
+      if (audioRef.current) {
+        const { seekTime } = s;
+        if (seekTime === seekTimeRef.current) return; // no change
+        seekTimeRef.current = seekTime;
+        //
+        console.log('AudioControls sync time', seekTime, audioRef.current.currentTime);
+        audioRef.current.currentTime = seekTime;
       }
-      prevCount = s.clickCounter;
     });
     return () => unsubscribe();
-  }, [setCurrentTime]);
+  }, []);
 
   // Sync audio element with isPlaying state
   useEffect(() => {

@@ -128,8 +128,10 @@ export const useSidebarStore = create<SidebarState>((set) => ({
 type AudioState = {
   currentTime: number;
   duration: number;
+  seekTime: number;
   setCurrentTime: (t: number) => void;
   setDuration: (d: number) => void;
+  setSeekTime: (t: number) => void;
 };
 
 export const useAudioStore = create<
@@ -139,11 +141,13 @@ export const useAudioStore = create<
   }
 >((set) => ({
   currentTime: 0,
+  seekTime: 0,
   duration: 1,
   audioRef: null,
   setCurrentTime: (t) => set({ currentTime: t }),
   setDuration: (d) => set({ duration: d }),
   setAudioRef: (ref) => set({ audioRef: ref }),
+  setSeekTime: (t) => set({ seekTime: t }),
 }));
 
 export const localSoundScapeStore = create<{

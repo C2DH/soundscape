@@ -32,6 +32,7 @@ export const Default: Story = {
   args: {
     color: 'cyan',
     lineWidth: 0.02,
+    showCurrentTimeAsHtml: true,
   },
   render: (args: SoundLineProps) => {
     const [points, setPoints] = useState<THREE.Vector3[]>(generateRandomPoints());
@@ -48,7 +49,12 @@ export const Default: Story = {
           <ambientLight />
           <directionalLight position={[10, 10, 5]} />
 
-          <SoundLine points={points} color={args.color} lineWidth={args.lineWidth} />
+          <SoundLine
+            points={points}
+            color={args.color}
+            lineWidth={args.lineWidth}
+            showCurrentTimeAsHtml={args.showCurrentTimeAsHtml}
+          />
 
           <OrbitControls />
         </Canvas>
