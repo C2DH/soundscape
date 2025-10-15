@@ -150,6 +150,7 @@ const SoundLine: React.FC<SoundLineProps> = ({
       side: THREE.DoubleSide,
     });
     const line = new Line2(geometry, material);
+    line.computeLineDistances(); // Ensure line distances are calculated for dashed/material effects
     return line;
   }, [color, lineWidth, resolution]);
 
