@@ -42,13 +42,13 @@ const Scene: React.FC<SceneProps> = ({ landscapeData }) => {
   return (
     <Canvas
       shadows
-      camera={{ position: cameraPos, fov: 20, far: 1000, near: 0.1 }}
+      camera={{ position: cameraPos, fov: 20, far: 1500, near: 0.1, zoom: isMobile ? 0.5 : 1 }}
       touch-action="none"
     >
       <OrbitControls
         ref={orbitRef}
-        minDistance={40}
-        maxDistance={isMobile ? 1200 : 600}
+        minDistance={isMobile ? 120 : 40}
+        maxDistance={isMobile ? 700 : 600}
         target={target}
         minPolarAngle={0} // 0 = looking straight down from above
         maxPolarAngle={Math.PI / 2}

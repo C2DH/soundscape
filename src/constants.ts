@@ -192,12 +192,12 @@ export const AvailableAudioItems: AudioItem[] = [
   },
   {
     id: 'SI-001',
-    url: '/slowenia',
-    name: 'slowenia',
+    url: '/slovenia',
+    name: 'slovenia',
     lat: 46.1512,
     lon: 14.9955,
-    audioSrc: '/audio/Slowenia.mp3',
-    json: '/data/slowenia.json',
+    audioSrc: '/audio/Slovenia.mp3',
+    json: '/data/slovenia.json',
     desc: 'Slovenia maintains a nationwide siren system with around 1,560 operational units, mostly mounted on fire stations, municipal buildings, and public facilities. The network combines both older mechanical and modern electronic sirens, and it remains an important part of civil protection alongside newer digital tools. The signals are standardized into three main categories. The warning signal (Opozorilo na nevarnost) is a two-minute steady tone, used to indicate a general state of danger such as floo...\nIn addition to these general signals, Slovenia has developed special localized siren patterns for high-risk municipalities. For example, in Hrastnik and Trbovlje, where chlorine is handled in industrial facilities, a unique 100-second composite signal (30 seconds wailing, 40 seconds steady, 30 seconds wailing) warns of chlorine leaks. In river valleys such as Muta, Vuzenica, Podvelka, Radlje ob Dravi, Brežice, Krško, and Sevnica, a different 100-second signal consisting of alternating four-second bursts ...',
     sources:
       'Government of Slovenia, SI-ALERT system: <a href="https://www.gov.si/en/" target="_blank">gov.si – SI-ALERT public warning</a>; Total Slovenia News (2019), overview of siren tests and functions (<a href="https://totalslovenia-news.com" target="_blank">totalslovenia-news.com</a>).',

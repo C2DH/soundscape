@@ -15,6 +15,7 @@ import fragmentSoundScape from '../shaders/soundscape/fragment.glsl?raw';
 import AudioVisualizer from './AudioVisualizer';
 import { Html } from '@react-three/drei';
 import ReverseSign from './svg/ReverseSign';
+import { isMobile } from 'react-device-detect';
 
 type SoundScapeProps = {
   lists: number[][];
@@ -275,7 +276,7 @@ const SoundScape = forwardRef<THREE.Mesh, SoundScapeProps>(({ lists, position },
         </mesh>
         <AudioVisualizer soundLinesVectors={soundLinesVectors} />
       </group>
-      <SoundScapeSoundlineWrapper />
+      {!isMobile && <SoundScapeSoundlineWrapper />}
       <Html
         occlude
         transform
