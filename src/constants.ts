@@ -89,12 +89,12 @@ export const AvailableAudioItems: AudioItem[] = [
   },
   {
     id: 'IS-001',
-    url: '/island',
-    name: 'island',
+    url: '/Iceland',
+    name: 'Iceland',
     lat: 64.9631,
     lon: -19.0208,
-    audioSrc: '/audio/Island.mp3',
-    json: '/data/island.json',
+    audioSrc: '/audio/Iceland.mp3',
+    json: '/data/iceland.json',
     desc: 'Iceland’s unique geological setting—marked by frequent volcanic activity, earthquakes, and extreme weather—has shaped its approach to public warning. Historically, mechanical sirens were the first form of early warning, particularly for potential military threats such as nuclear drills. In modern times, sirens are most often used for volcanic eruption warnings: for instance, in Grindavík and Svartsengi, loud, continuous evacuation sirens are activated when an eruption is imminent. Loca...\nAlongside sirens, Iceland relies heavily on mobile alerts and civil protection messaging. The Civil Protection Authority (Almannavarnir) and 112 emergency services use cell broadcasting via mobile networks to deliver alerts directly to phones in affected areas—no app download required—especially vital in reaching tourists and visitors. This system activates during eruptive or hazardous events, such as volcanic alerts or natural disasters, guiding people to evacuate or shelter as needed. The alerts are ...',
     sources:
       'Iceland Monitor, “Warning sirens in Grindavík and near the Blue Lagoon will be tested at 10 pm tonight” (Feb 2024 testing details); Visit Reykjanes, “Evacuation Sirens in Svartsengi and Grindavík” (Jul 2025 local siren function and test schedule); Almannavarnir (Icelandic Civil Protection), Emergency Response overview; EENA “Public Warning Systems: Lessons from Iceland” (mobile alert systems and cell broadcast use)',
