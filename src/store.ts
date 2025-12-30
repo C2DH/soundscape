@@ -184,12 +184,16 @@ export const localSoundScapeStore = create<{
 
 interface MeshState {
   mesh: THREE.Mesh | null;
-  setMesh: (mesh: THREE.Mesh | null) => void;
+  soundLines: THREE.Group | null;
+  setMesh: (m: THREE.Mesh | null) => void;
+  setSoundLines: (g: THREE.Group | null) => void;
 }
 
 export const useMeshStore = create<MeshState>((set) => ({
   mesh: null,
+  soundLines: null,
   setMesh: (mesh) => set({ mesh }),
+  setSoundLines: (soundLines) => set({ soundLines }),
 }));
 
 interface CameraState {

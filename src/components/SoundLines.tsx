@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
+import { useMeshStore } from '../store';
 
 type SoundLinesProps = {
   lines: THREE.Vector3[][];
@@ -16,6 +17,7 @@ const SoundLines: React.FC<SoundLinesProps> = ({
   opacity = 1,
   position = [0, 0, 0],
 }) => {
+  const setSoundLines = useMeshStore((s) => s.setSoundLines);
   //   console.log('lines', lines, lineIdx);
   const lineObjects = useMemo(() => {
     if (lines.length === 0 || lineIdx < 0 || lineIdx >= lines.length) {
@@ -37,7 +39,16 @@ const SoundLines: React.FC<SoundLinesProps> = ({
     });
   }, [lines, lineIdx, color, opacity]);
 
-  return <group position={position}>{lineObjects}</group>;
+  return (
+    <group
+      ref={(g) => {
+        if (g) setSoundLines(g);
+      }}
+      position={position}
+    >
+      {lineObjects}
+    </group>
+  );
 };
 
 export default SoundLines;

@@ -11,6 +11,7 @@ export default function Sidebar() {
   const toggleSidebar = useSidebarStore((s) => s.toggleSidebar);
   const isOpenModal = useModalStore((s) => s.isOpenModal);
   const mesh = useMeshStore((s) => s.mesh);
+  const soundLines = useMeshStore((s) => s.soundLines);
 
   console.log('Rendering Sidebar, isOpenSidebar:', isOpenSidebar, 'isOpenModal:', isOpenModal);
 
@@ -60,8 +61,23 @@ export default function Sidebar() {
                 </a>
               )}
               <div className="GeometryExporter opacity-60">
-                {mesh && <GeometryExporter ref={{ current: mesh }} />}
+                {mesh && (
+                  <GeometryExporter
+                    target={mesh}
+                    name={item?.name ?? 'soundscape_model'}
+                    exportScale={[0.6, 1, -0.8]}
+                  />
+                )}
               </div>
+              {/* <div className="GeometryExporter opacity-60">
+                {soundLines && (
+                  <GeometryExporter
+                    target={soundLines}
+                    name={`${item?.name ?? 'soundscape'}_lines`}
+                    exportScale={[0.7, 1, -0.8]}
+                  />
+                )}
+              </div> */}
             </footer>
           </div>
         </aside>
