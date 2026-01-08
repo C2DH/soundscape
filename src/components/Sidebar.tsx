@@ -11,7 +11,7 @@ export default function Sidebar() {
   const toggleSidebar = useSidebarStore((s) => s.toggleSidebar);
   const isOpenModal = useModalStore((s) => s.isOpenModal);
   const mesh = useMeshStore((s) => s.mesh);
-  const soundLines = useMeshStore((s) => s.soundLines);
+  // const soundLines = useMeshStore((s) => s.soundLines);
 
   console.log('Rendering Sidebar, isOpenSidebar:', isOpenSidebar, 'isOpenModal:', isOpenModal);
 
