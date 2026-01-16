@@ -32,7 +32,6 @@ export const useWorldStore = create<{
 interface ThemeState {
   colors: Record<string, string>; // still keep raw CSS strings
   threeColors: Record<string, THREE.Color>; // THREE.Color instances
-  setColor: (name: string, value: string) => void;
   refreshFromCSS: () => void;
   getColorVec3: (name: string) => THREE.Vector3 | undefined;
 }
@@ -53,13 +52,6 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     '--accent': parseColor('255,222,124'),
     '--accent-3d': parseColor('255,133,239'),
     '--accent-3d-time': parseColor('95,255,242'),
-  },
-  setColor: (name, value) => {
-    const color = new THREE.Color(value); // convert to THREE.Color
-    set((state) => ({
-      colors: { ...state.colors, [name]: value },
-      threeColors: { ...state.threeColors, [name]: color },
-    }));
   },
   refreshFromCSS: () => {
     const root = getComputedStyle(document.documentElement);
@@ -99,14 +91,12 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
 
 interface ModalState {
   isOpenModal: boolean;
-  toggleModal: () => void;
   openModal: () => void;
   closeModal: () => void;
 }
 
 export const useModalStore = create<ModalState>((set) => ({
   isOpenModal: false,
-  toggleModal: () => set((state) => ({ isOpenModal: !state.isOpenModal })),
   openModal: () => set({ isOpenModal: true }),
   closeModal: () => set({ isOpenModal: false }),
 }));
@@ -114,15 +104,11 @@ export const useModalStore = create<ModalState>((set) => ({
 interface SidebarState {
   isOpenSidebar: boolean;
   toggleSidebar: () => void;
-  openSidebar: () => void;
-  closeSidebar: () => void;
 }
 
 export const useSidebarStore = create<SidebarState>((set) => ({
   isOpenSidebar: false,
   toggleSidebar: () => set((state) => ({ isOpenSidebar: !state.isOpenSidebar })),
-  openSidebar: () => set({ isOpenSidebar: true }),
-  closeSidebar: () => set({ isOpenSidebar: false }),
 }));
 
 type AudioState = {
@@ -137,7 +123,6 @@ type AudioState = {
 export const useAudioStore = create<
   AudioState & {
     audioRef: React.RefObject<HTMLAudioElement> | null;
-    setAudioRef: (ref: React.RefObject<HTMLAudioElement>) => void;
   }
 >((set) => ({
   currentTime: 0,
@@ -146,40 +131,23 @@ export const useAudioStore = create<
   audioRef: null,
   setCurrentTime: (t) => set({ currentTime: t }),
   setDuration: (d) => set({ duration: d }),
-  setAudioRef: (ref) => set({ audioRef: ref }),
   setSeekTime: (t) => set({ seekTime: t }),
 }));
 
 export const localSoundScapeStore = create<{
-  t: number;
   highlightedVectors: THREE.Vector3[];
   highlightedLineIndex: number;
   lineTime: number;
-  lineTimeUpdatedByClick: boolean;
-  clickCounter: number; // NEW
-  setT: (t: number) => void;
-  setLineTime: (time: number, byClick?: boolean) => void;
   setHighlightedVectors: (
     highlightedVectors: THREE.Vector3[],
     highlightedLineIndex: number
   ) => void;
-  incrementClickCounter: () => void; // NEW
 }>((set) => ({
-  t: 0,
   highlightedVectors: [],
   highlightedLineIndex: 0,
   lineTime: 0,
-  lineTimeUpdatedByClick: false,
-  clickCounter: 0, // NEW
-  setT: (t: number) => set(() => ({ t })),
   setHighlightedVectors: (vectors: THREE.Vector3[], index: number) =>
     set({ highlightedVectors: vectors, highlightedLineIndex: index }),
-  setLineTime: (time: number) => {
-    // console.log('time | byClick', time, byClick);
-    set({ lineTime: time });
-  },
-
-  incrementClickCounter: () => set((state) => ({ clickCounter: state.clickCounter + 1 })), // NEW
 }));
 
 interface MeshState {
