@@ -40,7 +40,6 @@ const Earth: React.FC<EarthProps> = ({
   return (
     <>
       <group {...props} position={[0, 0, 0]} scale={[1.5, 1.5, 1.5]}>
-        <EarthRipple size={1300} />
         <PlanetLines radius={radius} maskUrl={maskUrl} />
         <Atmosphere radius={radius} />
         <mesh ref={mesh} rotation={[0, 0, 0]}>
@@ -58,6 +57,7 @@ const Earth: React.FC<EarthProps> = ({
             }}
           />
         </mesh>
+        <EarthRipple baseRadius={radius * 1.13} />
         {pathname == '/overview' && children}
       </group>
     </>
